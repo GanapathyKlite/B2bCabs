@@ -1,0 +1,34 @@
+.Dashboard_Ads {
+    background: #201f1d;
+    position: relative;
+    /* border-radius: 10px; */
+    margin: 50px 0 80px;
+    padding: 40px;
+  }
+  
+  .Dashboard_Ads-title {
+    font-weight: 900;
+    font-size: 45px;
+    color: #ffffff;
+    margin: 0 0 15px;
+  }
+  
+  .Dashboard_Ads-p{
+      font-size: 18px;
+      color: #ffffff;
+      margin: 0 0 37px;
+  }
+  
+  .Dashboard_Ads-right{
+      position: absolute;
+      right: 30%;
+      top: 10%;
+  }
+  
+  .bg-image{
+      position: relative;
+      background-image: url(../../Asset/BG_Sprinkle.svg);
+      background-repeat: no-repeat;
+      background-position: right;
+      background-size: cover;
+  }

@@ -1,0 +1,257 @@
+// SelectField.scss
+.select-container {
+  position: relative;
+  width: 100%;
+}
+
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-control {
+  padding-left: 2.5rem; // Adjust to make room for the arrow
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 0.75rem;
+  font-size: 22px;
+  pointer-events: none; // Ensure it doesn't interfere with clicks
+  transition: transform 0.3s ease;
+}
+
+.form-control.open ~ .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.formControlTextArea {
+  min-height: calc(3 * 1.5em); // Adjust the multiplier based on line-height
+  max-height: calc(7 * 1.5em); // Adjust the multiplier based on line-height
+  overflow-y: auto; // Allow scrolling if content exceeds max-height
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-7.5px);
+  }
+  20%,
+  40%,
+  60%,
+  80%,
+  100% {
+    transform: translateX(7.5px);
+  }
+}
+
+/* Apply shake animation when shake-animation class is present */
+.shake-animation {
+  animation: shake 0.3s ease-in-out;
+}
+
+.errorMessage {
+  font-size: 12px;
+}
+
+.drop-file-input {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  border: 2px dashed var(--PrimaryColor);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--input-bg);
+}
+
+.drop-file-input input {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.drop-file-input:hover,
+.drop-file-input.dragover {
+  opacity: 0.6;
+}
+
+.drop-file-input__label {
+  text-align: center;
+  color: var(--txt-second-color);
+  display: flex;
+  row-gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.uploaded-image-preview {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.drop-file-preview {
+  margin-top: 30px;
+}
+
+.drop-file-preview p {
+  font-weight: 500;
+}
+
+.drop-file-preview__title {
+  margin-bottom: 20px;
+}
+
+.drop-file-preview__item {
+  position: relative;
+  display: flex;
+  margin-bottom: 10px;
+  background-color: var(--input-bg);
+  padding: 15px;
+  border-radius: 20px;
+}
+
+.drop-file-preview__item img {
+  width: 50px;
+  margin-right: 20px;
+}
+
+.drop-file-preview__item__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.drop-file-preview__item__del {
+  background-color: var(--box-bg);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.drop-file-preview__item:hover .drop-file-preview__item__del {
+  opacity: 1;
+}
+
+.imageUpload {
+  width: 70px;
+}
+
+.form-control:focus {
+  border-color: #089848 !important;
+  box-shadow: 0 0 0 0.1rem rgba(8, 152, 72, 0.25) !important;
+}
+
+.cricleBackgroundColor {
+  background-color: #103251 !important;
+  transition: all 0.3s ease-in-out;
+}
+
+.closeBtn {
+  color: #089848;
+  font-size: 18px;
+}
+
+// image Delete Button Start
+.imgClear {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: rgb(20, 20, 20);
+  border: none;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+  cursor: pointer;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  position: relative;
+  gap: 1px;
+}
+
+.svgIcon {
+  width: 12px;
+  transition-duration: 0.3s;
+}
+
+.svgIcon path {
+  fill: white;
+}
+
+.imgClear:hover {
+  width: 120px;
+  border-radius: 50px;
+  transition-duration: 0.3s;
+  background-color: rgb(255, 69, 69);
+  align-items: center;
+  gap: 0;
+}
+
+.imgClear:hover .bin-bottom {
+  width: 50px;
+  transition-duration: 0.3s;
+  transform: translateY(60%);
+}
+.bin-top {
+  transform-origin: bottom right;
+}
+.imgClear:hover .bin-top {
+  width: 50px;
+  transition-duration: 0.3s;
+  transform: translateY(60%) rotate(160deg);
+}
+.imgClear::before {
+  position: absolute;
+  top: -20px;
+  content: "Delete";
+  color: white;
+  transition-duration: 0.3s;
+  font-size: 2px;
+}
+
+.imgClear:hover::before {
+  font-size: 12px;
+  opacity: 1;
+  transform: translateY(25px);
+  transition-duration: 0.3s;
+}
+// image Delete Button End
+
+.overflow-custom {
+  overflow-y: auto;
+}
+
+@media (min-width: 992px) {
+  .overflow-custom {  
+    overflow-y: scroll;
+  }
+}

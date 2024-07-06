@@ -1,0 +1,54 @@
+.facts {
+  position: relative;
+  padding: 80px 0;
+}
+
+.facts-number {
+  background: #201f1d;
+}
+
+.facts .facts-left img {
+  position: absolute;
+  left: -80px;
+  top: 10px;
+}
+
+.facts .facts-right img {
+  position: absolute;
+  right: 60px;
+  top: 30px;
+}
+
+.text-white {
+  color: white;
+}
+
+.count-group {
+  position: relative;
+  width: 100%;
+  display: flex;
+  top: 0;
+  background: white;
+  background-repeat: no-repeat;
+  background-position: right;
+  background-size: cover;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.count-img {
+  padding: 18px;
+  background: #201f1d;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  margin: 0 20px 0 0;
+  transition: 500ms all ease;
+  color: white;
+  font-size: 30px;
+}
+
+.count-content h4 {
+  font-weight: 900;
+  margin: 0 0 7px 0;
+}/*# sourceMappingURL=Facts.css.map */

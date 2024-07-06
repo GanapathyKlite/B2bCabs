@@ -1,0 +1,341 @@
+.edit_search {
+  background-color: var(--SecondaryColor);
+  padding: 10px 15px;
+  height: 75px;
+}
+
+.css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+  border-style: none !important;
+  border-width: 0;
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+  padding: 0 !important;
+  color: var(--whiteColor);
+}
+
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+  background-color: transparent !important;
+}
+
+.css-ymqfn8-MuiStack-root {
+  width: 100%;
+  padding-top: 0px !important;
+
+  > .MuiTextField-root {
+    min-width: 0px !important;
+  }
+}
+
+.w-85 {
+  width: 85% !important;
+}
+
+.select-menu {
+  .select-btn {
+    display: flex;
+    height: 55px;
+    background: var(--whiteColor);
+    padding: 5px 10px;
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+    justify-content: space-between;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+
+    i {
+      font-size: 25px;
+      transition: 0.3s;
+    }
+  }
+
+  &.active {
+    .select-btn i {
+      transform: rotate(-180deg);
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+        0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      padding: 10px 15px;
+    }
+  }
+
+  .options {
+    position: relative;
+    margin-top: 20px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+    display: none;
+
+    .option {
+      display: flex;
+      cursor: pointer;
+      padding: 10px 0;
+      align-items: start;
+      background: #fff;
+      flex-direction: column;
+      transition: 0.2s ease-in-out;
+
+      &:hover {
+        background: #dddddd;
+        padding-left: 15px;
+        box-shadow: -5px 0 var(--PrimaryColor);
+      }
+
+      i {
+        font-size: 25px;
+        margin-right: 12px;
+      }
+
+      .option-text {
+        font-size: 14px;
+        color: #333;
+      }
+    }
+  }
+}
+
+.subText {
+  font-size: 12px;
+}
+
+.label {
+  font-size: 14px;
+  color: var(--PrimaryColor);
+}
+
+.sBtn-text {
+  font-size: 16px;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  overflow: hidden;
+}
+
+.fromPlace {
+  height: 55px;
+  background: var(--whiteColor);
+  padding: 5px 10px;
+  font-size: 18px;
+  font-weight: 400;
+  cursor: pointer;
+  justify-content: space-between;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.searchBtnDiv {
+  height: 55px;
+}
+
+.top0 {
+  top: 0;
+  z-index: 555;
+}
+
+.arrows {
+  font-size: 20px;
+  color: var(--PrimaryColor);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px !important;
+  height: 55px;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+.searchBtn {
+  width: 135px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+  background: var(--PrimaryColor);
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+
+  &:after {
+    content: " ";
+    width: 0%;
+    height: 100%;
+    background: var(--PrimaryColor);
+    position: absolute;
+    transition: all 0.4s ease-in-out;
+    right: 0;
+  }
+
+  &:hover::after {
+    right: auto;
+    left: 0;
+    width: 100%;
+  }
+
+  span {
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    padding: 5px 15px;
+    color: #fff;
+    font-size: 1.125em;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    z-index: 20;
+    transition: all 0.3s ease-in-out;
+  }
+
+  &:hover span {
+    color: var(--whiteColor);
+    animation: scaleUp 0.3s ease-in-out;
+  }
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.datePickerDiv{
+    // Single Date Picker
+    :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:hover{
+        border-color: transparent !important;
+    }
+    :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus, :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus-within{
+        border-color: transparent;
+    }
+    // Range Date Picker
+    :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined{
+        height: 55px !important;
+        padding: 25px 10px 0 !important;
+        input{
+            font-size: 16px;
+        }
+    }
+    .ant-picker-clear{
+        top: auto !important;
+        bottom: 0px !important;
+    }
+}
+
+.datePickerInputBox {
+  input {
+    font-size: 16px !important;
+  }
+}
+
+
+
+.hg {
+  height: 200vh;
+}
+
+.top-95 {
+  top: 95px;
+}
+
+.sideBar {
+  border: 1px solid rgb(168, 168, 168);
+  /* box-shadow: 0px 0px 10px #6c757d80; */
+  padding: 15px;
+  /* border-radius: 10px; */
+}
+.sideBars {
+  box-shadow: 0px 0px 10px #6c757d80;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.form-check-input:focus {
+  box-shadow: none !important;
+}
+
+.containers {
+  padding-left: 0;
+  padding-right: 0;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.boxShadow {
+  box-shadow: 0 2px 6px 3px rgba(0, 0, 0, 0.097);
+}
+
+.carlist {
+  background-color: #fff;
+  border: 1px solid #bababa;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px 0 rgba(138, 107, 118, 0.08);
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  min-height: 180px;
+  position: relative;
+}
+
+.carIcon {
+  width: 150px;
+}
+
+.carData {
+  width: 550px;
+}
+
+.carRate {
+  width: 192px;
+}
+
+.carIcon img {
+  background: antiquewhite;
+  width: 75%;
+  padding: 8px;
+  height: 90px;
+  border-radius: 5px;
+}
+
+.carName {
+  font-size: 20px;
+  font-weight: 800px;
+  color: var(--SecondaryColor);
+}
+
+.similarCarName {
+  color: var(--grayText);
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.strikeDiagonal {
+  background: linear-gradient(
+    to left top,
+    transparent 47.75%,
+    #d0021a 49.5%,
+    #d0021a 50.5%,
+    transparent 52.25%
+  );
+}
+
+
+
+
+.offerPrice{
+  font-size: 30px;
+  font-weight: 500;
+  font-family: "Inter";
+}

@@ -1,0 +1,22 @@
+:root {
+  --PrimaryColor: #089848;
+  --SecondaryColor: #151515;
+  --whiteColor: hsl(0, 0%, 100%);
+  --LightGray: #f9f9f9;
+  --paraColor: #4d5b7c;
+  --cardBG: rgb(225, 225, 235);
+  --textColor: #0a223d;
+
+  //
+  --body-bg: #f5f8ff;
+  --box-bg: #fff;
+  --input-bg: #f5f8ff;
+  --txt-color: #2f2d2f;
+  --txt-second-color: #ccc;
+  --border-color: #089848;
+  --box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+* {
+  font-family: "Poppins", sans-serif !important;
+}

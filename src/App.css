@@ -1,0 +1,248 @@
+/* Outfit Font */
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none !important;
+}
+.App {
+  font-family: "Poppins", sans-serif !important;
+}
+
+.navbar-toggler {
+  border: none !important;
+}
+.navbar-toggler:focus {
+  box-shadow: none !important;
+}
+
+.textPrimary {
+  color: var(--PrimaryColor);
+}
+.bg-gray {
+  background-color: var(--LightGray);
+}
+.primaryBtn {
+  border: none;
+  padding: 7px 20px;
+  background-color: var(--PrimaryColor);
+  color: var(--whiteColor);
+  font-size: 16px;
+  font-weight: 400;
+}
+.primaryBtn:hover {
+  background-color: var(--PrimaryColor);
+}
+
+/* Style the radio buttons */
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #4caf50;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Style the radio button when checked */
+input[type="radio"]:checked {
+  background-color: #4caf50;
+}
+
+.backBtn {
+  border: 1px solid var(--PrimaryColor);
+  background-color: transparent;
+  padding: 7px 20px;
+}
+.backBtn:hover {
+  background-color: var(--PrimaryColor);
+  color: var(--whiteColor);
+  transition: all 0.2s linear;
+}
+
+.signUpBackground {
+  background-color: #e3e3e3;
+  min-height: 100vh;
+  max-height: fit-content;
+}
+
+li{
+  list-style: none !important;
+}
+
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined {
+  background: #ffffff;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(0 0 0 / 20%);
+  width: 100%;
+  height: 58px;
+  padding-left: 20px;
+  border-radius: 0;
+}
+
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:hover {
+  border-color: var(--SecondaryColor);
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus,
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus-within {
+  box-shadow: none;
+  border-color: var(--SecondaryColor);
+}
+
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown
+  .ant-picker-cell-in-view.ant-picker-cell-selected:not(
+    .ant-picker-cell-disabled
+  )
+  .ant-picker-cell-inner,
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown
+  .ant-picker-cell-in-view.ant-picker-cell-range-start:not(
+    .ant-picker-cell-disabled
+  )
+  .ant-picker-cell-inner,
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown
+  .ant-picker-cell-in-view.ant-picker-cell-range-end:not(
+    .ant-picker-cell-disabled
+  )
+  .ant-picker-cell-inner {
+  background-color: var(--PrimaryColor) !important;
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown .ant-picker-header-view >button:hover{
+  color: var(--PrimaryColor);
+}
+
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown
+  .ant-picker-cell-in-view.ant-picker-cell-in-range:not(
+    .ant-picker-cell-disabled
+  ):before,
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown
+  .ant-picker-cell-in-view.ant-picker-cell-range-start:not(
+    .ant-picker-cell-disabled
+  ):before,
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown
+  .ant-picker-cell-in-view.ant-picker-cell-range-end:not(
+    .ant-picker-cell-disabled
+  ):before {
+  background: #daffe1;
+}
+
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown
+  .ant-picker-cell-in-view.ant-picker-cell-today
+  .ant-picker-cell-inner::before{
+    border: 1px solid var(--PrimaryColor);
+  }
+  :where(.css-dev-only-do-not-override-98ntnt).ant-picker-range
+  .ant-picker-active-bar {
+  background: var(--PrimaryColor);
+}
+
+.ant-picker-now-btn {
+  color: var(--PrimaryColor);
+}
+.ant-picker-now-btn:hover {
+  color: #95d5b2;
+}
+.form-control{
+  font-size: 14px !important;
+}
+/* Default styles  */
+/* Add your default styles here  */
+
+/* Media query for screens smaller than 576px (e.g., smartphones)  */
+@media (max-width: 575px) {
+  .offcanvas {
+    max-width: 70% !important;
+  }
+  .facts .facts-left img {
+    opacity: 0.5;
+  }
+  .factsTitle,
+  .factsPara {
+    z-index: 5;
+  }
+  .facts {
+    padding: 40px 0;
+  }
+  .Ads {
+    padding: 20px !important;
+  }
+  .Ads-title {
+    font-size: 34px !important;
+  }
+  .footer-top {
+    padding: 30px 0px !important;
+  }
+  .keyFeaturesMainDiv {
+    padding: 10px 0 !important;
+  }
+  .we-offer-area .item {
+    padding: 15px !important;
+  }
+}
+
+/* Media query for screens between 576px and 767px (e.g., tablets)  */
+@media (min-width: 576px) and (max-width: 767px) {
+  .offcanvas {
+    max-width: 70% !important;
+  }
+  .facts .facts-left img {
+    opacity: 0.5;
+  }
+  .factsTitle,
+  .factsPara {
+    z-index: 5;
+  }
+  .facts {
+    padding: 40px 0;
+  }
+  .keyFeaturesMainDiv {
+    padding: 30px 0;
+  }
+  .Ads {
+    padding: 20px !important;
+  }
+  .Ads-title {
+    font-size: 34px !important;
+  }
+  .footer-top {
+    padding: 30px 0px !important;
+  }
+  .keyFeaturesMainDiv {
+    padding: 10px 0 !important;
+  }
+  .we-offer-area .item {
+    padding: 15px !important;
+  }
+}
+
+/* Media query for screens between 768px and 991px (e.g., small laptops)  */
+/* Adjust styles for small laptops here  */
+@media (min-width: 768px) and (max-width: 991px) {
+  .facts .facts-left img {
+    opacity: 0.5;
+  }
+  .factsTitle,
+  .factsPara {
+    z-index: 5;
+  }
+}
+
+/* Media query for screens between 992px and 1199px (e.g., medium laptops) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  /* Adjust styles for medium laptops here  */
+}
+
+/* Media query for screens larger than 1200px (e.g., large laptops and desktops)  */
+@media (min-width: 1200px) {
+  /* Adjust styles for large laptops and desktops here */
+}
