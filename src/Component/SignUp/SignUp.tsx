@@ -86,7 +86,7 @@ function SignUp() {
             currentIndex={currentIndex}
             completedSteps={completedSteps}
           />
-          <div className="col-12 col-lg-8 flex-2  mobileShadow h-100 p-2 p-lg-4 bg-light rounded-4 z-3">
+          <div className="col-12 col-lg-8 flex-2 mobileShadow h-100 p-2 p-md-3 p-lg-4 bg-light rounded-4 z-3">
             <div className="max-lg-bg-white w-100 h-100 rounded-2xl">
               {success ? (
                 <SuccessPage />

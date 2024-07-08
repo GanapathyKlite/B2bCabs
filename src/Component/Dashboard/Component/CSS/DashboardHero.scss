@@ -44,9 +44,9 @@
   font-size: 48px;
 }
 
-.height {
-  height: 200vh;
-}
+// .height {
+//   height: 200vh;
+// }
 
 .search_btn {
   border: none;
@@ -161,7 +161,7 @@
 
 .mobile_sc {
   position: absolute;
-  top: -170px;
+  top: -280px;
 }
 
 .css-a643pv-MuiStack-root {
@@ -297,8 +297,8 @@ input[type="radio"] {
     background-color: #f2f4f6;
   }
   .inputdiv {
-    border: none !important;
-    width: 96%;
+    // border: none !important;
+    // width: 96%;
     padding: 15px 0 !important;
   }
   .content_box {

@@ -15,7 +15,10 @@ const Form1: React.FC = () => {
   const { errors, touched } = useFormikContext<FormValues>();
 
   return (
-    <div className="d-flex flex-column gap-2 w-100 align-items-start font-mono text-left">
+    <div
+      className="d-flex flex-column gap-2 h-100 w-100 align-items-start font-mono text-left overflow-custom px-2"
+      style={{ scrollbarWidth: "thin" }}
+    >
       <h2 className="text-success font-weight-bold fs-3 mb-0">Personal Info</h2>
       <p className="text-secondary m-0 fs-small">
         Please provide your name, address, and phone

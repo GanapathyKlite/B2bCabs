@@ -9,13 +9,21 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 
 const NavBar: React.FC = () => {
+  const isSignUpRoute = location.pathname.startsWith("/signup");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showOffcanvas, setShowOffcanvas] = useState<boolean>(false); // State for Offcanvas visibility
 
   const navigate = useNavigate();
 
-  const handleShow = () => setShowModal(true);
-  const handleClose = () => setShowModal(false);
+  const handleShowModal = () => {
+    setShowModal(true);
+    setShowOffcanvas(false);
+  };
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleShowOffcanvas = () => setShowOffcanvas(true);
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
   const handleRegister = () => {
     navigate("/signup");
@@ -39,8 +47,13 @@ const NavBar: React.FC = () => {
           <Navbar.Brand className="m-0 d-block d-lg-none" href="/">
             <img src={Logo} alt="MainLogo" />
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
+          <Navbar.Toggle
+            aria-controls={`offcanvasNavbar-expand-${expand}`}
+            onClick={handleShowOffcanvas}
+          />
           <Navbar.Offcanvas
+            show={showOffcanvas}
+            onHide={handleCloseOffcanvas}
             id={`offcanvasNavbar-expand-${expand}`}
             aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
             placement="end"
@@ -50,29 +63,54 @@ const NavBar: React.FC = () => {
               <Navbar.Brand className="m-0 d-none d-lg-block" href="/">
                 <img src={Logo} alt="MainLogo" />
               </Navbar.Brand>
-              <Nav className="justify-content-center row-gap-4 align-items-center">
-                <NavLink className="py-0 px-4 NavBarLink" to="/" end>
-                  {({ isActive }) => (
-                    <span className={isActive ? "active" : ""}>Home</span>
-                  )}
-                </NavLink>
-                <NavLink className="py-0 px-4 NavBarLink" to="/aboutUs">
-                  {({ isActive }) => (
-                    <span className={isActive ? "active" : ""}>About Us</span>
-                  )}
-                </NavLink>
-                <NavLink className="py-0 px-4 NavBarLink" to="/services">
-                  {({ isActive }) => (
-                    <span className={isActive ? "active" : ""}>Services</span>
-                  )}
-                </NavLink>
-                <NavLink className="py-0 px-4 NavBarLink" to="/contact">
-                  {({ isActive }) => (
-                    <span className={isActive ? "active" : ""}>Contact</span>
-                  )}
-                </NavLink>
-              </Nav>
-              <button className="primaryBtn" type="button" onClick={handleShow}>
+              {isSignUpRoute ? (
+                <></>
+              ) : (
+                <Nav className="justify-content-center row-gap-4 align-items-center">
+                  <NavLink
+                    className="py-0 px-4 NavBarLink"
+                    to="/"
+                    end
+                    onClick={handleCloseOffcanvas}
+                  >
+                    {({ isActive }) => (
+                      <span className={isActive ? "active" : ""}>Home</span>
+                    )}
+                  </NavLink>
+                  <NavLink
+                    className="py-0 px-4 NavBarLink"
+                    to="/aboutUs"
+                    onClick={handleCloseOffcanvas}
+                  >
+                    {({ isActive }) => (
+                      <span className={isActive ? "active" : ""}>About Us</span>
+                    )}
+                  </NavLink>
+                  <NavLink
+                    className="py-0 px-4 NavBarLink"
+                    to="/services"
+                    onClick={handleCloseOffcanvas}
+                  >
+                    {({ isActive }) => (
+                      <span className={isActive ? "active" : ""}>Services</span>
+                    )}
+                  </NavLink>
+                  <NavLink
+                    className="py-0 px-4 NavBarLink"
+                    to="/contact"
+                    onClick={handleCloseOffcanvas}
+                  >
+                    {({ isActive }) => (
+                      <span className={isActive ? "active" : ""}>Contact</span>
+                    )}
+                  </NavLink>
+                </Nav>
+              )}
+              <button
+                className="primaryBtn"
+                type="button"
+                onClick={handleShowModal}
+              >
                 Agent Login
               </button>
             </Offcanvas.Body>
@@ -80,7 +118,7 @@ const NavBar: React.FC = () => {
         </Container>
       </Navbar>
 
-      <Modal show={showModal} onHide={handleClose} centered>
+      <Modal show={showModal} onHide={handleCloseModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>Sign In</Modal.Title>
         </Modal.Header>
@@ -159,7 +197,7 @@ const NavBar: React.FC = () => {
               style={{ fontSize: "var(--fontSize13)" }}
               onClick={handleRegister}
             >
-              <Link to="#" onClick={handleClose}>
+              <Link to="#" onClick={handleCloseModal}>
                 <span style={{ color: "var(--SecondaryColor)" }}>
                   Become an Agent? &nbsp;
                 </span>

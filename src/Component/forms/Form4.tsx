@@ -165,13 +165,13 @@ const Form4: React.FC<Form4Props> = ({
       </div>
 
       <div className="col-12">
-        <div className="d-flex justify-content-between align-items-center w-100 pe-2 pe-md-4">
+        <div className="d-flex justify-content-between align-items-center w-100 pb-2 pe-2 pe-md-4">
           <div>
             <label
               className="text-success font-weight-semibold"
               htmlFor="panimage"
             >
-              Upload Your PAN Card Image
+              Upload PAN Image
             </label>
           </div>
           {panimage.length > 0 && (
@@ -277,13 +277,13 @@ const Form4: React.FC<Form4Props> = ({
       </div>
 
       <div className="col-12">
-        <div className="d-flex justify-content-between align-items-center w-100 pe-2 pe-md-4">
+        <div className="d-flex justify-content-between align-items-center w-100 pb-2 pe-2 pe-md-4">
           <div>
             <label
               className="text-success font-weight-semibold"
               htmlFor="gstimage"
             >
-              Upload Your GST Image
+              Upload GST Image
             </label>
           </div>
           {gstimage.length > 0 && (
@@ -370,13 +370,13 @@ const Form4: React.FC<Form4Props> = ({
       </div>
 
       <div className="col-12">
-        <div className="d-flex justify-content-between align-items-center w-100 pe-2 pe-md-4">
+        <div className="d-flex justify-content-between align-items-center w-100 pb-2 pe-2 pe-md-4">
           <div>
             <label
               className="text-success font-weight-semibold"
               htmlFor="rcimage"
             >
-              Upload Your R C Image
+              Upload R C Image
             </label>
           </div>
           {rcimage.length > 0 && (

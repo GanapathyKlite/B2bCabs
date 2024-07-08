@@ -1,0 +1,164 @@
+.navbar-brand {
+  width: 150px;
+}
+
+.NavBarLink {
+  font-weight: 300 !important;
+  color: var(--secondary-color) !important;
+  font-size: 18px !important;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 30%;
+    height: 2px;
+    bottom: 0px;
+    left: 20px;
+    transform: scaleX(0);
+    background: var(--PrimaryColor);
+    transform-origin: center;
+    transition: transform 0.5s ease-out;
+  }
+
+  &:hover::after {
+    color: var(--PrimaryColor);
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+
+  &.active::after {
+    transform: scaleX(1);
+    background: var(--PrimaryColor);
+    transform-origin: center;
+  }
+}
+
+.agentLoginBtn {
+  border: none;
+  color: var(--whiteColor);
+  padding: 5px 15px;
+  background-color: var(--PrimaryColor);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.navBarBackGround {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.24);
+  background-color: var(--whiteColor);
+}
+
+.navBarDiv {
+  top: 0;
+  z-index: 150;
+  position: sticky;
+}
+
+.inputBoxDiv {
+  display: flex;
+  row-gap: 10px;
+  flex-direction: column;
+  position: relative;
+}
+
+.passwordEye {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  color: gray;
+}
+
+.loginForm {
+  display: flex;
+  row-gap: 10px;
+  flex-direction: column;
+}
+
+.loginFormInputBox {
+  border: 1px solid gray;
+  border-radius: 2px;
+  padding: 10px 20px;
+  outline: none;
+}
+
+.ui-checkbox {
+  --primary-color: #1ecb15;
+  --secondary-color: #fff;
+  --primary-hover-color: #43c73c;
+  --checkbox-diameter: 20px;
+  --checkbox-border-radius: 5px;
+  --checkbox-border-color: #d9d9d9;
+  --checkbox-border-width: 1px;
+  --checkbox-border-style: solid;
+  --checkmark-size: 1.2;
+
+  &,
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  appearance: none;
+  width: var(--checkbox-diameter);
+  height: var(--checkbox-diameter);
+  border-radius: var(--checkbox-border-radius);
+  background: var(--secondary-color);
+  border: var(--checkbox-border-width) var(--checkbox-border-style)
+    var(--checkbox-border-color);
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    box-shadow: 0 0 0 calc(var(--checkbox-diameter) / 2.5) var(--primary-color);
+    border-radius: inherit;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.12, 0.4, 0.29, 1.46);
+  }
+
+  &::before {
+    top: 40%;
+    left: 50%;
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 7px;
+    border-right: 2px solid var(--secondary-color);
+    border-bottom: 2px solid var(--secondary-color);
+    transform: translate(-50%, -50%) rotate(45deg) scale(0);
+    opacity: 0;
+    transition: all 0.1s cubic-bezier(0.71, -0.46, 0.88, 0.6), opacity 0.1s;
+  }
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+
+  &:checked {
+    background: var(--primary-color);
+    border-color: transparent;
+
+    &::before {
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(45deg)
+        scale(var(--checkmark-size));
+      transition: all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+    }
+  }
+
+  &:active:not(:checked)::after {
+    transition: none;
+    box-shadow: none;
+    opacity: 1;
+  }
+}
+
+.remeberMe {
+  user-select: none;
+}

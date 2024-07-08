@@ -22,7 +22,7 @@ const SuccessPage = () => {
         <br />
         After Document Verification.
       </p>
-      <button onClick={goBackHome}>Home</button>
+      <button className="primaryBtn" onClick={goBackHome}>Home</button>
     </div>
   );
 };

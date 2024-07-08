@@ -20,6 +20,7 @@
   background-color: var(--whiteColor);
   position: relative;
   padding: 20px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2784313725);
 }
 .profile .profileCircle {
   background-color: var(--PrimaryColor);
@@ -36,8 +37,4 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-}
-
-.offcanvas {
-  background-color: var(--cardBG) !important;
 }/*# sourceMappingURL=DashboardNavBar.css.map */

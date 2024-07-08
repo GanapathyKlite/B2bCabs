@@ -25,6 +25,7 @@
 @media (min-width: 992px) and (max-width: 1900px) {
   .desktopShadow {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2509803922) !important;
+    height: 540px;
   }
 }
 input,

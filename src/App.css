@@ -16,6 +16,12 @@ a {
   font-family: "Poppins", sans-serif !important;
 }
 
+.hiddenInputBox{
+  border: none;
+  width: 100%;
+  outline: none;
+}
+
 .navbar-toggler {
   border: none !important;
 }
@@ -154,6 +160,9 @@ li{
 }
 .form-control{
   font-size: 14px !important;
+}
+.btn-close:focus{
+  box-shadow: none !important;
 }
 /* Default styles  */
 /* Add your default styles here  */

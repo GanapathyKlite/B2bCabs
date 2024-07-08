@@ -54,10 +54,6 @@
   font-size: 48px;
 }
 
-.height {
-  height: 200vh;
-}
-
 .search_btn {
   border: none;
   color: var(--whiteColor);
@@ -190,11 +186,6 @@
 
 .clicked {
   color: var(--PrimaryColor);
-}
-
-.mobile_sc {
-  position: absolute;
-  top: -170px;
 }
 
 .css-a643pv-MuiStack-root {

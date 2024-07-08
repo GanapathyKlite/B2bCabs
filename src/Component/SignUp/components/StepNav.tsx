@@ -19,6 +19,9 @@ const StepNav = ({ currentIndex, completedSteps }: dataType) => {
   // Calculate the height of the progress line based on the current index
   const progressHeight = `${(currentIndex / (steps.length - 1)) * 100}%`;
 
+  const progressWeight = `${(currentIndex / (steps.length - 1)) * 100}%`;
+
+
   return (
     <>
       <img
@@ -35,20 +38,38 @@ const StepNav = ({ currentIndex, completedSteps }: dataType) => {
 
         <div className="z-index-50 position-relative p-4 d-flex flex-lg-column justify-content-center flex-row">
           <div className="position-relative d-flex flex-lg-column align-items-center gap-5">
+            {/* Desktop View */}
             <div
-              className="position-absolute bg-light w-1"
+              className="position-absolute bg-light w-1 d-none d-lg-block"
               style={{ height: "100%", zIndex: -1, left: "20px" }}
             ></div>
             <div
-              className="position-absolute w-1 progress-line"
+              className="position-absolute w-1 progress-line d-none d-lg-block"
               style={{
-                widows: progressHeight,
+                height: progressHeight,
                 zIndex: -1,
                 left: "20px",
                 backgroundColor: "rgb(16 50 81)",
               }}
             ></div>
-            <div className="position-absolute bg-light w-1"></div>
+            {/* Mobile View */}
+            <div
+              className="position-absolute bg-light d-block d-lg-none"
+              style={{
+                width: "100%",
+                zIndex: -1,
+                height: "0.25rem",
+              }}
+            ></div>
+            <div
+              className="position-absolute progress-line d-block d-lg-none"
+              style={{
+                width: progressWeight,
+                zIndex: -1,
+                height: "0.25rem",
+                backgroundColor: "rgb(16 50 81)",
+              }}
+            ></div>
             {steps.map((item, index) => (
               <div key={item} className="d-flex align-items-center gap-3 w-100">
                 <div

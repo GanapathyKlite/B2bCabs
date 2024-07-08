@@ -68,10 +68,16 @@ const CarListNavBar: React.FC = () => {
               <div className="d-flex justify-content-between align-items-start fromPlace">
                 <div className="d-flex label">FROM</div>
                 <div className="d-flex justify-content-between align-items-center w-100">
-                  <span className="sBtn-text">
+                  <input
+                    type="text"
+                    placeholder="ffg"
+                    className="hiddenInputBox"
+                    // value={}
+                  />
+                  {/* <span className="sBtn-text">
                     Muthialpet Police Station, Mahatma Gandhi Road, Ramakrishna
                     Nagar, Puducherry, India
-                  </span>
+                  </span> */}
                 </div>
               </div>
             </div>
