@@ -6,6 +6,7 @@ import { TbClockX } from "react-icons/tb";
 import { FaGasPump, FaRegSnowflake, FaTv } from "react-icons/fa";
 import { GiCharging } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
+import { FaIndianRupeeSign } from "react-icons/fa6";
 
 interface Car {
   name: string;
@@ -28,15 +29,15 @@ const cars: Car[] = [
     type: "Sedan",
     seats: 4,
     description: "Spacious Car",
-    extraKmFare: "₹10.8/km after 755 kms",
+    extraKmFare: "10.8/km after 755 kms",
     cancellationPolicy: "Free till 1 hour of departure",
     amenities: [
       <FaRegSnowflake key="ac" />,
       <GiCharging key="charging" />,
       <FaTv key="tv" />,
     ],
-    originalPrice: "₹10,054",
-    offerPrice: "₹1,150",
+    originalPrice: "10,054",
+    offerPrice: "1,150",
     discount: "13% off",
   },
   {
@@ -45,15 +46,15 @@ const cars: Car[] = [
     type: "SUV",
     seats: 6,
     description: "Large Car",
-    extraKmFare: "₹10.8/km after 755 kms",
+    extraKmFare: "10.8/km after 755 kms",
     cancellationPolicy: "Free till 1 hour of departure",
     amenities: [
       <FaRegSnowflake key="ac" />,
       <GiCharging key="charging" />,
       <FaTv key="tv" />,
     ],
-    originalPrice: "₹10,054",
-    offerPrice: "₹1,150",
+    originalPrice: "10,054",
+    offerPrice: "1,150",
     discount: "13% off",
   },
   {
@@ -62,15 +63,185 @@ const cars: Car[] = [
     type: "Sedan",
     seats: 4,
     description: "Spacious Car",
-    extraKmFare: "₹10.8/km after 755 kms",
+    extraKmFare: "10.8/km after 755 kms",
     cancellationPolicy: "Free till 1 hour of departure",
     amenities: [
       <FaRegSnowflake key="ac" />,
       <GiCharging key="charging" />,
       <FaTv key="tv" />,
     ],
-    originalPrice: "₹10,054",
-    offerPrice: "₹1,150",
+    originalPrice: "10,054",
+    offerPrice: "1,150",
+    discount: "13% off",
+  },
+  {
+    name: "Dzire, Etios",
+    icon: carIcon,
+    type: "Sedan",
+    seats: 4,
+    description: "Spacious Car",
+    extraKmFare: "10.8/km after 755 kms",
+    cancellationPolicy: "Free till 1 hour of departure",
+    amenities: [
+      <FaRegSnowflake key="ac" />,
+      <GiCharging key="charging" />,
+      <FaTv key="tv" />,
+    ],
+    originalPrice: "10,054",
+    offerPrice: "1,150",
+    discount: "13% off",
+  },
+  {
+    name: "Toyota Innova",
+    icon: CarIconSUV,
+    type: "SUV",
+    seats: 6,
+    description: "Large Car",
+    extraKmFare: "10.8/km after 755 kms",
+    cancellationPolicy: "Free till 1 hour of departure",
+    amenities: [
+      <FaRegSnowflake key="ac" />,
+      <GiCharging key="charging" />,
+      <FaTv key="tv" />,
+    ],
+    originalPrice: "10,054",
+    offerPrice: "1,150",
+    discount: "13% off",
+  },
+  {
+    name: "Dzire, Etios",
+    icon: carIcon,
+    type: "Sedan",
+    seats: 4,
+    description: "Spacious Car",
+    extraKmFare: "10.8/km after 755 kms",
+    cancellationPolicy: "Free till 1 hour of departure",
+    amenities: [
+      <FaRegSnowflake key="ac" />,
+      <GiCharging key="charging" />,
+      <FaTv key="tv" />,
+    ],
+    originalPrice: "10,054",
+    offerPrice: "1,150",
+    discount: "13% off",
+  },
+  {
+    name: "Dzire, Etios",
+    icon: carIcon,
+    type: "Sedan",
+    seats: 4,
+    description: "Spacious Car",
+    extraKmFare: "10.8/km after 755 kms",
+    cancellationPolicy: "Free till 1 hour of departure",
+    amenities: [
+      <FaRegSnowflake key="ac" />,
+      <GiCharging key="charging" />,
+      <FaTv key="tv" />,
+    ],
+    originalPrice: "10,054",
+    offerPrice: "1,150",
+    discount: "13% off",
+  },
+  {
+    name: "Toyota Innova",
+    icon: CarIconSUV,
+    type: "SUV",
+    seats: 6,
+    description: "Large Car",
+    extraKmFare: "10.8/km after 755 kms",
+    cancellationPolicy: "Free till 1 hour of departure",
+    amenities: [
+      <FaRegSnowflake key="ac" />,
+      <GiCharging key="charging" />,
+      <FaTv key="tv" />,
+    ],
+    originalPrice: "10,054",
+    offerPrice: "1,150",
+    discount: "13% off",
+  },
+  {
+    name: "Dzire, Etios",
+    icon: carIcon,
+    type: "Sedan",
+    seats: 4,
+    description: "Spacious Car",
+    extraKmFare: "10.8/km after 755 kms",
+    cancellationPolicy: "Free till 1 hour of departure",
+    amenities: [
+      <FaRegSnowflake key="ac" />,
+      <GiCharging key="charging" />,
+      <FaTv key="tv" />,
+    ],
+    originalPrice: "10,054",
+    offerPrice: "1,150",
+    discount: "13% off",
+  },
+  {
+    name: "Dzire, Etios",
+    icon: carIcon,
+    type: "Sedan",
+    seats: 4,
+    description: "Spacious Car",
+    extraKmFare: "10.8/km after 755 kms",
+    cancellationPolicy: "Free till 1 hour of departure",
+    amenities: [
+      <FaRegSnowflake key="ac" />,
+      <GiCharging key="charging" />,
+      <FaTv key="tv" />,
+    ],
+    originalPrice: "10,054",
+    offerPrice: "1,150",
+    discount: "13% off",
+  },
+  {
+    name: "Dzire, Etios",
+    icon: carIcon,
+    type: "Sedan",
+    seats: 4,
+    description: "Spacious Car",
+    extraKmFare: "10.8/km after 755 kms",
+    cancellationPolicy: "Free till 1 hour of departure",
+    amenities: [
+      <FaRegSnowflake key="ac" />,
+      <GiCharging key="charging" />,
+      <FaTv key="tv" />,
+    ],
+    originalPrice: "10,054",
+    offerPrice: "1,150",
+    discount: "13% off",
+  },
+  {
+    name: "Toyota Innova",
+    icon: CarIconSUV,
+    type: "SUV",
+    seats: 6,
+    description: "Large Car",
+    extraKmFare: "10.8/km after 755 kms",
+    cancellationPolicy: "Free till 1 hour of departure",
+    amenities: [
+      <FaRegSnowflake key="ac" />,
+      <GiCharging key="charging" />,
+      <FaTv key="tv" />,
+    ],
+    originalPrice: "10,054",
+    offerPrice: "1,150",
+    discount: "13% off",
+  },
+  {
+    name: "Dzire, Etios",
+    icon: carIcon,
+    type: "Sedan",
+    seats: 4,
+    description: "Spacious Car",
+    extraKmFare: "10.8/km after 755 kms",
+    cancellationPolicy: "Free till 1 hour of departure",
+    amenities: [
+      <FaRegSnowflake key="ac" />,
+      <GiCharging key="charging" />,
+      <FaTv key="tv" />,
+    ],
+    originalPrice: "10,054",
+    offerPrice: "1,150",
     discount: "13% off",
   },
 ];
@@ -82,15 +253,18 @@ const CarList: React.FC = () => {
   };
   return (
     <div>
-      <div className="d-flex flex-column gap-4">
+      <div className="d-flex flex-column gap-4 px-3 pb-5">
         {cars.map((car, index) => (
-          <div className="sideBars d-flex" key={index}>
-            <div className="carIcon d-flex align-items-center justify-content-center">
+          <div
+            className="sideBars d-flex flex-column row-gap-4 flex-md-rowsideBars d-flex flex-column flex-md-row position-relative"
+            key={index}
+          >
+            <div className="carIcon d-flex align-items-center justify-content-start justify-content-md-center">
               <img src={car.icon} alt="caricon" />
             </div>
-            <div className="carData d-flex">
+            <div className="col-12 col-md-8">
               <div className="d-flex gap-2 flex-column w-100">
-                <div className="d-inline-flex align-items-center gap-1">
+                <div className="d-inline-flex flex-column flex-md-row align-items-lg-center gap-1">
                   <span className="carName">
                     <b>{car.name}</b>
                   </span>
@@ -108,35 +282,35 @@ const CarList: React.FC = () => {
                     <b>{car.description}</b>
                   </p>
                   <div className="d-flex">
-                    <div className="text-primary px-3">
+                    <div className="text-success pe-3">
                       <GrMapLocation />
                     </div>
-                    <div className="d-flex w-75 font-size14">
-                      <div className="d-flex w-50">Extra km fare </div>
-                      <div className="d-flex w-50 fontInter">
+                    <div className="d-flex col-11 col-md-8 font-size14">
+                      <div className="d-flex col-5">Extra km fare </div>
+                      <div className="d-flex col-7 fontInter">
                         {car.extraKmFare}
                       </div>
                     </div>
                   </div>
                   <div className="d-flex font-size14">
-                    <div className="text-primary px-3">
+                    <div className="text-success pe-3">
                       <TbClockX />
                     </div>
-                    <div className="d-flex w-75">
-                      <div className="d-flex w-50">Cancellation </div>
-                      <div className="d-flex w-50 text-nowrap gap-1">
+                    <div className="d-flex col-11 col-md-8">
+                      <div className="d-flex col-5">Cancellation </div>
+                      <div className="col-7 gap-7">
                         <span className="text-success">Free</span> till 1 hour
                         of departure
                       </div>
                     </div>
                   </div>
                   <div className="d-flex align-items-center">
-                    <div className="text-primary px-3">
+                    <div className="text-success pe-3">
                       <FaGasPump />
                     </div>
-                    <div className="d-flex w-75">
-                      <div className="d-flex w-50 font-size14">Amenities</div>
-                      <div className="d-flex w-50 gap-3 align-items-center text-primary">
+                    <div className="d-flex col-11 col-md-8">
+                      <div className="d-flex col-5 font-size14">Amenities</div>
+                      <div className="d-flex col-6 gap-3 align-items-center text-success">
                         {car.amenities}
                       </div>
                     </div>
@@ -144,19 +318,27 @@ const CarList: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="carRate d-flex gap-3 flex-column">
+            <div
+              className="col-5 col-lg-3 d-flex row-gap-2 flex-column position-absolute"
+              style={{ right: "10px", top: "15px" }}
+            >
               <div>
-                <p className="text-danger m-0 px-4 pt-3 text-end">
+                <p className="text-danger m-0 px-lg-4 pt-md-3 text-end">
+                  <FaIndianRupeeSign />
                   {car.discount}
                 </p>
               </div>
-              <div className="d-flex align-items-center justify-content-evenly">
+              <div className="d-flex align-items-center justify-content-between justify-content-lg-evenly">
                 <span className="strikeDiagonal text-secondary d-flex justify-content-center align-items-center fontInter">
+                  <FaIndianRupeeSign />
                   {car.originalPrice}
                 </span>
-                <span className="offerPrice">{car.offerPrice}</span>
+                <span className="offerPrice">
+                  <FaIndianRupeeSign />
+                  {car.offerPrice}
+                </span>
               </div>
-              <div className="d-flex justify-content-center">
+              <div className="d-flex justify-content-end">
                 <button className="primaryBtn" onClick={handleCabBooking}>
                   BOOK NOW
                 </button>

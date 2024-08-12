@@ -9,7 +9,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <DashboardHero />
-      <Ads/>
+      <Ads />
       <Footer />
     </>
   );

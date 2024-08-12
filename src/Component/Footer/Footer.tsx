@@ -20,7 +20,7 @@ const Footer = () => {
                     typesetting industry. Lorem Ipsum has been the industry's
                     standard dummy text ever.
                   </p>
-                  <ul className="company-footer-contact-list">
+                  <ul className="p-0 company-footer-contact-list">
                     <li className="d-flex gap-2 align-items-center justify-content-start">
                       <FaPhone />
                       1234567890
@@ -31,7 +31,7 @@ const Footer = () => {
               <div className="col-6 col-lg-3">
                 <div className="widget course-links-widget">
                   <h5 className="widget-title">OUR AGENCY</h5>
-                  <ul className="courses-link-list">
+                  <ul className="courses-link-list m-0">
                     <li>
                       <a href="/">
                         <IoIosArrowForward className="me-1" />
@@ -68,7 +68,7 @@ const Footer = () => {
               <div className="col-6 col-lg-3">
                 <div className="widget course-links-widget">
                   <h5 className="widget-title">PARTNERS</h5>
-                  <ul className="courses-link-list">
+                  <ul className="courses-link-list m-0">
                     <li>
                       <a href="/">
                         <IoIosArrowForward className="me-1" />
@@ -136,7 +136,7 @@ const Footer = () => {
                 </span>
               </div>
               <div className="col-md-6 col-sm-6">
-                <ul className="terms-privacy d-flex justify-content-sm-end justify-content-center">
+                <ul className="p-0 terms-privacy d-flex justify-content-sm-end justify-content-center m-0">
                   <li>
                     <a href="/">Terms & Conditions</a>
                   </li>

@@ -213,26 +213,29 @@
   }
 }
 
-.datePickerDiv{
-    // Single Date Picker
-    :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:hover{
-        border-color: transparent !important;
+.datePickerDiv {
+  // Single Date Picker
+  :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:hover {
+    border-color: transparent !important;
+  }
+  :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus,
+  :where(
+      .css-dev-only-do-not-override-98ntnt
+    ).ant-picker-outlined:focus-within {
+    border-color: transparent;
+  }
+  // Range Date Picker
+  :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined {
+    height: 55px !important;
+    padding: 25px 10px 0 !important;
+    input {
+      font-size: 16px;
     }
-    :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus, :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus-within{
-        border-color: transparent;
-    }
-    // Range Date Picker
-    :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined{
-        height: 55px !important;
-        padding: 25px 10px 0 !important;
-        input{
-            font-size: 16px;
-        }
-    }
-    .ant-picker-clear{
-        top: auto !important;
-        bottom: 0px !important;
-    }
+  }
+  .ant-picker-clear {
+    top: auto !important;
+    bottom: 0px !important;
+  }
 }
 
 .datePickerInputBox {
@@ -240,8 +243,6 @@
     font-size: 16px !important;
   }
 }
-
-
 
 .hg {
   height: 200vh;
@@ -331,11 +332,14 @@
   );
 }
 
-
-
-
-.offerPrice{
+.offerPrice {
   font-size: 30px;
   font-weight: 500;
-  font-family: "Inter";
+  font-family: "Inter" !important;
+}
+
+@media (min-width: 0px) and (max-width: 767px) {
+  .offerPrice{
+    font-size: 25px;
+  }
 }

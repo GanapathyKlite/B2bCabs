@@ -33,7 +33,7 @@ const CarListNavBar: React.FC = () => {
 
   return (
     <>
-      <div className="edit_search position-sticky top0">
+      <div className="edit_search position-sticky d-none d-md-block top0">
         <div className="container">
           <div className="row justify-content-evenly">
             <div
@@ -112,7 +112,7 @@ const CarListNavBar: React.FC = () => {
             </div>
 
             <div className="col-lg-2 d-flex align-items-center searchBtnDiv">
-              <button className="searchBtn">
+              <button className="primaryBtn">
                 <span>SEARCH</span>
               </button>
             </div>

@@ -196,7 +196,8 @@
 .datePickerDiv :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:hover {
   border-color: transparent !important;
 }
-.datePickerDiv :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus, .datePickerDiv :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus-within {
+.datePickerDiv :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus,
+.datePickerDiv :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined:focus-within {
   border-color: transparent;
 }
 .datePickerDiv :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined {
@@ -301,5 +302,11 @@
 .offerPrice {
   font-size: 30px;
   font-weight: 500;
-  font-family: "Inter";
+  font-family: "Inter" !important;
+}
+
+@media (min-width: 0px) and (max-width: 767px) {
+  .offerPrice {
+    font-size: 25px;
+  }
 }/*# sourceMappingURL=CarList.css.map */

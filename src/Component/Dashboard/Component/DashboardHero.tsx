@@ -331,7 +331,8 @@ const DashboardHero: React.FC = () => {
                                 required
                                 format="ddd, MMM D"
                                 suffixIcon={null}
-                                className="border-0 w-75"
+                                className="border-0 w-75 p-0"
+                                allowClear={false}
                               />
                               <LuCalendarDays className="invisible" />
                             </div>
@@ -340,11 +341,18 @@ const DashboardHero: React.FC = () => {
                       ) : (
                         <>
                           <div className="col-lg-3 col-md-3 z-1">
-                            <RangePicker
-                              required
-                              format="ddd, MMM D"
-                              suffixIcon={null}
-                            />
+                            <div className="inputdiv px-3 py-0  m-0 d-flex align-items-center justify-content-between">
+                              <LuCalendarDays />
+
+                              <RangePicker
+                                required
+                                format="ddd, MMM D"
+                                suffixIcon={null}
+                                className="border-0 w-75 p-0"
+                                allowClear={false}
+                              />
+                              <LuCalendarDays className="invisible" />
+                            </div>
                           </div>
                         </>
                       )}

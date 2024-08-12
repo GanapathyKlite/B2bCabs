@@ -1,6 +1,8 @@
 import React from "react";
 import "./CarBooking.css";
 import carIcon from "../../Assets/Car_icon.svg";
+import Footer from "../Footer/Footer";
+import {  Tooltip } from "antd";
 // Icons Start
 import {
   FaArrowRightArrowLeft,
@@ -16,11 +18,13 @@ import { GiCharging } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
 import { GoDotFill } from "react-icons/go";
 import { BsExclamationCircle } from "react-icons/bs";
-import Footer from "../Footer/Footer";
-
 // Icons End
 
 const CarBooking: React.FC = () => {
+  React.useEffect(() => {
+    document.documentElement.scrollTop = document.documentElement.clientHeight;
+    document.documentElement.scrollLeft = document.documentElement.clientWidth;
+  }, []);
   return (
     <>
       <div className="w-100 ReviewBookingBar">
@@ -46,8 +50,8 @@ const CarBooking: React.FC = () => {
       </div>
 
       <div className="container">
-        <div className="px-5 row">
-          <div className="py-5 col-lg-8 d-flex flex-column gap-4">
+        <div className="px-lg-5 row">
+          <div className="py-4 py-lg-5 col-lg-8 d-flex flex-column gap-4">
             <div className="sideBars bg-light d-flex justify-content-between">
               <div className="col-lg-3 d-flex">
                 <div className="carIcon d-flex align-items-center justify-content-center">
@@ -74,7 +78,7 @@ const CarBooking: React.FC = () => {
                       <b>Spacious Car</b>
                     </p>
                     <div className="d-flex">
-                      <div className="text-primary px-3">
+                      <div className="text-primary pe-3">
                         <GrMapLocation />
                       </div>
                       <div className="d-flex font-size14 w-100">
@@ -86,7 +90,7 @@ const CarBooking: React.FC = () => {
                     </div>
 
                     <div className="d-flex font-size14">
-                      <div className="text-primary px-3">
+                      <div className="text-primary pe-3">
                         <TbClockX />
                       </div>
                       <div className="d-flex w-100">
@@ -99,7 +103,7 @@ const CarBooking: React.FC = () => {
                     </div>
 
                     <div className="d-flex align-items-center w-100">
-                      <div className="text-primary px-3">
+                      <div className="text-primary pe-3">
                         <FaGasPump />
                       </div>
                       <div className="d-flex w-100">
@@ -423,7 +427,7 @@ const CarBooking: React.FC = () => {
             </div>
           </div>
 
-          <div className="col-lg-4 pe-0">
+          <div className="col-lg-4 pe-lg-0">
             <div className="py-5 position-sticky top-95">
               <div
                 className="py-2 px-1 mb-3 d-flex justify-content-between align-items-center rounded"
@@ -524,12 +528,72 @@ const CarBooking: React.FC = () => {
                         ₹ 1,150
                       </div>
                     </div>
+              
                     <div
-                      className="font-size14 text-end"
-                      style={{ color: "var(--PrimaryColor)" }}
-                    >
-                      Fare Breakup
-                    </div>
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Tooltip
+        title={
+          <div className="">
+            <ul className="m-0 p-0">
+              <li>
+                <span>Base Fare</span>
+                <span>2084</span>
+              </li>
+              <li>
+                <span>State TAX</span>
+                <span>250</span>
+              </li>
+              <li>
+                <span>Toll Charges</span>
+                <span>210</span>
+              </li>
+              <li>
+                <span>Taxes & Fees</span>
+                <span>223</span>
+              </li>
+            </ul>
+          </div>
+        }
+        trigger="hover"
+        arrowPointAtCenter  
+      >
+        <span style={{ color: "var(--PrimaryColor)" }}>
+          Fare Breakup
+        </span>
+      </Tooltip>
+    </div>
+                    
+                    {/* <div className="font-size14 text-end position-relative">
+                      
+                      <span style={{ color: "var(--PrimaryColor)" }}>
+                        Fare Breakup
+                      </span>
+                      <div className="position-absolute text-light p-2 rounded bg-dark">
+                        <ul>
+                          <li>
+                            <span>Base Fare</span>
+                            <span>2084</span>
+                          </li>
+                          <li>
+                            <span>State TAX</span>
+                            <span>250</span>
+                          </li>
+                          <li>
+                            <span>Toll Charges</span>
+                            <span>210</span>
+                          </li>
+                          <li>
+                            <span>Taxes & Fees</span>
+                            <span>223</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
