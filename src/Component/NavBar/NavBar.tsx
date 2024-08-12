@@ -183,7 +183,7 @@ const NavBar: React.FC = () => {
                   }}
                   style={{ color: "var(--PrimaryColor)" }}
                 >
-                  Forget Password
+                  Forgot Password
                 </Link>
               </div>
             </div>
