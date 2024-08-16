@@ -13,7 +13,21 @@ interface FormValues {
 
 const Form1: React.FC = () => {
   const { errors, touched } = useFormikContext<FormValues>();
-
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const invalidKeys = ['e', 'E', '+', '-'];
+    const isNavigationKey = [
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Delete', 'Home', 'End'
+    ].includes(e.key);
+  
+    if (isNavigationKey || e.key === 'Enter') {
+      return;
+    }
+  
+    if (invalidKeys.includes(e.key) || !/\d/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+  
   return (
     <div
       className="d-flex flex-column gap-2 h-100 w-100 align-items-start font-mono text-left overflow-custom px-2"
@@ -115,6 +129,8 @@ const Form1: React.FC = () => {
             placeholder="e.g. 1234567890"
             id="mobilenumber"
             name="mobilenumber"
+            onKeyDown={handleKeyDown}
+            maxLength={10}
             className={`form-control border border-secondary rounded-3 p-3 w-100 ${
               errors.mobilenumber && touched.mobilenumber
                 ? "border-danger shake-animation"
@@ -140,6 +156,8 @@ const Form1: React.FC = () => {
             placeholder="e.g. 0987654321"
             id="alternatemobilenumber"
             name="alternatemobilenumber"
+            onKeyDown={handleKeyDown}
+            maxLength={10}
             className={`form-control border border-secondary rounded-3 p-3 w-100 ${
               errors.alternatemobilenumber && touched.alternatemobilenumber
                 ? "border-danger shake-animation"

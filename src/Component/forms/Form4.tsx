@@ -1,8 +1,9 @@
-import { ErrorMessage, Field, useFormikContext } from "formik";
+import { ErrorMessage, Field, useFormikContext, useField } from "formik";
 import "./CSS/Form.css";
 import uploadImg from "../../Assets/fileUploadIcon.svg";
 import { useRef } from "react";
 import { Notyf } from "notyf";
+import axios from 'axios';
 
 // Initialize Notyf instance with updated configuration
 const notyf = new Notyf({
@@ -33,10 +34,13 @@ const Form4: React.FC<Form4Props> = ({
   const gstimageRef = useRef<HTMLInputElement>(null);
   const rcimageRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue } = useFormikContext<any>();
+  const [panField] = useField('pan_front_side_img');
+    const [gstField] = useField('gst_front_side_img');
+    const [companyRegField] = useField('company_reg_cer_img');
 
   const validTypes = ["image/png", "image/jpeg", "image/tiff"];
-  const maxSize = 2 * 1024 * 1024; // 2MB
+  const maxSize = 101 * 1024; // 100KB
 
   const validateFile = (file: File): boolean => {
     if (!validTypes.includes(file.type)) {
@@ -44,13 +48,14 @@ const Form4: React.FC<Form4Props> = ({
       return false;
     }
     if (file.size > maxSize) {
-      notyf.error("File size should not exceed 2MB.");
+      notyf.error("File size should not exceed 100KB.");
       return false;
     }
     return true;
   };
 
-  const onFileChange = (
+
+  const onFileChange = async(
     files: File[],
     type: "panimage" | "gstimage" | "rcimage"
   ) => {
@@ -69,12 +74,72 @@ const Form4: React.FC<Form4Props> = ({
       if (type === "panimage") {
         setPanimage(validFiles);
         setFieldValue("panimage", validFiles);
+        const formData = new FormData();
+      formData.append("file", validFiles[0]);
+  
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/upload/upload-single/AGENT_PAN/agent`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        if (response.data.status) {
+          const imagePath = response.data.image_path;
+          setFieldValue('pan_front_side_img', imagePath);
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
       } else if (type === "gstimage") {
         setGstimage(validFiles);
         setFieldValue("gstimage", validFiles);
+        const formData = new FormData();
+      formData.append("file", validFiles[0]);
+  
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/upload/upload-single/AGENT_GST/agent`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        if (response.data.status) {
+          const imagePath = response.data.image_path;
+          setFieldValue('gst_front_side_img', imagePath);
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
       } else if (type === "rcimage") {
         setRcimage(validFiles);
         setFieldValue("rcimage", validFiles);
+        const formData = new FormData();
+      formData.append("file", validFiles[0]);
+  
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/upload/upload-single/AGENT_COM_CER/agent`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        if (response.data.status) {
+          const imagePath = response.data.image_path;
+          setFieldValue('company_reg_cer_img', imagePath);
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
       }
     } else {
       if (type === "panimage") {
@@ -110,16 +175,54 @@ const Form4: React.FC<Form4Props> = ({
     onFileChange(files, type);
   };
 
-  const clearImage = (type: "panimage" | "gstimage" | "rcimage") => {
+  const clearImage = async(type: "panimage" | "gstimage" | "rcimage") => {
     if (type === "panimage") {
-      setPanimage([]);
+      try {
+        const panFrontSideImgValue = panField.value;
+        
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/upload/delete`, {
+          image_path: panFrontSideImgValue,
+        });
+  
+        if (response.status === 200) {
+          setPanimage([]);
       setFieldValue("panimage", []);
+        }
+      } catch (error) {
+        console.error('Error deleting the image:', error);
+      }
+      
     } else if (type === "gstimage") {
-      setGstimage([]);
-      setFieldValue("gstimage", []);
+      try {
+        const gstFrontSideImgValue = gstField.value;
+        
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/upload/delete`, {
+          image_path: gstFrontSideImgValue,
+        });
+  
+        if (response.status === 200) {
+          setGstimage([]);
+          setFieldValue("gstimage", []);
+        }
+      } catch (error) {
+        console.error('Error deleting the image:', error);
+      }
+      
     } else if (type === "rcimage") {
-      setRcimage([]);
+      try {
+        const companyRegCerImgValue = companyRegField.value;
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/upload/delete`, {
+          image_path: companyRegCerImgValue,
+        });
+  
+        if (response.status === 200) {
+          setRcimage([]);
       setFieldValue("rcimage", []);
+        }
+      } catch (error) {
+        console.error('Error deleting the image:', error);
+      }
+      
     }
   };
 
@@ -253,7 +356,7 @@ const Form4: React.FC<Form4Props> = ({
           />
         </div>
         <div className="text-danger fs-small pt-2 errorMessage">
-          <ErrorMessage name="panimage" />
+          <ErrorMessage name="panimage" /> 
         </div>
       </div>
 

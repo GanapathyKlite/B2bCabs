@@ -10,6 +10,7 @@ import Dashboard from "./Component/Dashboard/Dashboard";
 import CarBooking from "./Component/CarBookingDetails/CarBooking";
 import DashboardNavbar from "./Component/Dashboard/Component/DashboardNavBar";
 import CarShowingPage from "./Component/CarList/CarShowingPage";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
   const location = useLocation();

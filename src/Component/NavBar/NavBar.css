@@ -71,6 +71,7 @@
 .passwordEye {
   position: absolute;
   bottom: 15px;
+  cursor: pointer;
   right: 15px;
   color: gray;
 }

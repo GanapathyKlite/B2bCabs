@@ -2,13 +2,18 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Offcanvas from "react-bootstrap/Offcanvas";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Profile from "../../../Assets/Profile.png";
 import "./CSS/DashboardNavBar.css";
 import Logo from "../../../Assets/B2b_Main_Logo_.svg";
 import { IoAddCircle } from "react-icons/io5";
 
 function DashboardNavbar() {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    navigate("/");
+  };
   return (
     <Navbar expand="true" className="bg-body-tertiary z-3">
       <Container fluid>
@@ -110,7 +115,7 @@ function DashboardNavbar() {
                 <Nav.Link className="ps-4" href="#action2">
                   Notification
                 </Nav.Link>
-                <Nav.Link className="ps-4 text-danger" href="#action2">
+                <Nav.Link className="ps-4 text-danger" href="#action2" onClick={handleLogout}>
                   Sign out
                 </Nav.Link>
               </div>

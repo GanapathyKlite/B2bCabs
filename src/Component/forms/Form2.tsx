@@ -1,7 +1,8 @@
 import { ErrorMessage, Field, useFormikContext } from "formik";
-import { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import "./CSS/Form.css";
 import { IoIosArrowDown } from "react-icons/io";
+import axios from 'axios';
 
 interface FormValues {
   companyname: string;
@@ -19,7 +20,46 @@ const Form2: React.FC = () => {
   const [isCityOpen, setIsCityOpen] = useState(false);
   const [isStateOpen, setIsStateOpen] = useState(false);
   const [isCountryOpen, setIsCountryOpen] = useState(false);
+  const [companyTypes, setCompanyTypes] = useState<Array<{ id: string; name: string }>>([]);
+  const [cities, setCities] = useState<Array<{ id_city: number; city_name: string; state_name: string; country_name: string }>>([]);
+  const { setFieldValue } = useFormikContext();
+  useEffect(() => {
+    const fetchCompanyTypes = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/registration-type`);
+        setCompanyTypes(response.data);
+        
+      } catch (error) {
+        console.error('Error fetching company types:', error);
+      }
+    };
 
+    fetchCompanyTypes();
+    const fetchCities = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/city/city-state-country`);
+        if (response.data.status) {
+          setCities(response.data.cities);
+          
+        } else {
+          console.error('Failed to fetch cities');
+        }
+      } catch (error) {
+        console.error('Error fetching cities:', error);
+      }
+    };
+
+    fetchCities();
+  }, []);
+
+  const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCity = cities.find(city => city.city_name === event.target.value);
+
+    if (selectedCity) {
+      setFieldValue('state', selectedCity.state_name);
+      setFieldValue('country', selectedCity.country_name);
+    }
+  };
   return (
     <div
       className="d-flex flex-column gap-2 h-100 w-100 align-items-start font-mono text-left overflow-custom px-2"
@@ -71,7 +111,7 @@ const Form2: React.FC = () => {
               onBlur={() => setIsCompanyTypeOpen(false)}
             >
               <option disabled label="Select company type" value="" />
-              <option
+              {/* <option
                 value="Public Limited Company (PLC)"
                 label="Public Limited Company (PLC)"
               />
@@ -82,7 +122,10 @@ const Form2: React.FC = () => {
               <option
                 value="One Person Company (OPC)"
                 label="One Person Company (OPC)"
-              />
+              /> */}
+              {companyTypes.map((type) => (
+          <option key={type.id} value={type.id} label={type.name} />
+        ))}
             </Field>
             <IoIosArrowDown
               className={`dropdown-arrow ${isCompanyTypeOpen ? "rotate" : ""}`}
@@ -136,14 +179,21 @@ const Form2: React.FC = () => {
               } ${errors.city && touched.city ? "border-danger" : ""}`}
               onClick={() => setIsCityOpen(!isCityOpen)}
               onBlur={() => setIsCityOpen(false)}
+              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                handleCityChange(event);
+                setFieldValue('city', event.target.value);
+              }}
             >
               <option disabled label="Select City" />
-              <option value="Tamil Nadu" label="Tamil Nadu" />
+              {/* <option value="Tamil Nadu" label="Tamil Nadu" />
               <option value="Kerala" label="Kerala" />
               <option value="Telangana" label="Telangana" />
               <option value="Maharashtra" label="Maharashtra" />
               <option value="Punjab" label="Punjab" />
-              <option value="Andhra Pradesh" label="Andhra Pradesh" />
+              <option value="Andhra Pradesh" label="Andhra Pradesh" /> */}
+               {cities.map((city) => (
+          <option key={city.id_city} value={city.city_name} label={city.city_name} />
+        ))}
             </Field>
             <IoIosArrowDown
               className={`dropdown-arrow ${isCityOpen ? "rotate" : ""}`}
@@ -161,27 +211,15 @@ const Form2: React.FC = () => {
             State
           </label>
           <div className="select-wrapper">
-            <Field
-              as="select"
-              id="state"
-              name="state"
-              className={`form-control border border-secondary rounded-3 p-3 w-100 ${
-                isStateOpen ? "open" : ""
-              } ${errors.state && touched.state ? "border-danger" : ""}`}
-              onClick={() => setIsStateOpen(!isStateOpen)}
-              onBlur={() => setIsStateOpen(false)}
-            >
-              <option disabled label="Select State" />
-              <option value="Tamil Nadu" label="Tamil Nadu" />
-              <option value="Kerala" label="Kerala" />
-              <option value="Telangana" label="Telangana" />
-              <option value="Maharashtra" label="Maharashtra" />
-              <option value="Punjab" label="Punjab" />
-              <option value="Andhra Pradesh" label="Andhra Pradesh" />
-            </Field>
-            <IoIosArrowDown
-              className={`dropdown-arrow ${isStateOpen ? "rotate" : ""}`}
-            />
+          <Field
+            as="input"
+            id="state"
+            name="state"
+            className={`form-control border border-secondary rounded-3 p-3 w-100 ${
+              isStateOpen ? 'open' : ''
+            }`}
+            readOnly
+          />
           </div>
           <div className="text-danger fs-small pt-2 errorMessage">
             <ErrorMessage name="state" />
@@ -198,27 +236,16 @@ const Form2: React.FC = () => {
             Country
           </label>
           <div className="select-wrapper">
-            <Field
-              as="select"
-              id="country"
-              name="country"
-              className={`form-control border border-secondary rounded-3 p-3 w-100 ${
-                isCountryOpen ? "open" : ""
-              } ${errors.country && touched.country ? "border-danger" : ""}`}
-              onClick={() => setIsCountryOpen(!isCountryOpen)}
-              onBlur={() => setIsCountryOpen(false)}
-            >
-              <option disabled label="Select Country" />
-              <option value="Tamil Nadu" label="Tamil Nadu" />
-              <option value="Kerala" label="Kerala" />
-              <option value="Telangana" label="Telangana" />
-              <option value="Maharashtra" label="Maharashtra" />
-              <option value="Punjab" label="Punjab" />
-              <option value="Andhra Pradesh" label="Andhra Pradesh" />
-            </Field>
-            <IoIosArrowDown
-              className={`dropdown-arrow ${isCountryOpen ? "rotate" : ""}`}
-            />
+          <Field
+            as="input"
+            id="country"
+            name="country"
+            className={`form-control border border-secondary rounded-3 p-3 w-100 ${
+              isCountryOpen ? 'open' : ''
+            }`}
+            readOnly
+          />
+           
           </div>
           <div className="text-danger fs-small pt-2 errorMessage">
             <ErrorMessage name="country" />
@@ -236,6 +263,7 @@ const Form2: React.FC = () => {
             placeholder="e.g. 123456"
             id="pincode"
             name="pincode"
+            maxLength={6}
             className={`form-control border border-secondary rounded-3 p-3 w-100 ${
               errors.pincode && touched.pincode
                 ? "border-danger shake-animation"

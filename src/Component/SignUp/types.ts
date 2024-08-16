@@ -112,7 +112,7 @@ const form4Schema = z.object({
     .length(10, "PAN number must be 10 characters long"),
     panimage: z
     .array(z.instanceof(File))
-    .refine(files => files.length > 0, 'Please upload your check')
+    .refine(files => files.length > 0, 'Please upload your PAN')
     .refine(files => files.every(file => ['image/png', 'image/jpeg', 'image/tiff'].includes(file.type)), 'Only PNG, JPEG, and TIFF files are allowed')
     .refine(files => files.every(file => file.size <= 2 * 1024 * 1024), 'File size should not exceed 2MB')
     .default([]),
@@ -122,13 +122,13 @@ const form4Schema = z.object({
     .length(15, "GST Number must be 15 characters long"),
   gstimage: z
     .array(z.instanceof(File))
-    .refine(files => files.length > 0, 'Please upload your check')
+    .refine(files => files.length > 0, 'Please upload your GST')
     .refine(files => files.every(file => ['image/png', 'image/jpeg', 'image/tiff'].includes(file.type)), 'Only PNG, JPEG, and TIFF files are allowed')
     .refine(files => files.every(file => file.size <= 2 * 1024 * 1024), 'File size should not exceed 2MB')
     .default([]),
   rcimage: z
     .array(z.instanceof(File))
-    .refine(files => files.length > 0, 'Please upload your check')
+    .refine(files => files.length > 0, 'Please upload your RC')
     .refine(files => files.every(file => ['image/png', 'image/jpeg', 'image/tiff'].includes(file.type)), 'Only PNG, JPEG, and TIFF files are allowed')
     .refine(files => files.every(file => file.size <= 2 * 1024 * 1024), 'File size should not exceed 2MB')
     .default([]),
