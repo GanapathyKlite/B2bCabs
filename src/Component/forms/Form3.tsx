@@ -1,9 +1,10 @@
-import { ErrorMessage, Field, useFormikContext } from "formik";
+import { ErrorMessage, Field, useFormikContext, useField } from "formik";
 import { useRef } from "react";
 import { Notyf } from "notyf";
 import uploadImg from "../../Assets/fileUploadIcon.svg";
 import "./CSS/Form.css";
 import "notyf/notyf.min.css";
+import axios from 'axios';
 
 // Initialize Notyf instance with updated configuration
 const notyf = new Notyf({
@@ -21,9 +22,10 @@ interface Form3Props {
 const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { setFieldValue } = useFormikContext();
-
+  const [field] = useField('check_leaf_front_img');
+    
   const validTypes = ["image/png", "image/jpeg", "image/tiff"];
-  const maxSize = 2 * 1024 * 1024; // 2MB
+  const maxSize = 101 * 1024; // 100KB
 
   const validateFile = (file: File): boolean => {
     if (!validTypes.includes(file.type)) {
@@ -31,13 +33,13 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
       return false;
     }
     if (file.size > maxSize) {
-      notyf.error("File size should not exceed 2MB.");
+      notyf.error("File size should not exceed 100KB.");
       return false;
     }
     return true;
   };
 
-  const onFileChange = (files: File[]) => {
+  const onFileChange = async(files: File[]) => {
     const validFiles: File[] = [];
     const invalidFiles: File[] = [];
 
@@ -52,6 +54,26 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
     if (validFiles.length > 0) {
       setFileList(validFiles);
       setFieldValue("filelist", validFiles);
+      const formData = new FormData();
+      formData.append("file", validFiles[0]);
+  
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/upload/upload-single/AGENT_CheckLeaf/agent`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        if (response.data.status) {
+          const imagePath = response.data.image_path;
+          setFieldValue('check_leaf_front_img', imagePath);
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
     } else {
       setFileList([]);
       setFieldValue("filelist", []);
@@ -89,9 +111,22 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
     onFileChange(files);
   };
 
-  const clearImage = () => {
-    setFileList([]);
-    setFieldValue("filelist", []);
+  const clearImage = async() => {
+    try {
+      const checkImgValue = field.value;
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/upload/delete`, {
+        image_path: checkImgValue,
+      });
+
+      if (response.status === 200) {
+        setFileList([]);
+        setFieldValue("filelist", []);
+      }
+    } catch (error) {
+      console.error('Error deleting the image:', error);
+    }
+
+
   };
 
   return (
