@@ -18,6 +18,7 @@
     "axios": "^1.7.3",
     "bootstrap": "^5.3.3",
     "date-fns": "^3.6.0",
+    "dayjs": "^1.11.12",
     "font-awesome-icons": "^1.6.0",
     "formik": "^2.4.6",
     "lottie-react": "^2.4.0",

@@ -1,7 +1,7 @@
-// src/Component/Auth/AuthContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { AxiosResponse } from 'axios';
 import axios from 'axios';
+import { Dayjs } from 'dayjs';
 
 interface AuthContextType {
   authToken: string | null;
@@ -16,12 +16,27 @@ interface AuthContextType {
   };
   login: (formData: { email: string; password: string }) =>  Promise<AxiosResponse | undefined>;
   logout: () => void;
+  inputValueOne: string;
+  setInputValueOne: React.Dispatch<React.SetStateAction<string>>;
+  inputValueTwo: string;
+  setInputValueTwo: React.Dispatch<React.SetStateAction<string>>;
+  selectedDate: Dayjs | null;
+  setSelectedDate: React.Dispatch<React.SetStateAction<Dayjs | null>>;
+  selectedDateRange: [Dayjs | null, Dayjs | null] | null;
+  setSelectedDateRange: React.Dispatch<React.SetStateAction<[Dayjs | null, Dayjs | null] | null>>;
+  tripType: string;
+  setTripType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [authToken, setAuthToken] = useState<string | null>(localStorage.getItem('authToken'));
+  const [inputValueOne, setInputValueOne] = useState<string>("");
+  const [inputValueTwo, setInputValueTwo] = useState<string>("");
+  const [tripType, setTripType] = useState<string>("Cab from Airport");
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+  const [selectedDateRange, setSelectedDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
   const [userData, setUserData] = useState({
     id: null,
     companyName: null,
@@ -76,7 +91,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ authToken, userData, login, logout }}>
+    <AuthContext.Provider value={{ authToken, userData, login, logout, inputValueOne, 
+      setInputValueOne,
+      inputValueTwo, 
+      setInputValueTwo,
+      selectedDate,
+      setSelectedDate,
+      selectedDateRange,
+      setSelectedDateRange, tripType, setTripType }}>
       {children}
     </AuthContext.Provider>
   );
