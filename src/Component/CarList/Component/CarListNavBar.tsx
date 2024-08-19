@@ -23,7 +23,7 @@ const CarListNavBar: React.FC = () => {
     { icon: <FaRupeeSign />, color: "#4267B2", text: "Hourly Rental" },
     { icon: <FaRupeeSign />, color: "#1DA1F2", text: "Holidays Package" },
   ];
-console.log(tripType,"triptype");
+
 
   const toggleDropdown = () => {
     setIsActive(!isActive);
