@@ -7,10 +7,11 @@ import { GrLocation } from "react-icons/gr";
 import { LuClock4 } from "react-icons/lu";
 import { DatePicker } from "antd";
 import { LuCalendarDays } from "react-icons/lu";
-
+import { useAuth } from "../../Auth/AuthContext";
 // import "antd/dist/reset.css";
 // import { CalendarOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import dayjs from 'dayjs';
 
 interface TabData {
   id: number;
@@ -65,8 +66,20 @@ const DashboardHero: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
   const [isToggled, setToggled] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>("option1");
-  const [inputValueOne, setInputValueOne] = useState<string>("");
-  const [inputValueTwo, setInputValueTwo] = useState<string>("");
+  // const [inputValueOne, setInputValueOne] = useState<string>("");
+  // const [inputValueTwo, setInputValueTwo] = useState<string>("");
+
+  const {
+    inputValueOne,
+    setInputValueOne,
+    inputValueTwo,
+    setInputValueTwo,
+    selectedDate,
+    setSelectedDate,
+    selectedDateRange,
+    setSelectedDateRange,
+    tripType, setTripType
+  } = useAuth();
 
   const handleTabClick = (tabId: number) => {
     setActiveTab(tabId);
@@ -79,6 +92,23 @@ const DashboardHero: React.FC = () => {
 
   const handleToggle = (option: string) => {
     setSelectedOption(option);
+    if (activeTab === 1) {
+      if (selectedOption === 'option1') {
+        setTripType("Cab from Airport");
+      } else if (selectedOption === 'option2') {
+        setTripType("Cab to Airport");
+      }
+    } else if (activeTab === 2) {
+      if (selectedOption === 'option1') {
+        setTripType("Daily Rental");
+      } else if (selectedOption === 'option2') {
+        setTripType("Hourly Rental");
+      }
+    } else {
+      setTripType("Holiday Package");
+    }
+    
+    
   };
   const navigate = useNavigate();
   const handleSubmit = () => {
@@ -96,7 +126,13 @@ const DashboardHero: React.FC = () => {
     setInputValueTwo(inputTwoValue);
     console.log(inputTwoValue);
   };
+  const handleDateChange = (date: dayjs.Dayjs | null) => {
+    setSelectedDate(date);
+  };
 
+  const handleRangeChange = (dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null) => {
+    setSelectedDateRange(dates);
+  };
   return (
     <>
       <div className="hero-banner">
@@ -204,7 +240,8 @@ const DashboardHero: React.FC = () => {
                           </div>
 
                           <input
-                            onChange={inputFieldOne}
+                            // onChange={inputFieldOne}
+                            onChange={(e) => setInputValueOne(e.target.value)}
                             value={inputValueOne}
                             type="text"
                             required
@@ -275,7 +312,8 @@ const DashboardHero: React.FC = () => {
                           >
                             <input
                               type="text"
-                              onChange={inputFieldTwo}
+                              // onChange={inputFieldTwo}
+                              onChange={(e) => setInputValueTwo(e.target.value)}
                               value={inputValueTwo}
                               required
                               className="inputbox w-100 m-0"
@@ -333,6 +371,7 @@ const DashboardHero: React.FC = () => {
                                 suffixIcon={null}
                                 className="border-0 w-75 p-0"
                                 allowClear={false}
+                                onChange={handleDateChange}
                               />
                               <LuCalendarDays className="invisible" />
                             </div>
@@ -350,6 +389,7 @@ const DashboardHero: React.FC = () => {
                                 suffixIcon={null}
                                 className="border-0 w-75 p-0"
                                 allowClear={false}
+                                onChange={handleRangeChange}
                               />
                               <LuCalendarDays className="invisible" />
                             </div>
