@@ -7,11 +7,13 @@ import Profile from "../../../Assets/Profile.png";
 import "./CSS/DashboardNavBar.css";
 import Logo from "../../../Assets/B2b_Main_Logo_.svg";
 import { IoAddCircle } from "react-icons/io5";
+import { useAuth } from "../../Auth/AuthContext";
 
 function DashboardNavbar() {
   const navigate = useNavigate();
+  const { logout, userData } = useAuth();
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
+    logout(); 
     navigate("/");
   };
   return (
@@ -42,7 +44,7 @@ function DashboardNavbar() {
                 </div>
               </div>
               <div className="name" style={{ fontSize: "25px" }}>
-                William Johnson
+              {userData.name}
               </div>
               <div
                 className="viewProfile"
@@ -55,7 +57,7 @@ function DashboardNavbar() {
                 {/* <div><img src="" alt="" /></div> */}
                 <div style={{ fontSize: "25px", fontWeight: "500" }}>
                   <span style={{ fontFamily: "Outfit , sans-serif" }}>₹</span>
-                  &nbsp; 15,000
+                  &nbsp; {userData.currentBalance}
                 </div>
                 <div className="d-flex align-items-center primaryBtn">
                   <IoAddCircle />

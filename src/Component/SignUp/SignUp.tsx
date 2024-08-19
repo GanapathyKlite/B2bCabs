@@ -108,7 +108,12 @@ function SignUp() {
       lastname, filelist, ...filteredValues } = temp;
 
       try {
-        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/agent/registration`,filteredValues);
+        const key = localStorage.getItem('authkey');
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/agent/registration`,filteredValues,{
+          headers: {
+            Authorization: `Bearer ${key}`
+          }
+        });
         if (response.status === 200 && response.data.status) {
           setSuccess(true); 
         } else if(response.status === 200 && response.data.status === false){

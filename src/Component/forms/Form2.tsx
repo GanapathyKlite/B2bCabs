@@ -23,9 +23,14 @@ const Form2: React.FC = () => {
   const { setFieldValue } = useFormikContext();
 
   useEffect(() => {
+    const key = localStorage.getItem("authkey")
     const fetchCompanyTypes = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/registration-type`);
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/registration-type`,{
+          headers: {
+            Authorization: `Bearer ${key}`
+          }
+        });
         setCompanyTypes(response.data);
         
       } catch (error) {
@@ -36,7 +41,12 @@ const Form2: React.FC = () => {
     fetchCompanyTypes();
     const fetchCities = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/city/city-state-country`);
+        
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/city/city-state-country`,{
+          headers: {
+            Authorization: `Bearer ${key}`
+          }
+        });
         if (response.data.status) {
           setCities(response.data.cities);
           

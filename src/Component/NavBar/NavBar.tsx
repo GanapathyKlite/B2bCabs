@@ -11,6 +11,7 @@ import axios from 'axios';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Notyf } from "notyf";
 import { Typography, Box, LinearProgress, } from '@mui/material';
+import { useAuth } from '../Auth/AuthContext';
 
 // Initialize Notyf instance with updated configuration
 const notyf = new Notyf({
@@ -52,7 +53,36 @@ const NavBar: React.FC = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
   const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
   const [passwordToken, setPasswordToken] = useState("");
+  const { login } = useAuth();
 
+  useEffect(() => {
+    const loginData = {
+      username: "Agent Panel",
+      password: "agent@2024"
+    };
+
+    const getAuthKey = async () => {
+      try {
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/login`, loginData, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (response.status === 200 && response.data.status) {
+          const { key } = response.data;
+          localStorage.setItem('authkey', key); 
+        } else {
+          console.error('Login failed:', response.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        
+      }
+    };
+
+    getAuthKey();
+  }, []);
   useEffect(() => {
     if (showOTPField && countdown > 0) {
       const timer = setInterval(() => {
@@ -141,24 +171,20 @@ const NavBar: React.FC = () => {
         localStorage.removeItem('password');
         localStorage.removeItem('rememberMe');
       }
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/agent/login`, formData);
-      if (response.status === 200 && response.data.status) {
-        const { token } = response.data; 
-        
-        localStorage.setItem('authToken', token); 
-        navigate('/dashboard');
-      } else if(response.status === 200 && response.data.status === false){
-        const errorMessage = response?.data?.message;
-        notyf.error(errorMessage);
-      }
-    } catch (error) {
       
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || 'An error occurred';
-        notyf.error(errorMessage);
-      } else {
+      const response = await login(formData);
+
+    if (response?.status === 200 && response.data.status) {
+      const { token } = response.data;
+      navigate('/dashboard');
+      localStorage.setItem('authToken', token);
+    } else if (response?.status === 200 && response.data.status === false) {
+      const errorMessage = response?.data?.message;
+      notyf.error(errorMessage); 
+    }
+    } catch (error) {
+      console.log(error);
         notyf.error('An unexpected error occurred');
-      }
     }
   };
 
