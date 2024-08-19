@@ -3,6 +3,7 @@ import { FaAngleDown, FaAngleUp, FaRupeeSign } from "react-icons/fa";
 import { LuArrowLeftRight } from "react-icons/lu";
 import { DatePicker } from "antd";
 const { RangePicker } = DatePicker;
+import { useAuth } from "../../Auth/AuthContext";
 
 interface Option {
   icon: JSX.Element;
@@ -13,6 +14,7 @@ interface Option {
 const CarListNavBar: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Select your option");
+  const { inputValueOne, inputValueTwo, selectedDate, selectedDateRange, tripType } = useAuth();
 
   const options: Option[] = [
     { icon: <FaRupeeSign />, color: "#171515", text: "Cab From Airport" },
@@ -21,6 +23,7 @@ const CarListNavBar: React.FC = () => {
     { icon: <FaRupeeSign />, color: "#4267B2", text: "Hourly Rental" },
     { icon: <FaRupeeSign />, color: "#1DA1F2", text: "Holidays Package" },
   ];
+
 
   const toggleDropdown = () => {
     setIsActive(!isActive);
@@ -42,12 +45,14 @@ const CarListNavBar: React.FC = () => {
               <div className="select-btn" onClick={toggleDropdown}>
                 <div className="d-flex label">Trip Type</div>
                 <div className="d-flex justify-content-between align-items-center w-100">
-                  <span className="sBtn-text">{selectedOption}</span>
+                  {tripType? (<span className="sBtn-text">{tripType}</span>):(<span className="sBtn-text">{selectedOption}</span>)}
+                  
                   {isActive ? <FaAngleUp /> : <FaAngleDown />}
                 </div>
               </div>
 
               <ul className="options">
+
                 {options.map((option, index) => (
                   <li
                     className="option"
@@ -70,9 +75,9 @@ const CarListNavBar: React.FC = () => {
                 <div className="d-flex justify-content-between align-items-center w-100">
                   <input
                     type="text"
-                    placeholder="ffg"
+                    placeholder="Input One"
                     className="hiddenInputBox"
-                    // value={}
+                    value={inputValueOne}
                   />
                   {/* <span className="sBtn-text">
                     Muthialpet Police Station, Mahatma Gandhi Road, Ramakrishna
@@ -88,11 +93,17 @@ const CarListNavBar: React.FC = () => {
               <div className="d-flex justify-content-between align-items-start fromPlace">
                 <div className="d-flex label">TO</div>
                 <div className="d-flex justify-content-between align-items-center w-100">
-                  <span className="sBtn-text">
+                  {/* <span className="sBtn-text">
                     Yeswanthpur South Western Railway Parcel Office, Railway
                     Colony Road, Muniswara Nagar, Yeswanthpur, Bengaluru,
                     Karnataka, India
-                  </span>
+                  </span> */}
+                   <input
+        type="text"
+        placeholder="Input Two"
+        className="hiddenInputBox"
+        value={inputValueTwo}
+      />
                 </div>
               </div>
             </div>
@@ -106,7 +117,13 @@ const CarListNavBar: React.FC = () => {
                   PICK-UP DATE
                 </div>
                 <div className="d-flex justify-content-between align-items-center w-100 datePickerDiv">
-                  <RangePicker />
+                  {/* <RangePicker /> */}
+                  {selectedDate ? (
+        <DatePicker value={selectedDate} />
+      ) : (
+        <RangePicker value={selectedDateRange} />
+      )}
+
                 </div>
               </div>
             </div>

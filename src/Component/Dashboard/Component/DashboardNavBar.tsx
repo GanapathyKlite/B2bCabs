@@ -3,7 +3,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { Link, useNavigate } from "react-router-dom";
-import Profile from "../../../Assets/Profile.png";
+// import Profile from "../../../Assets/Profile.png";
 import "./CSS/DashboardNavBar.css";
 import Logo from "../../../Assets/B2b_Main_Logo_.svg";
 import { IoAddCircle } from "react-icons/io5";
@@ -16,6 +16,10 @@ function DashboardNavbar() {
     logout(); 
     navigate("/");
   };
+  const imageURL = `${import.meta.env.VITE_API_IMG_URL}`; 
+  const profileImage = `${imageURL}${userData.logo}`;
+  
+  
   return (
     <Navbar expand="true" className="bg-body-tertiary z-3">
       <Container fluid>
@@ -36,7 +40,7 @@ function DashboardNavbar() {
                 {/* <div className="profileCirlce2"> */}
                 <div className="profileImage">
                   <img
-                    src={Profile}
+                    src={profileImage}
                     alt="profileicon"
                     className="w-100 h-100"
                   />
