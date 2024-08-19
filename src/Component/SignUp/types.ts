@@ -23,6 +23,7 @@ const emailValidationSchema = z
 
 
 const form1Schema = z.object({
+  name_title: z.enum([ "Mr.","Ms.", "Mrs."]).default("Mr."), 
   firstname: z
     .string()
     .min(3, "Minimum 3 characters")
@@ -33,34 +34,34 @@ const form1Schema = z.object({
     .min(3, "Minimum 3 characters")
     .max(20, "Maximum 20 characters")
     .regex(/^[\sa-zA-Z.]+$/, "Name can only contain alphabetic characters, spaces, and '.'"),
-  mobilenumber: z
+    mobile_no: z
     .string()
     .regex(/^\d{10}$/, "Mobile number must contain exactly 10 digits")
     .min(10, "Should contain minimum 10 digits")
     .max(10, "Should not exceed 10 digits"),
-  alternatemobilenumber: z
+  al_mobile_no: z
     .string()
     .regex(/^\d{10}$/, "Mobile number must contain exactly 10 digits")
     .min(10, "Should contain minimum 10 digits")
     .max(10, "Should not exceed 10 digits"),
-  emailid: emailValidationSchema,
-}).refine(data => data.mobilenumber !== data.alternatemobilenumber, {
+    email_id: emailValidationSchema,
+}).refine(data => data.mobile_no !== data.al_mobile_no, {
   message: "Mobile number and alternate mobile number should not be the same",
-  path: ["alternatemobilenumber"],
+  path: ["al_mobile_no"],
 });
 
 const form2Schema = z.object({
-  companyname: z
+  company_name: z
     .string()
     .min(3, "Minimum 3 characters")
     .max(20, "Maximum 20 characters")
     .regex(/^[a-zA-Z\s]+$/, "Name can only contain alphabetic characters and spaces"),
-  companytype: z
+    type_of_company: z
     .string()
     .min(1, "Please select a company type")
     .refine((value) => value !== "Select company type", {
       message: "Please select a valid company type",
-      path: ["companytype"],
+      path: ["type_of_company"],
     }),
   address: z
     .string()
@@ -83,17 +84,17 @@ const form2Schema = z.object({
 });
 
 const form3Schema = z.object({
-  accountno: z
+  account_no: z
     .string()
     .regex(/^\d+$/, "Account number must contain only digits")
     .min(10, "Should contain minimum 10 digits")
     .max(18, "Should not exceed 18 digits"),
-  beneficiaryname: z
+    beneficiary_name: z
     .string()
     .min(3, "Minimum 3 characters")
     .max(20, "Maximum 20 characters")
     .regex(/^[\sa-zA-Z.]+$/, "Name can only contain alphabetic characters, spaces, and '.'"),
-  ifsccode: z
+    ifc_code: z
     .string()
     .regex(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Invalid IFSC code format")
     .min(11, "IFSC code must be 11 characters long")
@@ -101,12 +102,12 @@ const form3Schema = z.object({
   filelist: z.array(z.instanceof(File))
     .refine(files => files.length > 0, 'Please upload your check')
     .refine(files => files.every(file => ['image/png', 'image/jpeg', 'image/tiff'].includes(file.type)), 'Only PNG, JPEG, and TIFF files are allowed')
-    .refine(files => files.every(file => file.size <= 2 * 1024 * 1024), 'File size should not exceed 2MB')
+    .refine(files => files.every(file => file.size <= 101 * 1024), 'File size should not exceed 100KB')
     .default([]),
 });
 
 const form4Schema = z.object({
-  panno: z
+  pan_no: z
     .string()
     .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN format")
     .length(10, "PAN number must be 10 characters long"),
@@ -114,9 +115,9 @@ const form4Schema = z.object({
     .array(z.instanceof(File))
     .refine(files => files.length > 0, 'Please upload your PAN')
     .refine(files => files.every(file => ['image/png', 'image/jpeg', 'image/tiff'].includes(file.type)), 'Only PNG, JPEG, and TIFF files are allowed')
-    .refine(files => files.every(file => file.size <= 2 * 1024 * 1024), 'File size should not exceed 2MB')
+    .refine(files => files.every(file => file.size <= 101 * 1024), 'File size should not exceed 100KB')
     .default([]),
-  gstno: z
+    gst_no: z
     .string()
     .regex(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/, "Invalid GST Number format")
     .length(15, "GST Number must be 15 characters long"),
@@ -124,13 +125,19 @@ const form4Schema = z.object({
     .array(z.instanceof(File))
     .refine(files => files.length > 0, 'Please upload your GST')
     .refine(files => files.every(file => ['image/png', 'image/jpeg', 'image/tiff'].includes(file.type)), 'Only PNG, JPEG, and TIFF files are allowed')
-    .refine(files => files.every(file => file.size <= 2 * 1024 * 1024), 'File size should not exceed 2MB')
+    .refine(files => files.every(file => file.size <= 101 * 1024), 'File size should not exceed 100KB')
     .default([]),
   rcimage: z
     .array(z.instanceof(File))
     .refine(files => files.length > 0, 'Please upload your RC')
     .refine(files => files.every(file => ['image/png', 'image/jpeg', 'image/tiff'].includes(file.type)), 'Only PNG, JPEG, and TIFF files are allowed')
-    .refine(files => files.every(file => file.size <= 2 * 1024 * 1024), 'File size should not exceed 2MB')
+    .refine(files => files.every(file => file.size <= 101 * 1024), 'File size should not exceed 100KB')
+    .default([]),
+    logoimage: z
+    .array(z.instanceof(File))
+    .refine(files => files.length > 0, 'Please upload your Logo')
+    .refine(files => files.every(file => ['image/png', 'image/jpeg', 'image/tiff'].includes(file.type)), 'Only PNG, JPEG, and TIFF files are allowed')
+    .refine(files => files.every(file => file.size <= 101 * 1024), 'File size should not exceed 100KB')
     .default([]),
 });
 

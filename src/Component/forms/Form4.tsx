@@ -17,9 +17,12 @@ interface Form4Props {
   panimage: File[];
   gstimage: File[];
   rcimage: File[];
+  logoimage: File[];
   setPanimage: React.Dispatch<React.SetStateAction<File[]>>;
   setGstimage: React.Dispatch<React.SetStateAction<File[]>>;
   setRcimage: React.Dispatch<React.SetStateAction<File[]>>;
+  setLogoimage
+  : React.Dispatch<React.SetStateAction<File[]>>;
 }
 
 const Form4: React.FC<Form4Props> = ({
@@ -29,16 +32,19 @@ const Form4: React.FC<Form4Props> = ({
   setGstimage,
   rcimage,
   setRcimage,
+  logoimage,
+  setLogoimage
 }) => {
   const panimageRef = useRef<HTMLInputElement>(null);
   const gstimageRef = useRef<HTMLInputElement>(null);
   const rcimageRef = useRef<HTMLInputElement>(null);
+  const logoimageRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const { setFieldValue } = useFormikContext<any>();
   const [panField] = useField('pan_front_side_img');
     const [gstField] = useField('gst_front_side_img');
     const [companyRegField] = useField('company_reg_cer_img');
-
+    const [LogoField] = useField('company_logo');
   const validTypes = ["image/png", "image/jpeg", "image/tiff"];
   const maxSize = 101 * 1024; // 100KB
 
@@ -57,7 +63,7 @@ const Form4: React.FC<Form4Props> = ({
 
   const onFileChange = async(
     files: File[],
-    type: "panimage" | "gstimage" | "rcimage"
+    type: "panimage" | "gstimage" | "rcimage" | "logoimage"
   ) => {
     const validFiles: File[] = [];
     const invalidFiles: File[] = [];
@@ -140,6 +146,29 @@ const Form4: React.FC<Form4Props> = ({
       } catch (error) {
         console.error("Error uploading file:", error);
       }
+      } else if (type === "logoimage") {
+        setLogoimage(validFiles);
+        setFieldValue("logoimage", validFiles);
+        const formData = new FormData();
+      formData.append("file", validFiles[0]);
+  
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/upload/upload-single/AGENT_LOGO/agent`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+        if (response.data.status) {
+          const imagePath = response.data.image_path;
+          setFieldValue('company_logo', imagePath);
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
       }
     } else {
       if (type === "panimage") {
@@ -151,13 +180,16 @@ const Form4: React.FC<Form4Props> = ({
       } else if (type === "rcimage") {
         setRcimage([]);
         setFieldValue("rcimage", []);
+      } else if (type === "logoimage") {
+        setLogoimage([]);
+        setFieldValue("logoimage", []);
       }
     }
   };
 
   const onDrop = (
     e: React.DragEvent,
-    type: "panimage" | "gstimage" | "rcimage"
+    type: "panimage" | "gstimage" | "rcimage" | "logoimage"
   ) => {
     e.preventDefault();
     e.stopPropagation();
@@ -169,13 +201,13 @@ const Form4: React.FC<Form4Props> = ({
 
   const onFileDrop = (
     e: React.ChangeEvent<HTMLInputElement>,
-    type: "panimage" | "gstimage" | "rcimage"
+    type: "panimage" | "gstimage" | "rcimage" | "logoimage"
   ) => {
     const files = Array.from(e.target.files || []);
     onFileChange(files, type);
   };
 
-  const clearImage = async(type: "panimage" | "gstimage" | "rcimage") => {
+  const clearImage = async(type: "panimage" | "gstimage" | "rcimage" | "logoimage") => {
     if (type === "panimage") {
       try {
         const panFrontSideImgValue = panField.value;
@@ -185,8 +217,11 @@ const Form4: React.FC<Form4Props> = ({
         });
   
         if (response.status === 200) {
+          setFieldValue("panimage", []);
           setPanimage([]);
-      setFieldValue("panimage", []);
+          if (panimageRef.current) {
+            panimageRef.current.value = '';  
+          }
         }
       } catch (error) {
         console.error('Error deleting the image:', error);
@@ -203,6 +238,9 @@ const Form4: React.FC<Form4Props> = ({
         if (response.status === 200) {
           setGstimage([]);
           setFieldValue("gstimage", []);
+          if (gstimageRef.current) {
+            gstimageRef.current.value = '';  
+          }
         }
       } catch (error) {
         console.error('Error deleting the image:', error);
@@ -218,6 +256,27 @@ const Form4: React.FC<Form4Props> = ({
         if (response.status === 200) {
           setRcimage([]);
       setFieldValue("rcimage", []);
+      if (rcimageRef.current) {
+        rcimageRef.current.value = '';  
+      }
+        }
+      } catch (error) {
+        console.error('Error deleting the image:', error);
+      }
+      
+    } else if (type === "logoimage") {
+      try {
+        const companyLogoValue = LogoField.value;
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/upload/delete`, {
+          image_path: companyLogoValue,
+        });
+  
+        if (response.status === 200) {
+          setLogoimage([]);
+      setFieldValue("logoimage", []);
+      if (logoimageRef.current) {
+        logoimageRef.current.value = '';  
+      }
         }
       } catch (error) {
         console.error('Error deleting the image:', error);
@@ -226,13 +285,15 @@ const Form4: React.FC<Form4Props> = ({
     }
   };
 
-  const triggerFileSelect = (type: "panimage" | "gstimage" | "rcimage") => {
+  const triggerFileSelect = (type: "panimage" | "gstimage" | "rcimage" | "logoimage") => {
     if (type === "panimage" && panimageRef.current) {
       panimageRef.current.click();
     } else if (type === "gstimage" && gstimageRef.current) {
       gstimageRef.current.click();
     } else if (type === "rcimage" && rcimageRef.current) {
       rcimageRef.current.click();
+    } else if (type === "logoimage" && logoimageRef.current) {
+      logoimageRef.current.click();
     }
   };
 
@@ -251,19 +312,19 @@ const Form4: React.FC<Form4Props> = ({
       <div className="col-12">
         <label
           className="text-success font-weight-semibold pb-2"
-          htmlFor="panno"
+          htmlFor="pan_no"
         >
           PAN Number
         </label>
         <Field
           type="text"
           placeholder=" e.g. XYZ Pvt Ltd"
-          id="panno"
-          name="panno"
+          id="pan_no"
+          name="pan_no"
           className="form-control border border-secondary rounded-3 p-3 w-100"
         />
         <div className="text-danger fs-small pt-2 errorMessage">
-          <ErrorMessage name="panno" />
+          <ErrorMessage name="pan_no" />
         </div>
       </div>
 
@@ -281,6 +342,7 @@ const Form4: React.FC<Form4Props> = ({
             <button
               id="checkDeleteBtn"
               className="imgClear"
+                type="button"
               onClick={() => clearImage("panimage")}
             >
               <svg
@@ -363,19 +425,19 @@ const Form4: React.FC<Form4Props> = ({
       <div className="col-12">
         <label
           className="text-success font-weight-semibold pb-2"
-          htmlFor="gstno"
+          htmlFor="gst_no"
         >
           GST Number
         </label>
         <Field
           type="text"
           placeholder=" e.g. XYZ Pvt Ltd"
-          id="gstno"
-          name="gstno"
+          id="gst_no"
+          name="gst_no"
           className="form-control border border-secondary rounded-3 p-3 w-100"
         />
         <div className="text-danger fs-small pt-2 errorMessage">
-          <ErrorMessage name="gstno" />
+          <ErrorMessage name="gst_no" />
         </div>
       </div>
 
@@ -393,6 +455,7 @@ const Form4: React.FC<Form4Props> = ({
             <button
               id="checkDeleteBtn"
               className="imgClear"
+                type="button"
               onClick={() => clearImage("gstimage")}
             >
               <svg
@@ -486,6 +549,7 @@ const Form4: React.FC<Form4Props> = ({
             <button
               id="checkDeleteBtn"
               className="imgClear"
+                type="button"
               onClick={() => clearImage("rcimage")}
             >
               <svg
@@ -562,6 +626,100 @@ const Form4: React.FC<Form4Props> = ({
         </div>
         <div className="text-danger fs-small pt-2 errorMessage errorMessage">
           <ErrorMessage name="rcimage" />
+        </div>
+      </div>
+
+      <div className="col-12">
+        <div className="d-flex justify-content-between align-items-center w-100 pb-2 pe-2 pe-md-4">
+          <div>
+            <label
+              className="text-success font-weight-semibold"
+              htmlFor="logoimage"
+            >
+              Upload Compay Logo
+            </label>
+          </div>
+          {logoimage.length > 0 && (
+            <button
+              id="checkDeleteBtn"
+              className="imgClear"
+                type="button"
+              onClick={() => clearImage("logoimage")}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 69 14"
+                className="svgIcon bin-top"
+              >
+                <g clip-path="url(#clip0_35_24)">
+                  <path
+                    fill="black"
+                    d="M20.8232 2.62734L19.9948 4.21304C19.8224 4.54309 19.4808 4.75 19.1085 4.75H4.92857C2.20246 4.75 0 6.87266 0 9.5C0 12.1273 2.20246 14.25 4.92857 14.25H64.0714C66.7975 14.25 69 12.1273 69 9.5C69 6.87266 66.7975 4.75 64.0714 4.75H49.8915C49.5192 4.75 49.1776 4.54309 49.0052 4.21305L48.1768 2.62734C47.3451 1.00938 45.6355 0 43.7719 0H25.2281C23.3645 0 21.6549 1.00938 20.8232 2.62734ZM64.0023 20.0648C64.0397 19.4882 63.5822 19 63.0044 19H5.99556C5.4178 19 4.96025 19.4882 4.99766 20.0648L8.19375 69.3203C8.44018 73.0758 11.6746 76 15.5712 76H53.4288C57.3254 76 60.5598 73.0758 60.8062 69.3203L64.0023 20.0648Z"
+                  ></path>
+                </g>
+                <defs>
+                  <clipPath id="clip0_35_24">
+                    <rect fill="white" height="14" width="69"></rect>
+                  </clipPath>
+                </defs>
+              </svg>
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 69 57"
+                className="svgIcon bin-bottom"
+              >
+                <g clip-path="url(#clip0_35_22)">
+                  <path
+                    fill="black"
+                    d="M20.8232 -16.3727L19.9948 -14.787C19.8224 -14.4569 19.4808 -14.25 19.1085 -14.25H4.92857C2.20246 -14.25 0 -12.1273 0 -9.5C0 -6.8727 2.20246 -4.75 4.92857 -4.75H64.0714C66.7975 -4.75 69 -6.8727 69 -9.5C69 -12.1273 66.7975 -14.25 64.0714 -14.25H49.8915C49.5192 -14.25 49.1776 -14.4569 49.0052 -14.787L48.1768 -16.3727C47.3451 -17.9906 45.6355 -19 43.7719 -19H25.2281C23.3645 -19 21.6549 -17.9906 20.8232 -16.3727ZM64.0023 1.0648C64.0397 0.4882 63.5822 0 63.0044 0H5.99556C5.4178 0 4.96025 0.4882 4.99766 1.0648L8.19375 50.3203C8.44018 54.0758 11.6746 57 15.5712 57H53.4288C57.3254 57 60.5598 54.0758 60.8062 50.3203L64.0023 1.0648Z"
+                  ></path>
+                </g>
+                <defs>
+                  <clipPath id="clip0_35_22">
+                    <rect fill="white" height="57" width="69"></rect>
+                  </clipPath>
+                </defs>
+              </svg>
+            </button>
+          )}
+        </div>
+        <div
+          ref={wrapperRef}
+          className="drop-file-input"
+          onDragEnter={(e) => e.preventDefault()}
+          onDragLeave={(e) => e.preventDefault()}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => onDrop(e, "logoimage")}
+          onClick={() => triggerFileSelect("logoimage")}
+        >
+          <div className="drop-file-input__label">
+            {logoimage.length === 0 ? (
+              <>
+                <img src={uploadImg} alt="Upload" className="imageUpload" />
+                <p>Drag & Drop your Company Logo here</p>
+              </>
+            ) : (
+              <img
+                src={URL.createObjectURL(logoimage[0])}
+                alt="Uploaded"
+                className="uploaded-image-preview"
+              />
+            )}
+          </div>
+          <input
+            id="logoimage"
+            name="logoimage"
+            type="file"
+            ref={logoimageRef}
+            onChange={(e) => onFileDrop(e, "logoimage")}
+            style={{ display: "none" }}
+          />
+        </div>
+        <div className="text-danger fs-small pt-2 errorMessage errorMessage">
+          <ErrorMessage name="logoimage" />
         </div>
       </div>
     </div>
