@@ -10,7 +10,8 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Notyf } from "notyf";
-import { Button, TextField, Typography, Box, LinearProgress, } from '@mui/material';
+import { Typography, Box, LinearProgress, } from '@mui/material';
+import { useAuth } from '../Auth/AuthContext';
 
 // Initialize Notyf instance with updated configuration
 const notyf = new Notyf({
@@ -32,6 +33,7 @@ interface PasswordForm {
 const NavBar: React.FC = () => {
   const isSignUpRoute = location.pathname.startsWith("/signup");
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [shownewPassModal, setShownewPassModal] = useState(false);
@@ -49,7 +51,38 @@ const NavBar: React.FC = () => {
   const [isresendButtonDisabled, setIsresendButtonDisabled] = useState(true);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
+  const [passwordToken, setPasswordToken] = useState("");
+  const { login } = useAuth();
 
+  useEffect(() => {
+    const loginData = {
+      username: "Agent Panel",
+      password: "agent@2024"
+    };
+
+    const getAuthKey = async () => {
+      try {
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/login`, loginData, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (response.status === 200 && response.data.status) {
+          const { key } = response.data;
+          localStorage.setItem('authkey', key); 
+        } else {
+          console.error('Login failed:', response.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        
+      }
+    };
+
+    getAuthKey();
+  }, []);
   useEffect(() => {
     if (showOTPField && countdown > 0) {
       const timer = setInterval(() => {
@@ -66,6 +99,18 @@ const NavBar: React.FC = () => {
       setOtp("");
     }
   }, [countdown, showOTPField]);
+
+  useEffect(() => {
+    // Check if the password meets the criteria and confirm password matches
+    const passwordValidation = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const isValidPassword = passwordValidation.test(passwordFormData.newPassword);
+    const doPasswordsMatch = passwordFormData.newPassword === passwordFormData.confirmPassword;
+
+    setPasswordError(isValidPassword ? null : 'Password must contain atleast one capital letter, one special character, one integer and small letters, length should be more than 7');
+    setConfirmPasswordError(doPasswordsMatch ? null : 'Passwords do not match.');
+
+    setIsPasswordValid(isValidPassword && doPasswordsMatch);
+  }, [passwordFormData]);
 
   useEffect(() => {
     const storedEmail = localStorage.getItem('email');
@@ -95,12 +140,7 @@ const NavBar: React.FC = () => {
     navigate("/signup");
   };
 
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setFormData({
-  //     ...formData,
-  //     [e.target.name]: e.target.value,
-  //   });
-  // };
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
@@ -109,26 +149,10 @@ const NavBar: React.FC = () => {
     }));
   };
   
+  
+
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-  
-    if (name === 'newPassword') {
-      const passwordValidation = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      if (!passwordValidation.test(value)) {
-        setPasswordError('Password must contain atleast one capital letter, one special character, one integer and small letters, length should be more than 7');
-      } else {
-        setPasswordError(null);
-      }
-    }
-  
-    if (name === 'confirmPassword') {
-      if (value !== passwordFormData.newPassword) {
-        setConfirmPasswordError('Passwords do not match.');
-      } else {
-        setConfirmPasswordError(null);
-      }
-    }
-  
     setPasswordFormData({
       ...passwordFormData,
       [name]: value,
@@ -147,24 +171,20 @@ const NavBar: React.FC = () => {
         localStorage.removeItem('password');
         localStorage.removeItem('rememberMe');
       }
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/agent/login`, formData);
-      if (response.status === 200 && response.data.status) {
-        const { token } = response.data; 
-        
-        localStorage.setItem('authToken', token); 
-        navigate('/dashboard');
-      } else if(response.status === 200 && response.data.status === false){
-        const errorMessage = response?.data?.message;
-        notyf.error(errorMessage);
-      }
-    } catch (error) {
       
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || 'An error occurred';
-        notyf.error(errorMessage);
-      } else {
+      const response = await login(formData);
+
+    if (response?.status === 200 && response.data.status) {
+      const { token } = response.data;
+      navigate('/dashboard');
+      localStorage.setItem('authToken', token);
+    } else if (response?.status === 200 && response.data.status === false) {
+      const errorMessage = response?.data?.message;
+      notyf.error(errorMessage); 
+    }
+    } catch (error) {
+      console.log(error);
         notyf.error('An unexpected error occurred');
-      }
     }
   };
 
@@ -172,7 +192,10 @@ const NavBar: React.FC = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
+  const togglePasswordVisibility2 = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+  
   const expand = "lg";
   
   const validateEmail = (email: string) => {
@@ -229,7 +252,7 @@ const handleOtp = async(e: React.FormEvent) => {
           setShowResendButton(false); 
           setShowForgotPasswordModal(false);
           setShownewPassModal(true);
-          
+          setPasswordToken(response.data.token);
         } else if(response.status === 200 && response.data.status === false){
           const errorMessage = response?.data?.message;
           notyf.error(errorMessage);
@@ -263,7 +286,28 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
 const handlePasswordSubmit = async(e: FormEvent)=>{
   e.preventDefault();
-  console.log("password submitted");
+  if (isPasswordValid) {
+    try {
+      const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/agent/reset-password`, {"token": passwordToken,"newPassword":passwordFormData.newPassword});
+      if (response.status === 200 && response.data.status) {
+        notyf.success(response.data.message);
+        
+        setShownewPassModal(false);
+        setShowModal(true);
+      } else if(response.status === 200 && response.data.status === false){
+        const errorMessage = response?.data?.message;
+        notyf.error(errorMessage);
+      }
+    } catch (error) {
+      
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || 'An error occurred';
+        notyf.error(errorMessage);
+      } else {
+        notyf.error('An unexpected error occurred');
+      }
+    }
+}
   
 }
   return (
@@ -441,8 +485,11 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
           </form>
         </Modal.Body>
       </Modal>
-      <Modal show={showForgotPasswordModal} onHide={() => {
+      <Modal show={showForgotPasswordModal} 
+      backdrop="static"
+      onHide={() => {
         setShowForgotPasswordModal(false);
+        setIssubmitButtonDisabled(false);
         setShow(false);
         setOtp("");}} centered>
         <Modal.Header closeButton>
@@ -456,39 +503,40 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
       <Box
       >
         <div className="inputBoxDiv">
-        <TextField
-          label="Email"
-          type="email"
-          id="email"
-          placeholder="Enter your email id"
-          value={email}
-          onChange={handleEmailChange}
-           className="loginFormInputBox"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          error={!isEmailValid && email !== ''}
-          helperText={!isEmailValid && email !== '' ? 'Please enter a valid email' : ''}
-        />
+        <label htmlFor="email">
+        Email <span className="text-danger">*</span>
+      </label>
+
+      <input
+    type="email"
+    id="email"
+    disabled={showOTPField && show}
+    placeholder="Enter your email id"
+    value={email}
+    onChange={handleEmailChange}
+    className={`loginFormInputBox ${!isEmailValid && email !== '' ? 'is-invalid' : ''}`} // Add 'is-invalid' class if email is not valid
+  />
+  
+  {!isEmailValid && email !== '' && (
+    <p className="text-danger">Please enter a valid email</p>
+  )}
             </div>
        {!show ? (
-         <Button
-         disabled={!isEmailValid || issubmitButtonDisabled}
-         onClick={handleEmailSubmit}
-         type="submit"
-         variant="contained"
-         color="primary"
-         fullWidth
-         style={{
-           marginTop: '20px',
-           backgroundColor: !isEmailValid ? '#d3d3d3' : '#089848', 
-           color: '#fff',
-           cursor: !isEmailValid ? 'not-allowed' : 'pointer', 
-           border: 'none',
-         }}
-       >
-         Submit
-       </Button>
+       
+       <div className="d-flex justify-content-center">
+              <button className="primaryBtn" data-bs-dismiss="modal" 
+               disabled={!isEmailValid || issubmitButtonDisabled}
+               onClick={handleEmailSubmit}
+                style={{
+                  marginTop: '20px',
+                  backgroundColor: !isEmailValid || issubmitButtonDisabled ? '#d3d3d3' : '#089848', 
+                  color: '#fff',
+                  cursor: !isEmailValid || issubmitButtonDisabled ? 'default' : 'pointer', 
+                  border: 'none',
+                }}>
+                Submit
+              </button>
+            </div>
        ):null}
        
       </Box>
@@ -496,19 +544,24 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
       (<Box >
 
 {showOTPField && (
-        <>
-        <Typography >Verify OTP</Typography>
-          <TextField
-            variant="outlined"
-            fullWidth
+        <div>
+        <h5 style={{ textAlign: 'center', marginTop: '20px' }}>Verify OTP</h5>
+         
+          <div className="inputBoxDiv">
+  <label htmlFor="email">
+    OTP <span className="text-danger">*</span>
+  </label>
+          <input
+          className="loginFormInputBox"
             placeholder="Enter the OTP"
-            inputProps={{ maxLength: 4}}
+            maxLength={4}
             onChange={e=>{
               setOtp(e.target.value)
           }}
           onKeyDown={handleKeyDown}
             type="text"
           />
+          </div>
           <Typography variant="body2" color="textSecondary" style={{ marginTop: '10px' }}>
             Time remaining: {countdown} seconds
           </Typography>
@@ -517,42 +570,40 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
             value={(countdown / 30) * 100}
             style={{ marginTop: '10px' }}
           />
-        </>
+        </div>
       )}
 {showResendButton && (
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleEmailSubmit}
-          style={{
-            marginTop: '20px',
-            backgroundColor: isresendButtonDisabled ? '#d3d3d3' : '#089848', 
-            color: '#fff',
-            cursor: isresendButtonDisabled ? 'not-allowed' : 'pointer', 
-            border: 'none',
-          }}
-          disabled={ isresendButtonDisabled}
-        >
-          Resend OTP
-        </Button>
-      )}
-      {!showResendButton && (
-        <Button 
-        disabled={!otp}
-        onClick={handleOtp}
-        type="submit"
-        variant="contained"
-        color="primary"
-        fullWidth
+        <div className="d-flex justify-content-center">
+        <button className="primaryBtn" data-bs-dismiss="modal" 
+        onClick={handleEmailSubmit}
         style={{
           marginTop: '20px',
-          backgroundColor: !otp ? '#d3d3d3' : '#089848', 
+          backgroundColor: isresendButtonDisabled ? '#d3d3d3' : '#089848', 
           color: '#fff',
-          cursor: !otp ? 'not-allowed' : 'pointer', 
+          cursor: isresendButtonDisabled ? 'not-allowed' : 'pointer', 
           border: 'none',
         }}
-        >Verify</Button>
+        disabled={ isresendButtonDisabled}>
+          Resend OTP
+        </button>
+      </div>
+      )}
+      {!showResendButton && (
+        <div className="d-flex justify-content-center">
+        <button className="primaryBtn" data-bs-dismiss="modal" 
+       disabled={!otp}
+       onClick={handleOtp}
+       style={{
+        marginTop: '20px',
+        backgroundColor: !otp ? '#d3d3d3' : '#089848', 
+        color: '#fff',
+        cursor: !otp ? 'not-allowed' : 'pointer', 
+        border: 'none',
+      }}
+      >
+          Verify
+        </button>
+      </div>
       )
 
       }
@@ -561,7 +612,9 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
         </Modal.Body>
       </Modal>
 
-      <Modal show={shownewPassModal} onHide={()=>{
+      <Modal show={shownewPassModal} 
+      backdrop="static"
+      onHide={()=>{
         setShownewPassModal(false)
       }} centered>
         <Modal.Header closeButton>
@@ -575,7 +628,7 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
                 Enter New Password <span className="text-danger">*</span>
               </label>
               <input
-                type="text"
+                type={showPassword ? "text" : "password"}
                 id="newPassword"
                 placeholder="&nbsp;Enter Your New Password"
                 name="newPassword"
@@ -585,17 +638,21 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
                 required
                 autoComplete="off"
               />
-                      
-
-              {passwordError && <p className="text-danger">{passwordError}</p>}
+                    <span  className="passwordEye"
+    onClick={togglePasswordVisibility}
+  >
+    {showPassword ? <FaEye /> : <FaEyeSlash />}
+  </span>   
+             
             </div>
+            {passwordError && <p className="text-danger">{passwordError}</p>}
 
             <div className="inputBoxDiv">
               <label htmlFor="confirmPassword">
                Confirm Password <span className="text-danger">*</span>
               </label>
               <input
-                type={showPassword ? "text" : "password"}
+                type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
                 placeholder="&nbsp;Enter Your Confirm Password"
                 name="confirmPassword"
@@ -605,10 +662,22 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
                 required
                 autoComplete="off"
               />
+                <span  className="passwordEye"
+    onClick={togglePasswordVisibility2}
+  >
+    {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
+  </span>   
               {confirmPasswordError && <p className="text-danger">{confirmPasswordError}</p>}
               </div>
                <div className="d-flex justify-content-center">
-              <button className="primaryBtn" data-bs-dismiss="modal">
+              <button className="primaryBtn" data-bs-dismiss="modal" disabled={!isPasswordValid}
+                style={{
+                  marginTop: '20px',
+                  backgroundColor: !isPasswordValid ? '#d3d3d3' : '#089848', 
+                  color: '#fff',
+                  cursor: !isPasswordValid ? 'default' : 'pointer', 
+                  border: 'none',
+                }}>
                 Submit
               </button>
             </div></form>

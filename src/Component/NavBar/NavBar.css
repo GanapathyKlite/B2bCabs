@@ -198,4 +198,6 @@
 }
 /* Remember checkbox End */
 
-
+.is-invalid {
+  border-color: red;
+}

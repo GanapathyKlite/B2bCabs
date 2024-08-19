@@ -21,6 +21,8 @@ interface Form3Props {
 
 const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const { setFieldValue } = useFormikContext();
   const [field] = useField('check_leaf_front_img');
     
@@ -121,12 +123,14 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
       if (response.status === 200) {
         setFileList([]);
         setFieldValue("filelist", []);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';  
+        }
+        
       }
     } catch (error) {
       console.error('Error deleting the image:', error);
     }
-
-
   };
 
   return (
@@ -142,37 +146,37 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
         <div className="col-12 col-lg-6 pe-lg-2">
           <label
             className="text-success font-weight-semibold pb-2"
-            htmlFor="accountno"
+            htmlFor="account_no"
           >
             Account Number
           </label>
           <Field
             type="text"
             placeholder="e.g. XYZ Pvt Ltd"
-            id="accountno"
-            name="accountno"
+            id="account_no"
+            name="account_no"
             className="form-control border border-secondary rounded-3 p-3 w-100"
           />
           <div className="text-danger fs-small pt-2 errorMessage">
-            <ErrorMessage name="accountno" />
+            <ErrorMessage name="account_no" />
           </div>
         </div>
         <div className="col-12 col-lg-6 ps-lg-2">
           <label
             className="text-success font-weight-semibold pb-2"
-            htmlFor="beneficiaryname"
+            htmlFor="beneficiary_name"
           >
             Beneficiary Name
           </label>
           <Field
             type="text"
             placeholder="e.g. XYZ Pvt Ltd"
-            id="beneficiaryname"
-            name="beneficiaryname"
+            id="beneficiary_name"
+            name="beneficiary_name"
             className="form-control border border-secondary rounded-3 p-3 w-100"
           />
           <div className="text-danger fs-small pt-2 errorMessage">
-            <ErrorMessage name="beneficiaryname" />
+            <ErrorMessage name="beneficiary_name" />
           </div>
         </div>
       </div>
@@ -180,19 +184,19 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
       <div className="col-12">
         <label
           className="text-success font-weight-semibold pb-2"
-          htmlFor="ifsccode"
+          htmlFor="ifc_code"
         >
           IFSC Code
         </label>
         <Field
           type="text"
           placeholder="e.g. XYZ Pvt Ltd"
-          id="ifsccode"
-          name="ifsccode"
+          id="ifc_code"
+          name="ifc_code"
           className="form-control border border-secondary rounded-3 p-3 w-100"
         />
         <div className="text-danger fs-small pt-2 errorMessage">
-          <ErrorMessage name="ifsccode" />
+          <ErrorMessage name="ifc_code" />
         </div>
       </div>
 
@@ -209,6 +213,7 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
           {/* Clear Button: Show only when fileList is not empty */}
           {fileList.length > 0 && (
             <button
+            type="button"
               id="checkDeleteBtn"
               className="imgClear"
               onClick={clearImage}
@@ -279,6 +284,7 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
             name="filelist"
             type="file"
             onChange={onFileDrop}
+            ref={fileInputRef}
           />
         </div>
         <div className="text-danger fs-small pt-2 errorMessage">

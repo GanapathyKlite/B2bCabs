@@ -5,8 +5,8 @@ import { IoIosArrowDown } from "react-icons/io";
 import axios from 'axios';
 
 interface FormValues {
-  companyname: string;
-  companytype: string;
+  company_name: string;
+  type_of_company: string;
   address: string;
   city: string;
   state: string;
@@ -18,15 +18,19 @@ const Form2: React.FC = () => {
   const { errors, touched } = useFormikContext<FormValues>();
   const [isCompanyTypeOpen, setIsCompanyTypeOpen] = useState(false);
   const [isCityOpen, setIsCityOpen] = useState(false);
-  const [isStateOpen, setIsStateOpen] = useState(false);
-  const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [companyTypes, setCompanyTypes] = useState<Array<{ id: string; name: string }>>([]);
-  const [cities, setCities] = useState<Array<{ id_city: number; city_name: string; state_name: string; country_name: string }>>([]);
+  const [cities, setCities] = useState<Array<{ id_city: number; city_name: string; state_name: string; country_name: string; id_country: number; id_state: number }>>([]);
   const { setFieldValue } = useFormikContext();
+
   useEffect(() => {
+    const key = localStorage.getItem("authkey")
     const fetchCompanyTypes = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/registration-type`);
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/registration-type`,{
+          headers: {
+            Authorization: `Bearer ${key}`
+          }
+        });
         setCompanyTypes(response.data);
         
       } catch (error) {
@@ -37,7 +41,12 @@ const Form2: React.FC = () => {
     fetchCompanyTypes();
     const fetchCities = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/city/city-state-country`);
+        
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/city/city-state-country`,{
+          headers: {
+            Authorization: `Bearer ${key}`
+          }
+        });
         if (response.data.status) {
           setCities(response.data.cities);
           
@@ -58,6 +67,24 @@ const Form2: React.FC = () => {
     if (selectedCity) {
       setFieldValue('state', selectedCity.state_name);
       setFieldValue('country', selectedCity.country_name);
+      setFieldValue("id_state", selectedCity.id_state);
+      setFieldValue("id_country", selectedCity.id_country);
+      setFieldValue("id_city", selectedCity.id_city);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const invalidKeys = ['e', 'E', '+', '-'];
+    const isNavigationKey = [
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Delete', 'Home', 'End'
+    ].includes(e.key);
+  
+    if (isNavigationKey || e.key === 'Enter') {
+      return;
+    }
+  
+    if (invalidKeys.includes(e.key) || !/\d/.test(e.key)) {
+      e.preventDefault();
     }
   };
   return (
@@ -73,39 +100,39 @@ const Form2: React.FC = () => {
         <div className="col-12 col-lg-6 pe-lg-2">
           <label
             className="text-success font-weight-semibold pb-2"
-            htmlFor="companyname"
+            htmlFor="company_name"
           >
             Company Name
           </label>
           <Field
             type="text"
             placeholder="e.g. XYZ Pvt Ltd"
-            id="companyname"
-            name="companyname"
+            id="company_name"
+            name="company_name"
             className={`form-control border border-secondary rounded-3 p-3 w-100 ${
-              errors.companyname && touched.companyname
+              errors.company_name && touched.company_name
                 ? "border-danger shake-animation"
                 : ""
             }`}
           />
           <div className="text-danger fs-small pt-2 errorMessage">
-            <ErrorMessage name="companyname" />
+            <ErrorMessage name="company_name" />
           </div>
         </div>
         <div className="col-12 col-lg-6 ps-lg-2">
           <label
             className="text-success font-weight-semibold pb-2"
-            htmlFor="companytype"
+            htmlFor="type_of_company"
           >
             Company Type
           </label>
           <div className="select-wrapper">
             <Field
               as="select"
-              id="companytype"
-              name="companytype"
+              id="type_of_company"
+              name="type_of_company"
               className={`form-control border border-secondary rounded-3 p-3 w-100 ${
-                errors.companytype && touched.companytype ? "border-danger" : ""
+                errors.type_of_company && touched.type_of_company ? "border-danger" : ""
               }`}
               onClick={() => setIsCompanyTypeOpen(!isCompanyTypeOpen)}
               onBlur={() => setIsCompanyTypeOpen(false)}
@@ -132,7 +159,7 @@ const Form2: React.FC = () => {
             />
           </div>
           <div className="text-danger fs-small pt-2 errorMessage">
-            <ErrorMessage name="companytype" />
+            <ErrorMessage name="type_of_company" />
           </div>
         </div>
       </div>
@@ -185,12 +212,7 @@ const Form2: React.FC = () => {
               }}
             >
               <option disabled label="Select City" />
-              {/* <option value="Tamil Nadu" label="Tamil Nadu" />
-              <option value="Kerala" label="Kerala" />
-              <option value="Telangana" label="Telangana" />
-              <option value="Maharashtra" label="Maharashtra" />
-              <option value="Punjab" label="Punjab" />
-              <option value="Andhra Pradesh" label="Andhra Pradesh" /> */}
+              
                {cities.map((city) => (
           <option key={city.id_city} value={city.city_name} label={city.city_name} />
         ))}
@@ -215,9 +237,7 @@ const Form2: React.FC = () => {
             as="input"
             id="state"
             name="state"
-            className={`form-control border border-secondary rounded-3 p-3 w-100 ${
-              isStateOpen ? 'open' : ''
-            }`}
+            className={`form-control border border-secondary rounded-3 p-3 w-100 `}
             readOnly
           />
           </div>
@@ -240,9 +260,7 @@ const Form2: React.FC = () => {
             as="input"
             id="country"
             name="country"
-            className={`form-control border border-secondary rounded-3 p-3 w-100 ${
-              isCountryOpen ? 'open' : ''
-            }`}
+            className={`form-control border border-secondary rounded-3 p-3 w-100 `}
             readOnly
           />
            
@@ -264,6 +282,7 @@ const Form2: React.FC = () => {
             id="pincode"
             name="pincode"
             maxLength={6}
+            onKeyDown={handleKeyDown}
             className={`form-control border border-secondary rounded-3 p-3 w-100 ${
               errors.pincode && touched.pincode
                 ? "border-danger shake-animation"

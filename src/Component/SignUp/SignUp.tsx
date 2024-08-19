@@ -11,29 +11,44 @@ import SuccessPage from "../forms/SuccessPage";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { formValidationSchema } from "./types";
 import "./SignUp.css";
+import axios from 'axios';
+import { Notyf } from "notyf";
 
+const notyf = new Notyf({
+  duration: 4000,
+  position: { x: "right", y: "top" },
+  ripple: true,
+  dismissible: true,
+});
+type FormValues = typeof initialValues;
 const initialValues = {
+  name_title:"Mr.",
+  name:"",
   firstname: "",
   lastname: "",
-  emailid: "",
-  mobilenumber: "",
-  alternatemobilenumber: "",
-  companyname: "",
-  companytype: "",
+  email_id: "",
+  mobile_no: "",
+  al_mobile_no: "",
+  company_name: "",
+  type_of_company: "",
   address: "",
   city: "",
   state: "",
   country: "",
+  id_state: "",
+  id_city: "",
+  id_country: "",
   pincode: "",
-  accountno: "",
-  beneficiaryname: "",
-  ifsccode: "",
+  account_no: "",
+  beneficiary_name: "",
+  ifc_code: "",
   filelist: [] as File[],
-  panno: "",
-  panimage: null as File | null,
-  gstno: "",
-  gstimage: null as File | null,
-  rcimage: null as File | null,
+  pan_no: "",
+  panimage: [] as File[],
+  gst_no: "",
+  gstimage: [] as File[],
+  rcimage: [] as File[],
+  logoimage: [] as File[],
 };
 
 function SignUp() {
@@ -43,6 +58,7 @@ function SignUp() {
   const [panimage, setPanimage] = useState<File[]>([]);
   const [gstimage, setGstimage] = useState<File[]>([]);
   const [rcimage, setRcimage] = useState<File[]>([]);
+  const [logoimage, setLogoimage] = useState<File[]>([]);
   const [completedSteps, setCompletedSteps] = useState<boolean[]>([
     false,
     false,
@@ -56,6 +72,7 @@ function SignUp() {
     updatedSteps[currentIndex] = true;
     setCompletedSteps(updatedSteps);
     setCurrentIndex(currentIndex + 1);
+    
   };
 
   const back = () => {
@@ -78,6 +95,48 @@ function SignUp() {
     }
   };
 
+  const handleSubmit = async (  values: FormValues, actions: FormikHelpers<typeof initialValues>) => {
+    try {
+      const temp = { ...values };
+
+    temp.name = `${temp.firstname} ${temp.lastname}`;
+    temp.state = temp.id_state;
+    temp.city = temp.id_city;
+    temp.country = temp.id_country;
+
+    const { gstimage, logoimage, panimage, rcimage, id_state, id_city, id_country, firstname,
+      lastname, filelist, ...filteredValues } = temp;
+
+      try {
+        const key = localStorage.getItem('authkey');
+        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/agent/registration`,filteredValues,{
+          headers: {
+            Authorization: `Bearer ${key}`
+          }
+        });
+        if (response.status === 200 && response.data.status) {
+          setSuccess(true); 
+        } else if(response.status === 200 && response.data.status === false){
+          const errorMessage = response?.data?.message;
+          notyf.error(errorMessage);
+        }
+      } catch (error) {
+        
+        if (axios.isAxiosError(error)) {
+          const errorMessage = error.response?.data?.message || 'An error occurred';
+          notyf.error(errorMessage);
+        } else {
+          notyf.error('An unexpected error occurred');
+        }
+      }
+      
+    } catch (error) {
+      console.error('Error during registration:', error);
+    } finally {
+      actions.setSubmitting(false);
+    }
+  };
+
   return (
     <div className="container">
       <div className="row justify-content-center align-items-center p-0 py-lg-3">
@@ -96,16 +155,14 @@ function SignUp() {
                   validationSchema={setValidationSchema()}
                   validateOnChange={true}
                   validateOnBlur={true}
-                  onSubmit={(
-                    values,
-                    actions: FormikHelpers<typeof initialValues>
-                  ) => {
-                    next();
+                  
+                  onSubmit={(values, actions) => {
                     if (currentIndex === 3) {
-                      console.log(values);
-                      setSuccess(true);
+                      handleSubmit(values, actions); 
+                    } else {
+                      next();
+                      actions.setTouched({});
                     }
-                    actions.setTouched({});
                   }}
                 >
                   {({ validateForm, setFieldTouched, values }) => (
@@ -123,6 +180,8 @@ function SignUp() {
                           setGstimage={setGstimage}
                           rcimage={rcimage}
                           setRcimage={setRcimage}
+                          logoimage={logoimage}
+                          setLogoimage={setLogoimage}
                         />
                       )}
                       <div className="w-100 d-flex flex-row justify-content-between pt-3">
