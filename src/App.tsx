@@ -1,5 +1,4 @@
-// src/App.tsx
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 import LandingPage from './Component/Landing_Page/LandingPage';
 import NavBar from './Component/NavBar/NavBar';
@@ -13,11 +12,38 @@ import DashboardNavbar from './Component/Dashboard/Component/DashboardNavBar';
 import CarShowingPage from './Component/CarList/CarShowingPage';
 import PrivateRoute from './Component/Auth/PrivateRoute';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { useAuth } from './Component/Auth/AuthContext';
+import { useEffect } from 'react';
 
 function App() {
   const location = useLocation();
-
+  const navigate = useNavigate();
+  const { authToken } = useAuth();
   const isDashboardRoute = location.pathname.startsWith('/dashboard');
+
+  useEffect(() => {
+    if (!authToken) {
+      navigate('/');
+    }
+
+    const disableBack = () => {
+      window.history.pushState(null, '', window.location.href);
+      window.onpopstate = (event) => {
+        if (location.pathname === '/dashboard') {
+          window.history.go(1);
+        }
+      };
+    };
+
+    if (location.pathname === '/dashboard') {
+      disableBack();
+    }
+
+    return () => {
+      window.onpopstate = null;
+    };
+  }, [authToken, location, navigate]);
+
 
   return (
     <div className="App">
@@ -35,6 +61,7 @@ function App() {
           <Route path="/dashboard/cablist" element={<CarShowingPage />} />
           <Route path="/dashboard/cabbooking" element={<CarBooking />} />
         </Route>
+
       </Routes>
     </div>
   );

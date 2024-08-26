@@ -24,6 +24,16 @@
   background-image: var(--gradientColor);
 }
 
+.custom-list-style ol {
+  list-style-type: decimal !important; 
+  padding-left: 20px; 
+}
+
+.custom-list-style li {
+  list-style-type: decimal !important; 
+  list-style: decimal !important;    
+}
+
 .form-check .form-check-input {
   float: none;
   margin-left: 0;
