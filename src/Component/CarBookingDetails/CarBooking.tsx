@@ -3,18 +3,20 @@ import "./CarBooking.css";
 import carIcon from "../../Assets/Car_icon.svg";
 import Footer from "../Footer/Footer";
 import {  Tooltip } from "antd";
+import { useLocation } from 'react-router-dom';
+import parse from 'html-react-parser';
+
 // Icons Start
 import {
   FaArrowRightArrowLeft,
-  FaGasPump,
-  FaRegSnowflake,
-  FaTv,
   FaCheck,
   FaCircleCheck,
 } from "react-icons/fa6";
 import { GrMapLocation } from "react-icons/gr";
 import { TbClockX } from "react-icons/tb";
-import { GiCharging } from "react-icons/gi";
+import { FaGasPump, FaRegSnowflake, FaTv, FaMusic } from "react-icons/fa";
+import { BiSolidCarGarage } from "react-icons/bi";
+import { GiCharging, GiCarDoor } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
 import { GoDotFill } from "react-icons/go";
 import { BsExclamationCircle } from "react-icons/bs";
@@ -25,6 +27,73 @@ const CarBooking: React.FC = () => {
     document.documentElement.scrollTop = document.documentElement.clientHeight;
     document.documentElement.scrollLeft = document.documentElement.clientWidth;
   }, []);
+
+  const location = useLocation();
+  const car = location.state.car;
+  const startcity = location.state.startcity;
+  const endcity = location.state.endcity;
+  const startdate = location.state.startdate;
+  const enddate = location.state.enddate;
+  const imageURL = `${import.meta.env.VITE_API_IMG_URL}`; 
+  const carImage = `${imageURL}${car.image}`;
+  console.log("amenities",car.description);
+  
+
+  const handleOpenTerms = (): void => {
+    const newWindow: Window | null = window.open("", "_blank");
+  
+    if (newWindow) {
+      newWindow.document.write(`<html>
+        <head>
+          <title>Terms and Conditions</title>
+          <style>
+            body {
+              margin: 20px;
+              padding: 0;
+              color: #333;
+              background-color: #f4f4f4;
+              font-family: "Poppins", sans-serif
+            }
+            h1 {
+              background-color: #089848;
+              color: white;
+              padding: 10px;
+              text-align: center;
+              margin: 0;
+            }
+            ul {
+              margin: 0;
+              padding-left: 20px;
+            }
+            li {
+              margin-bottom: 10px;
+            }
+             pre {
+              background-color: #fff;
+              border: 1px solid #ddd;
+              padding: 10px;
+              overflow-wrap: break-word;
+              word-wrap: break-word;
+              white-space: pre-wrap; /* Allows text to wrap */
+              max-width: 100vw;
+              box-sizing: border-box;
+            }
+          </style>
+        </head>
+        <body>
+        <h1 >Terms & Conditions</h1>
+        <pre>${car.terms_condition}</pre></body></html>`);
+      newWindow.document.close();
+    }
+  };
+  const descriptionItems = car.description.split('|');
+  const iconMap: { [key: string]: JSX.Element } = {
+    AC: <FaRegSnowflake key="ac" />,
+    Charger: <GiCharging key="charger" />,
+    Music: <FaMusic key="music" />,
+    Carrier: <BiSolidCarGarage key="carrier" />,
+    TV: <FaTv key="tv" /> 
+  };
   return (
     <>
       <div className="w-100 ReviewBookingBar">
@@ -34,17 +103,26 @@ const CarBooking: React.FC = () => {
             className="d-flex align-items-center column-gap-3 font-size14"
             style={{ fontWeight: "var(--font300)" }}
           >
-            <span>Bangalore</span>
-            <FaArrowRightArrowLeft />
-            <span>Puducherry, India</span>
+            {/* <span>Bangalore</span> */}
+            { startcity.city}
+            {endcity ? <FaArrowRightArrowLeft /> : null}
+            {/* <span>Puducherry, India</span> */}
+           {endcity ? endcity.city : null} 
           </div>
           <div
             className="d-flex column-gap-3 font-size14"
             style={{ fontWeight: "var(--font300)" }}
           >
-            <span>Round Trip</span>|
-            <span>Pickup : Thu, 15 Feb 24, 12:55 PM</span>|
-            <span>Drop : Sat, 17 Feb 24, 10:55 AM</span>
+            {/* <span>Round Trip</span>| */}
+            <span>Pickup : 
+              {/* Thu, 15 Feb 24, 12:55 PM */}
+              { startdate}
+              </span>
+              {enddate?(<> <span>
+               |  Drop : {/*Sat, 17 Feb 24, 10:55 AM */}
+                { enddate}
+                </span></>):null}
+            
           </div>
         </div>
       </div>
@@ -55,22 +133,28 @@ const CarBooking: React.FC = () => {
             <div className="sideBars bg-light d-flex justify-content-between">
               <div className="col-lg-3 d-flex">
                 <div className="carIcon d-flex align-items-center justify-content-center">
-                  <img src={carIcon} alt="caricon" />
+                  <img style={{objectFit: "contain"}} src={carImage} alt="caricon" />
                 </div>
               </div>
               <div className="col-lg-8 d-flex">
                 <div className="d-flex gap-2 flex-column w-100">
                   <div className="d-inline-flex align-items-center gap-1">
                     <span className="carName">
-                      <b>Dzire, Etios</b>
+                      <b>
+                        {/* Dzire, Etios */}
+                        {car.vehicle_name}
+                        </b>
                     </span>
                     <span className="similarCarName">or similar</span>
                   </div>
                   <div className="d-inline-flex">
                     <span className="d-flex gap-2" style={{ fontSize: "14px" }}>
-                      <li>Sedan</li>
-                      <li>AC</li>
-                      <li>4 Seats</li>
+                      {/* <li>
+                        Sedan
+                        {car.vehicle_name}
+                        </li> */}
+                      {/* <li>AC</li> */}
+                      <li>{car.seats} Seats</li>
                     </span>
                   </div>
                   <div className="d-flex gap-2 flex-column w-100">
@@ -84,7 +168,10 @@ const CarBooking: React.FC = () => {
                       <div className="d-flex font-size14 w-100">
                         <div className="col-lg-4">Extra km fare </div>
                         <div className="col-lg-8 fontInter">
-                          ₹10.8/km after 755 kms
+                          {/* ₹10.8/km after 755 kms */}
+                          ₹ {car.extra_km_fare} /km after  {" "}
+                           {car.extra_duration_fare ? car.extra_duration_fare: car.km}
+                           {" "}km
                         </div>
                       </div>
                     </div>
@@ -109,9 +196,15 @@ const CarBooking: React.FC = () => {
                       <div className="d-flex w-100">
                         <div className="col-lg-4 font-size14">Amenities</div>
                         <div className="d-flex col-lg-8 text-primary gap-3 align-items-center">
-                          <FaRegSnowflake />
+                          {/* <FaRegSnowflake />
                           <GiCharging />
-                          <FaTv />
+                          <FaTv /> */}
+
+                          <b>
+                          {descriptionItems.map((item: string) => (
+          iconMap[item] || <span key={item} >{item}</span>
+        ))}
+      </b>
                         </div>
                       </div>
                     </div>
@@ -140,13 +233,15 @@ const CarBooking: React.FC = () => {
                   </div>
                 </div>
                 <div className="ps-3 font-size14 d-flex flex-column gap-3">
-                  <div>
+                  {/* <div>
                     <GoDotFill style={{ fontSize: "11px" }} /> 750 Kms
                   </div>
                   <div>
                     <GoDotFill style={{ fontSize: "11px" }} /> Driver Allowance
-                  </div>
+                  </div> */}
+                    <div className="custom-list-style">{parse (car.inclusion)}</div>
                 </div>
+              
               </div>
 
               <div className="right_side col-6 d-flex gap-3 flex-column">
@@ -159,7 +254,7 @@ const CarBooking: React.FC = () => {
                     <span className="font-size14">(Extra Charges)</span>
                   </div>
                 </div>
-                <div className="font-size14 d-flex flex-column gap-3">
+                {/* <div className="font-size14 d-flex flex-column gap-3">
                   <div className="d-flex">
                     <div className="col-6">
                       <GoDotFill style={{ fontSize: "11px" }} /> Toll Charges
@@ -209,7 +304,13 @@ const CarBooking: React.FC = () => {
                       16/Km
                     </div>
                   </div>
+                </div> */}
+                <div className="font-size14 d-flex flex-column gap-3">
+                <div className="custom-list-style">{parse (car.exclusion)}</div>
+
                 </div>
+                
+                
               </div>
             </div>
 
@@ -343,9 +444,12 @@ const CarBooking: React.FC = () => {
                     User Agreement
                   </span>
                   and
-                  <span style={{ color: "var(--PrimaryColor)" }}>
-                    Terms of Service
-                  </span>
+                  <span
+      style={{ color: "var(--PrimaryColor)", cursor: "pointer" }}
+      onClick={handleOpenTerms}
+    >
+      Terms of Service
+    </span>
                 </div>
               </form>
             </div>
@@ -436,11 +540,27 @@ const CarBooking: React.FC = () => {
                 <span style={{ color: "var(--PrimaryColor)" }}>
                   <FaCircleCheck />
                 </span>
-                <span className="font-size11">
-                  Free Cancellation before 19 Feb 2024, 10:45 AM IST
+                <span className="font-size11" >
+                  {/* <div dangerouslySetInnerHTML={{ __html: car.cancel_policy }} /> */}
+                  Free Cancellation before 
+                  { startdate}
+                  {/* 19 Feb 2024, 10:45 AM IST */}
                 </span>
                 <span style={{ color: "var(--PrimaryColor)" }}>
-                  <BsExclamationCircle />
+                <Tooltip
+        title={
+          <div className="">
+            <div dangerouslySetInnerHTML={{ __html: car.cancel_policy }} />
+          </div>
+        }
+        trigger="hover"
+        arrowPointAtCenter  
+      >
+        <span style={{ color: "var(--PrimaryColor)" }}>
+        <BsExclamationCircle />
+        </span>
+      </Tooltip>
+                  
                 </span>
               </div>
 
@@ -501,7 +621,8 @@ const CarBooking: React.FC = () => {
                           <span style={{ fontFamily: "Inter !important" }}>
                             ₹
                           </span>{" "}
-                          7,109
+                          {/* 7,109 */}
+                          {car.total_price}
                         </b>
                       </div>
                     </div>
@@ -518,14 +639,17 @@ const CarBooking: React.FC = () => {
 
                   <div className="carRate d-flex flex-column">
                     <div>
-                      <p className="text-danger m-0 text-end">13% off</p>
+                      {/* <p className="text-danger m-0 text-end">13% off</p> */}
                     </div>
                     <div className="d-flex align-items-center justify-content-end gap-2">
                       <div className="strikeDiagonal font-size12 text-secondary d-flex justify-content-center align-items-center fontInter">
-                        ₹10,054
+                        ₹ 
+                        {/* 10,054 */}
+                        {car.total_price}
                       </div>
                       <div className="font-size25 fontWeight500 fontInter">
-                        ₹ 1,150
+                        {/* ₹ 1,150 */}
+                        ₹  {car.total_price}
                       </div>
                     </div>
               
@@ -541,20 +665,26 @@ const CarBooking: React.FC = () => {
           <div className="">
             <ul className="m-0 p-0">
               <li>
-                <span>Base Fare</span>
-                <span>2084</span>
+                <span>Base Fare: </span>
+                <span>
+                  {/* 2084 */}
+                  {car.basic_rate}
+                  </span>
               </li>
-              <li>
+              {/* <li>
                 <span>State TAX</span>
                 <span>250</span>
               </li>
               <li>
                 <span>Toll Charges</span>
                 <span>210</span>
-              </li>
+              </li> */}
               <li>
-                <span>Taxes & Fees</span>
-                <span>223</span>
+                <span>Taxes & Fees: </span>
+                <span>
+                  {/* 223 */}
+                  {car.tax_amount}
+                  </span>
               </li>
             </ul>
           </div>

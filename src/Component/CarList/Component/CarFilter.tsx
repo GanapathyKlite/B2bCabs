@@ -1,9 +1,171 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Range, getTrackBackground } from "react-range";
 
-const CarFilter: React.FC = () => {
+
+interface Car {
+  name: string;
+  icon: string;
+  type: string;
+  seats: number;
+  description: string;
+  extraKmFare: string;
+  cancellationPolicy: string;
+  // amenities: JSX.Element[];
+  amenities: string[];
+  originalPrice: string;
+  offerPrice: string;
+  discount: string;
+  price: string;
+  vehicle_name: string;
+  images: string;
+}
+
+interface CarFilterProps {
+  cars: Car[];
+  onFilterChange: (selectedVehicleNames: string[], selectedPriceRange: [number, number]) => void;
+}
+
+const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange  }) => {
+
+  const uniqueVehicleNames = Array.from(new Set(cars.map((car) => car.vehicle_name)));
+  const [selectedVehicleNames, setSelectedVehicleNames] = useState<string[]>(uniqueVehicleNames);
+
+  const prices = cars
+  .map((car) => parseFloat(car.price.replace(/,/g, '')))
+  .filter((price) => !isNaN(price)); // Filter out any invalid prices
+
+const minPrice = Math.min(...prices);
+const maxPrice = Math.max(...prices);
+  
+
+  const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
+  useEffect(() => {
+    onFilterChange(selectedVehicleNames, priceRange);
+  }, [selectedVehicleNames, priceRange]);
+
+  const handleCheckboxChange = (vehicleName: string) => {
+    let updatedSelection = [...selectedVehicleNames];
+
+    if (updatedSelection.includes(vehicleName)) {
+      updatedSelection = updatedSelection.filter((name) => name !== vehicleName);
+    } else {
+      updatedSelection.push(vehicleName);
+    }
+
+    setSelectedVehicleNames(updatedSelection);
+  };
+
+  const handleSliderChange = (values: number[]) => {
+    if (values.length === 2) {
+      setPriceRange([values[0], values[1]]);
+    }
+  };
+
   return (
     <>
-      <div className="pb-4">
+     <div className="pb-4">
+      <p className="h5 mb-3">Select Filters</p>
+      <p className="mb-2">Cab Type</p>
+      <div className="d-flex flex-column gap-2">
+        {uniqueVehicleNames.map((vehicleName, index) => (
+          <div className="form-check d-flex justify-content-between" key={index}>
+            <div>
+              <input
+                className="form-check-input"
+                type="checkbox"
+                value={vehicleName}
+                id={`flexCheckDefault${index}`}
+                onChange={() => handleCheckboxChange(vehicleName)}
+                checked={selectedVehicleNames.includes(vehicleName)}
+              />
+              <label
+                className="form-check-label font-size14"
+                htmlFor={`flexCheckDefault${index}`}
+              >
+                {vehicleName}
+              </label>
+            </div>
+            <div className="text-secondary font-size12">
+              ({cars.filter((car) => car.vehicle_name === vehicleName).length})
+            </div>
+          </div>
+        ))}
+      </div>
+
+       {/* Price Range Slider */}
+       <div className="mt-4">
+          <p className="mb-2">Price Range</p>
+          <Range
+            values={priceRange}
+            step={100}
+            min={minPrice}
+            max={maxPrice}
+            onChange={handleSliderChange}
+            renderTrack={({ props, children }) => (
+              <div
+                onMouseDown={props.onMouseDown}
+                onTouchStart={props.onTouchStart}
+                style={{
+                  ...props.style,
+                  height: '36px',
+                  display: 'flex',
+                  width: '100%',
+                }}
+              >
+                <div
+                  ref={props.ref}
+                  style={{
+                    height: '5px',
+                    width: '100%',
+                    borderRadius: '4px',
+                    background: getTrackBackground({
+                      values: priceRange,
+                      colors: ['#ccc', '#548BF4', '#ccc'],
+                      min: minPrice,
+                      max: maxPrice,
+                    }),
+                    alignSelf: 'center',
+                  }}
+                >
+                  {children}
+                </div>
+              </div>
+            )}
+            renderThumb={({ props, isDragged }) => (
+              <div
+                {...props}
+                key={props.key}
+                style={{
+                  ...props.style,
+                  height: '22px',
+                  width: '22px',
+                  borderRadius: '4px',
+                  backgroundColor: '#FFF',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  boxShadow: '0px 2px 6px #AAA',
+                }}
+              >
+                <div
+                  style={{
+                    height: '16px',
+                    width: '5px',
+                    backgroundColor: isDragged ? '#548BF4' : '#CCC',
+                  }}
+                />
+              </div>
+            )}
+          />
+          <div className="d-flex justify-content-between mt-2">
+            <span>₹{priceRange[0].toLocaleString()}</span>
+            <span>₹{priceRange[1].toLocaleString()}</span>
+          </div>
+        </div>
+
+
+    </div>
+      {/* <div className="pb-4">
         <p className="h5 mb-3">Select Filters</p>
         <p className="mb-2"> Cab Type</p>
         <div className="d-flex flex-column gap-2">
@@ -98,7 +260,7 @@ const CarFilter: React.FC = () => {
             <div className="text-secondary font-size12">(1)</div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

@@ -113,7 +113,7 @@ function DashboardNavbar() {
               >
                 <h5>Support</h5>
                 <Nav.Link className="ps-4" href="#action1">
-                  Chart Support
+                  Chat Support
                 </Nav.Link>
                 <Nav.Link className="ps-4" href="#action2">
                   User Management
