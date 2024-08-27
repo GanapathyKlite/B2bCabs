@@ -1,3 +1,9 @@
+.dashBoardNavBarHeader {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2117647059);
+  position: sticky !important;
+  top: 0;
+}
+
 .hero-banner {
   background: radial-gradient(127.68% 2996.56% at 12.65% 127.68%, rgba(0, 0, 0, 0.2666666667) 0%, #222222 100%);
   width: 100%;
@@ -284,4 +290,45 @@
   letter-spacing: 1px;
   font-size: 13px;
   transition: 0.3s;
+}
+
+.addCashModalBoxDiv input {
+  padding: 7.5px 10px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  outline: none;
+}
+.addCashModalBoxDiv input:focus {
+  border: 1px solid var(--PrimaryColor);
+}
+
+.dashBoardNavBarTitle {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: #3a3a3a !important;
+}
+
+.dashBoardNavBarSubTitle {
+  font-size: 16px !important;
+  font-weight: 300 !important;
+  color: #919191 !important;
+}
+
+.css-1f773le-MuiButtonBase-root-MuiAccordionSummary-root {
+  min-height: -moz-fit-content !important;
+  min-height: fit-content !important;
+}
+
+.css-eqpfi5-MuiAccordionSummary-content,
+.css-1086bdv-MuiPaper-root-MuiAccordion-root.Mui-expanded,
+.css-eqpfi5-MuiAccordionSummary-content.Mui-expanded {
+  margin: 0 !important;
+}
+
+.css-15v22id-MuiAccordionDetails-root {
+  padding: 0 0 0 20px !important;
+}
+
+.css-1086bdv-MuiPaper-root-MuiAccordion-root::before {
+  content: none !important;
 }/*# sourceMappingURL=Dashboard.css.map */

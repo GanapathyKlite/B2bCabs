@@ -11,7 +11,7 @@ import { useAuth } from "../../Auth/AuthContext";
 // import "antd/dist/reset.css";
 // import { CalendarOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 interface TabData {
   id: number;
@@ -78,7 +78,8 @@ const DashboardHero: React.FC = () => {
     setSelectedDate,
     selectedDateRange,
     setSelectedDateRange,
-    tripType, setTripType
+    tripType,
+    setTripType,
   } = useAuth();
 
   const handleTabClick = (tabId: number) => {
@@ -93,44 +94,44 @@ const DashboardHero: React.FC = () => {
   const handleToggle = (option: string) => {
     setSelectedOption(option);
     if (activeTab === 1) {
-      if (selectedOption === 'option1') {
+      if (selectedOption === "option1") {
         setTripType("Cab from Airport");
-      } else if (selectedOption === 'option2') {
+      } else if (selectedOption === "option2") {
         setTripType("Cab to Airport");
       }
     } else if (activeTab === 2) {
-      if (selectedOption === 'option1') {
+      if (selectedOption === "option1") {
         setTripType("Daily Rental");
-      } else if (selectedOption === 'option2') {
+      } else if (selectedOption === "option2") {
         setTripType("Hourly Rental");
       }
     } else {
       setTripType("Holiday Package");
     }
-    
-    
   };
   const navigate = useNavigate();
   const handleSubmit = () => {
     navigate("/dashboard/cablist");
   };
 
-  const inputFieldOne = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputOneValue = e.target.value;
-    setInputValueOne(inputOneValue);
-    console.log(inputOneValue);
-  };
+  // const inputFieldOne = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const inputOneValue = e.target.value;
+  //   setInputValueOne(inputOneValue);
+  //   console.log(inputOneValue);
+  // };
 
-  const inputFieldTwo = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputTwoValue = e.target.value;
-    setInputValueTwo(inputTwoValue);
-    console.log(inputTwoValue);
-  };
+  // const inputFieldTwo = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const inputTwoValue = e.target.value;
+  //   setInputValueTwo(inputTwoValue);
+  //   console.log(inputTwoValue);
+  // };
   const handleDateChange = (date: dayjs.Dayjs | null) => {
     setSelectedDate(date);
   };
 
-  const handleRangeChange = (dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null) => {
+  const handleRangeChange = (
+    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
+  ) => {
     setSelectedDateRange(dates);
   };
   return (

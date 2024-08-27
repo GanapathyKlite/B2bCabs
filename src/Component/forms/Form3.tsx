@@ -4,7 +4,7 @@ import { Notyf } from "notyf";
 import uploadImg from "../../Assets/fileUploadIcon.svg";
 import "./CSS/Form.css";
 import "notyf/notyf.min.css";
-import axios from 'axios';
+import axios from "axios";
 
 // Initialize Notyf instance with updated configuration
 const notyf = new Notyf({
@@ -24,8 +24,8 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { setFieldValue } = useFormikContext();
-  const [field] = useField('check_leaf_front_img');
-    
+  const [field] = useField("check_leaf_front_img");
+
   const validTypes = ["image/png", "image/jpeg", "image/tiff"];
   const maxSize = 101 * 1024; // 100KB
 
@@ -41,7 +41,7 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
     return true;
   };
 
-  const onFileChange = async(files: File[]) => {
+  const onFileChange = async (files: File[]) => {
     const validFiles: File[] = [];
     const invalidFiles: File[] = [];
 
@@ -58,20 +58,22 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
       setFieldValue("filelist", validFiles);
       const formData = new FormData();
       formData.append("file", validFiles[0]);
-  
+
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/upload/upload-single/AGENT_CheckLeaf/agent`,
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/upload/upload-single/AGENT_CheckLeaf/agent`,
           formData,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
+              "Content-Type": "multipart/form-data",
             },
           }
         );
         if (response.data.status) {
           const imagePath = response.data.image_path;
-          setFieldValue('check_leaf_front_img', imagePath);
+          setFieldValue("check_leaf_front_img", imagePath);
         }
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -113,23 +115,25 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
     onFileChange(files);
   };
 
-  const clearImage = async() => {
+  const clearImage = async () => {
     try {
       const checkImgValue = field.value;
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/upload/delete`, {
-        image_path: checkImgValue,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/upload/delete`,
+        {
+          image_path: checkImgValue,
+        }
+      );
 
       if (response.status === 200) {
         setFileList([]);
         setFieldValue("filelist", []);
         if (fileInputRef.current) {
-          fileInputRef.current.value = '';  
+          fileInputRef.current.value = "";
         }
-        
       }
     } catch (error) {
-      console.error('Error deleting the image:', error);
+      console.error("Error deleting the image:", error);
     }
   };
 
@@ -213,7 +217,7 @@ const Form3: React.FC<Form3Props> = ({ fileList, setFileList }) => {
           {/* Clear Button: Show only when fileList is not empty */}
           {fileList.length > 0 && (
             <button
-            type="button"
+              type="button"
               id="checkDeleteBtn"
               className="imgClear"
               onClick={clearImage}

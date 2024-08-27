@@ -1,0 +1,107 @@
+.editprofileDetailsDiv {
+  display: flex;
+  // width: 100%;
+  row-gap: 15px;
+  border-radius: 10px;
+  padding: 15px;
+  // flex-direction: column;
+  background-color: rgb(238, 238, 238);
+
+  .profileDetailsDiv {
+    padding: 15px;
+    border-radius: 10px;
+    background-color: rgb(238, 238, 238);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    row-gap: 15px;
+    position: sticky;
+    top: 65px;
+    background-color: var(--whiteColor);
+    box-shadow: 0 0 10px #00000030;
+
+    .profileDetailsLogoDiv {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      img {
+        width: 250px;
+        background-color: var(--whiteColor);
+        padding: 10px;
+        border-radius: 8px;
+      }
+    }
+    .profileDetailsShow {
+      display: flex;
+      column-gap: 15px;
+    }
+
+    .profileDetails {
+      display: flex;
+      row-gap: 5px;
+      flex-direction: column;
+      div {
+        font-size: 20px;
+        color: var(--PrimaryColor);
+        align-items: flex-start;
+        // justify-content: center;
+        display: flex;
+        gap: 5px;
+
+        .userIcon {
+          font-size: 18px;
+        }
+        .emailIcon,
+        .mobileIcon {
+          font-size: 14px;
+        }
+      }
+      div:nth-child(2),
+      div:nth-child(3) {
+        font-size: 14px;
+        font-weight: 400;
+        color: rgb(100, 100, 100, 1);
+      }
+    }
+  }
+
+  .personalInfoDiv {
+    padding: 10px 5px 20px;
+    background-color: var(--whiteColor);
+    border-radius: 10px;
+
+    input {
+      outline: none;
+    }
+
+    textarea {
+      min-height: 50px;
+    }
+
+    .BankInfoCheckImg {
+      height: 190px;
+      &:hover {
+        opacity: 1 !important;
+      }
+    }
+    .checkBookDiv {
+      img {
+        height: 200px;
+        object-fit: contain;
+        width: 100%;
+      }
+    }
+
+    .PANImgDiv,
+    .GSTImgDiv {
+      img {
+        height: 150px;
+        width: 100%;
+        object-fit: contain;
+        display: flex;
+        border-radius: 10px;
+      }
+    }
+  }
+}
