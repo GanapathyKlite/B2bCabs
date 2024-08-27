@@ -20,29 +20,30 @@ function App() {
   const navigate = useNavigate();
   const { authToken } = useAuth();
   const isDashboardRoute = location.pathname.startsWith('/dashboard');
+  const publicRoutes = ['/', '/aboutUs', '/services', '/contact', '/signup'];
 
   useEffect(() => {
-    if (!authToken) {
+    if (!authToken && !publicRoutes.includes(location.pathname)) {
       navigate('/');
     }
+  }, [authToken, location.pathname, navigate]);
 
-    const disableBack = () => {
+  useEffect(() => {
+    if (location.pathname === '/dashboard') {
       window.history.pushState(null, '', window.location.href);
-      window.onpopstate = (event) => {
+  
+      window.onpopstate = () => {
         if (location.pathname === '/dashboard') {
-          window.history.go(1);
+          window.history.go(1); 
         }
       };
-    };
-
-    if (location.pathname === '/dashboard') {
-      disableBack();
     }
-
+  
     return () => {
       window.onpopstate = null;
     };
-  }, [authToken, location, navigate]);
+  }, [location.pathname]);
+  
 
 
   return (
