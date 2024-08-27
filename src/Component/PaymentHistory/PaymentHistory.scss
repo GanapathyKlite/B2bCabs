@@ -1,0 +1,169 @@
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  color: var(--PrimaryColor) !important;
+}
+.css-1aquho2-MuiTabs-indicator {
+  background-color: var(--PrimaryColor) !important;
+}
+.css-heg063-MuiTabs-flexContainer {
+  justify-content: space-around !important;
+}
+
+.css-19kzrtu {
+  padding: 0 !important;
+}
+.css-jpln7h-MuiTabs-scroller {
+  background-color: #eaeaea;
+  border-radius: 10px 10px 0 0;
+}
+
+.transactionListDiv {
+  background-color: #eaeaea;
+  row-gap: 20px;
+  padding: 20px;
+  display: flex;
+  min-height: 50vh;
+  border-radius: 0 0 10px 10px;
+  flex-direction: column;
+
+  .searchBarDiv {
+    position: relative;
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid gray;
+      transition: 0.2s linear;
+      outline: none;
+      font-size: 14px;
+
+      &:focus {
+        border: 1px solid var(--PrimaryColor);
+      }
+    }
+    svg {
+      position: absolute;
+      font-size: 22px;
+      top: 50%;
+      right: 10px;
+      color: gray;
+      transform: translateY(-50%);
+    }
+  }
+
+  .transactionList {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    row-gap: 5px;
+    width: 100%;
+    padding: 20px;
+    height: fit-content;
+    border-radius: 10px;
+    background-color: var(--LightGray);
+    box-shadow: 0 0 10px #ddd;
+
+    .transactionListDate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      row-gap: 10px;
+      span:first-child {
+        font-size: 26px;
+        width: 45px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        height: 45px;
+        overflow: hidden;
+
+        svg {
+          z-index: 2;
+        }
+
+        .circleBackground {
+          position: absolute;
+          width: 40px;
+          border-radius: 50px;
+          left: 20px;
+          height: 40px;
+          background-color: rgb(0 0 0 / 8%);
+          top: -10px;
+        }
+      }
+      span:last-child {
+        font-size: 14px;
+        font-weight: 400;
+      }
+    }
+    .transactionListId {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      row-gap: 10px;
+
+      span:first-child {
+        font-size: 18px;
+      }
+      span:last-child {
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--grayTextColor);
+      }
+    }
+    .transactionListAmount {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      row-gap: 10px;
+      align-items: end;
+
+      span:first-child {
+        font-size: 18px;
+      }
+      span:last-child {
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        font-weight: 400;
+      }
+    }
+
+    .resultNotFount {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      row-gap: 15px;
+      flex-direction: column;
+      img {
+        height: 180px;
+        width: 100%;
+        object-fit: contain;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      div {
+        font-size: 20px;
+        color: var(--PrimaryColor);
+      }
+    }
+  }
+  .detailedStatement {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    row-gap: 5px;
+    width: 100%;
+    padding: 20px;
+    // height: fit-content;
+    border-radius: 10px;
+    background-color: var(--LightGray);
+    box-shadow: 0 0 10px #ddd;
+  }
+}

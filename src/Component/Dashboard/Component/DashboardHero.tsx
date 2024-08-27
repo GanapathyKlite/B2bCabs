@@ -11,11 +11,13 @@ import { useAuth } from "../../Auth/AuthContext";
 // import "antd/dist/reset.css";
 // import { CalendarOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+
 import dayjs,{ Dayjs } from 'dayjs';
 import axios from "axios";
 import { AxiosError } from "axios";
 import AutocompleteInput from "../../AutoComplete/AutocompleInput";
 import { Notyf } from "notyf";
+
 
 interface TabData {
   id: number;
@@ -123,6 +125,7 @@ const DashboardHero: React.FC = () => {
     setSelectedDateRange,
     tripType, setTripType,
     hourTime, setHourTime
+
   } = useAuth();
 
   const handleTabClick = (tabId: number) => {
@@ -301,25 +304,29 @@ const DashboardHero: React.FC = () => {
   
   useEffect(() => {
     if (activeTab === 1) {
+
       if (selectedOption === 'option1') {
         setTripType("Cab From Airport");
       } else if (selectedOption === 'option2') {
         setTripType("Cab To Airport");
+
       }
     } else if (activeTab === 2) {
-      if (selectedOption === 'option1') {
+      if (selectedOption === "option1") {
         setTripType("Daily Rental");
-      } else if (selectedOption === 'option2') {
+      } else if (selectedOption === "option2") {
         setTripType("Hourly Rental");
       }
     } else if (activeTab === 3) {
       setTripType("Holidays Package");
     }
+
     
   }, [activeTab, selectedOption]);
 
   const handleToggle = (option: string) => {
     setSelectedOption(option);
+
   };
   const navigate = useNavigate();
   // const handleSubmit = async() => {
@@ -499,6 +506,7 @@ const DashboardHero: React.FC = () => {
     }
   }
 
+
   const inputFieldOne = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputOneValue = e.target.value;
     setInputValueOne(inputOneValue);  
@@ -521,6 +529,7 @@ const DashboardHero: React.FC = () => {
   };
 
   const handleDateChange = (date: Dayjs | null) => {
+
     setSelectedDate(date);
     if (date) {
       sessionStorage.setItem('selectedDate', date.toISOString());
@@ -530,7 +539,9 @@ const DashboardHero: React.FC = () => {
   };
 
 
+
   const handleRangeChange = (dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null) => {
+
     setSelectedDateRange(dates);
     if (dates && dates[0] && dates[1]) {
       sessionStorage.setItem('selectedDateRange', JSON.stringify([dates[0].toISOString(), dates[1].toISOString()]));

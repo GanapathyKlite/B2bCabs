@@ -1,0 +1,33 @@
+.driverNameSpan {
+  font-size: 14px;
+  color: var(--PrimaryColor);
+  font-weight: 500 !important;
+  display: flex;
+  column-gap: 5px;
+  align-items: center;
+
+  span{
+    cursor: pointer;
+  }
+}
+
+.driverSMSDetailsBtnDiv {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  button {
+    padding: 5px 20px;
+    color: var(--SecondaryColor);
+    border: 1px solid var(--PrimaryColor);
+    background-color: var(--whiteColor);
+    transition: 0.2s linear background-color;
+    border-radius: 5px;
+    font-size: 14px;
+
+    &:hover {
+      border: 1px solid transparent;
+      color: var(--whiteColor);
+      background-color: var(--PrimaryColor);
+    }
+  }
+}
