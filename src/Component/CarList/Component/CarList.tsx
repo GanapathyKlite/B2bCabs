@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import carIcon from "../../../Assets/Car_icon.svg";
 import CarIconSUV from "../../../Assets/Car_icon_SUV.svg";
 import { GrMapLocation } from "react-icons/gr";
+import { BiSolidCarGarage } from "react-icons/bi";
 import { TbClockX } from "react-icons/tb";
-import { FaGasPump, FaRegSnowflake, FaTv } from "react-icons/fa";
-import { GiCharging } from "react-icons/gi";
+import { FaGasPump, FaRegSnowflake, FaTv, FaMusic } from "react-icons/fa";
+import { GiCharging, GiCarDoor } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { FaIndianRupeeSign } from "react-icons/fa6";
+import axios from "axios";
+import { useAuth } from "../../Auth/AuthContext";
 
 interface Car {
   name: string;
@@ -16,245 +19,460 @@ interface Car {
   description: string;
   extraKmFare: string;
   cancellationPolicy: string;
-  amenities: JSX.Element[];
+  // amenities: JSX.Element[];
+  amenities: string[];
   originalPrice: string;
   offerPrice: string;
   discount: string;
+  price: string;
+  vehicle_name: string;
+  images: string;
 }
 
-const cars: Car[] = [
-  {
-    name: "Dzire, Etios",
-    icon: carIcon,
-    type: "Sedan",
-    seats: 4,
-    description: "Spacious Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Toyota Innova",
-    icon: CarIconSUV,
-    type: "SUV",
-    seats: 6,
-    description: "Large Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Dzire, Etios",
-    icon: carIcon,
-    type: "Sedan",
-    seats: 4,
-    description: "Spacious Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Dzire, Etios",
-    icon: carIcon,
-    type: "Sedan",
-    seats: 4,
-    description: "Spacious Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Toyota Innova",
-    icon: CarIconSUV,
-    type: "SUV",
-    seats: 6,
-    description: "Large Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Dzire, Etios",
-    icon: carIcon,
-    type: "Sedan",
-    seats: 4,
-    description: "Spacious Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Dzire, Etios",
-    icon: carIcon,
-    type: "Sedan",
-    seats: 4,
-    description: "Spacious Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Toyota Innova",
-    icon: CarIconSUV,
-    type: "SUV",
-    seats: 6,
-    description: "Large Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Dzire, Etios",
-    icon: carIcon,
-    type: "Sedan",
-    seats: 4,
-    description: "Spacious Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Dzire, Etios",
-    icon: carIcon,
-    type: "Sedan",
-    seats: 4,
-    description: "Spacious Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Dzire, Etios",
-    icon: carIcon,
-    type: "Sedan",
-    seats: 4,
-    description: "Spacious Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Toyota Innova",
-    icon: CarIconSUV,
-    type: "SUV",
-    seats: 6,
-    description: "Large Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-  {
-    name: "Dzire, Etios",
-    icon: carIcon,
-    type: "Sedan",
-    seats: 4,
-    description: "Spacious Car",
-    extraKmFare: "10.8/km after 755 kms",
-    cancellationPolicy: "Free till 1 hour of departure",
-    amenities: [
-      <FaRegSnowflake key="ac" />,
-      <GiCharging key="charging" />,
-      <FaTv key="tv" />,
-    ],
-    originalPrice: "10,054",
-    offerPrice: "1,150",
-    discount: "13% off",
-  },
-];
+// const cars: Car[] = [
+//   {
+//     name: "Dzire, Etios",
+//     icon: carIcon,
+//     type: "Sedan",
+//     seats: 4,
+//     description: "Spacious Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Toyota Innova",
+//     icon: CarIconSUV,
+//     type: "SUV",
+//     seats: 6,
+//     description: "Large Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Dzire, Etios",
+//     icon: carIcon,
+//     type: "Sedan",
+//     seats: 4,
+//     description: "Spacious Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Dzire, Etios",
+//     icon: carIcon,
+//     type: "Sedan",
+//     seats: 4,
+//     description: "Spacious Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Toyota Innova",
+//     icon: CarIconSUV,
+//     type: "SUV",
+//     seats: 6,
+//     description: "Large Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Dzire, Etios",
+//     icon: carIcon,
+//     type: "Sedan",
+//     seats: 4,
+//     description: "Spacious Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Dzire, Etios",
+//     icon: carIcon,
+//     type: "Sedan",
+//     seats: 4,
+//     description: "Spacious Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Toyota Innova",
+//     icon: CarIconSUV,
+//     type: "SUV",
+//     seats: 6,
+//     description: "Large Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Dzire, Etios",
+//     icon: carIcon,
+//     type: "Sedan",
+//     seats: 4,
+//     description: "Spacious Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Dzire, Etios",
+//     icon: carIcon,
+//     type: "Sedan",
+//     seats: 4,
+//     description: "Spacious Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Dzire, Etios",
+//     icon: carIcon,
+//     type: "Sedan",
+//     seats: 4,
+//     description: "Spacious Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Toyota Innova",
+//     icon: CarIconSUV,
+//     type: "SUV",
+//     seats: 6,
+//     description: "Large Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+//   {
+//     name: "Dzire, Etios",
+//     icon: carIcon,
+//     type: "Sedan",
+//     seats: 4,
+//     description: "Spacious Car",
+//     extraKmFare: "10.8/km after 755 kms",
+//     cancellationPolicy: "Free till 1 hour of departure",
+//     amenities: [
+//       <FaRegSnowflake key="ac" />,
+//       <GiCharging key="charging" />,
+//       <FaTv key="tv" />,
+//     ],
+//     originalPrice: "10,054",
+//     offerPrice: "1,150",
+//     discount: "13% off",
+//   },
+// ];
+    
+interface CarListProps {
+  cars: Car[];
+  duration: string;
+  km: number;
+  start_date?: string;
+  pickup_time?: string;
+  startrangedate?:string;
+  endrangedate?:string;
+  hourTime: string;
+}
 
-const CarList: React.FC = () => {
+const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_time, startrangedate,endrangedate, hourTime  }) => {
+  const {authToken} = useAuth();
   const navigate = useNavigate();
-  const handleCabBooking = () => {
-    navigate("/dashboard/cabbooking");
+  const [tripType, setTripType] = useState("");
+  const handleCabBooking = async(car: any) => {
+    const storedtripType = sessionStorage.getItem("tripType");
+    if(storedtripType){
+      setTripType(storedtripType)
+    }
+    let  start_city, end_city ;
+    const storedstartCitySuggestion = sessionStorage.getItem('startCitySuggestion'); 
+    const storedendCitySuggestion = sessionStorage.getItem('endCitySuggestion');
+    
+    if (storedstartCitySuggestion) {
+      const suggestionObject = JSON.parse(storedstartCitySuggestion);
+        start_city = {
+    city : suggestionObject.city,
+    admin: suggestionObject.admin,
+    province: suggestionObject.province
+  }
+    }
+    if (storedendCitySuggestion) {
+      const suggestionObject = JSON.parse(storedendCitySuggestion);
+      end_city = {
+    city : suggestionObject.city,
+    admin: suggestionObject.admin,
+    province: suggestionObject.province
+  }
+    }
+    if(tripType === "Cab From Airport" || tripType === "Cab To Airport"){
+   try {
+    const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/price/airportPickup/selectedPrice`,
+     { start_city, end_city,"duration": duration ,"km": km,"vehicle_id":car.vehicle_id,"start_date":start_date,
+       "pickup_time":pickup_time}
+       ,
+     {
+       headers: {
+         Authorization: `Bearer ${authToken}`,
+         "Content-Type": "application/json",
+       },
+     }
+   );
+   if (response.data.status) {
+    navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city, startdate: start_date}});
+   } 
+
+   } catch (error) {
+    console.log(error);
+    
+   }}
+   if(tripType === "Daily Rental"){
+    try {
+     const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/price/dayRental/selectedPrice`,
+      { start_city, end_city,"duration": duration ,"km": km,"vehicle_id":car.vehicle_id,"start_date":startrangedate,
+        "end_date":endrangedate}
+        ,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.data.status) {
+     navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city,
+      startdate: startrangedate, enddate: endrangedate
+     }});
+    } 
+ 
+    } catch (error) {
+     console.log(error);
+     
+    }}
+    if(tripType === "Hourly Rental" ){
+      try {
+       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/price/hourRental/selectedPrice`,
+        { start_city, "duration": duration ,"km": km,"vehicle_id":car.vehicle_id,"start_date":start_date,
+          "pickup_time":pickup_time, "hour_package_type":parseInt(hourTime),}
+          ,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data.status) {
+       navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, startdate: start_date}});
+      } 
+   
+      } catch (error) {
+       console.log(error);
+       
+      }}
+
+
+   
   };
+  const amenitiesMap: { [key: string]: { icon: JSX.Element; name: string } } = {
+    "1": { icon: <FaRegSnowflake key="ac" />, name: 'AC' },
+    "2": { icon: <GiCharging key="charger" />, name: 'Charger' },
+    "3": { icon: <FaMusic key="music" />, name: 'Music' },
+    "4": { icon: <BiSolidCarGarage key="carrier" />, name: 'Carrier' },
+    "5": { icon: <FaTv key="tv" />, name: 'TV' },
+};
   return (
     <div>
       <div className="d-flex flex-column gap-4 px-3 pb-5">
-        {cars.map((car, index) => (
+      {cars.map((car, index) => (
+          <div
+            className="sideBars d-flex flex-column row-gap-4 flex-md-rowsideBars d-flex flex-column flex-md-row position-relative"
+            key={index}
+          >
+            <div className="carIcon d-flex align-items-center justify-content-start justify-content-md-center">
+              <img style={{objectFit: "contain"}} src={`${import.meta.env.VITE_API_IMG_URL}${car.images}`} alt="caricon" />
+            </div>
+            <div className="col-12 col-md-8">
+              <div className="d-flex gap-2 flex-column w-100">
+                <div className="d-inline-flex flex-column flex-md-row align-items-lg-center gap-1">
+                  <span className="carName">
+                    <b>{car.vehicle_name}</b>
+                  </span>
+                  <span className="similarCarName">or similar</span>
+                </div>
+                <div className="d-inline-flex">
+                  <span className="d-flex gap-2" style={{ fontSize: "14px" }}>
+                    {/* <li>{car.vehicle_name}</li>
+                    <li>AC</li> */}
+                    <li>{car.seats} Seats</li>
+                  </span>
+                </div>
+                <div className="d-flex gap-2 flex-column w-100">
+                  <p className="m-0">
+                    <b>{car.description}</b>
+                  </p>
+                  {/* <div className="d-flex">
+                    <div className="text-success pe-3">
+                      <GrMapLocation />
+                    </div>
+                    <div className="d-flex col-11 col-md-8 font-size14">
+                      <div className="d-flex col-5">Extra km fare </div>
+                      <div className="d-flex col-7 fontInter">
+                        {car.extraKmFare}
+                      </div>
+                    </div>
+                  </div> */}
+                  <div className="d-flex font-size14">
+                    <div className="text-success pe-3">
+                      <TbClockX />
+                    </div>
+                    <div className="d-flex col-11 col-md-8">
+                      <div className="d-flex col-5">Cancellation </div>
+                      <div className="col-7 gap-7">
+                        <span className="text-success">Free</span> till 1 hour
+                        of departure
+                      </div>
+                    </div>
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <div className="text-success pe-3">
+                      <FaGasPump />
+                    </div>
+                    <div className="d-flex col-11 col-md-8">
+                      <div className="d-flex col-5 font-size14">Amenities</div>
+                      {/* <div className="d-flex col-6 gap-3 align-items-center text-success">
+                        {car.amenities.map((amenity) => amenitiesMap[amenity] || null)}
+                      </div> */}
+                    <div className="d-flex flex-wrap gap-3 align-items-center text-success">
+    {car.amenities.map((amenity) => (
+        <div key={amenity} className="icon-container d-flex flex-column align-items-center">
+            {amenitiesMap[amenity]?.icon || null}
+            {/* <div className="text-center">{amenitiesMap[amenity]?.name || 'Unknown'}</div> */}
+        </div>
+    ))}
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="col-5 col-lg-3 d-flex row-gap-2 flex-column position-absolute"
+              style={{ right: "10px", top: "15px" }}
+            >
+              <div>
+                <p className="text-danger m-0 px-lg-4 pt-md-3 text-end">
+                  {/* <FaIndianRupeeSign /> */}
+                  {car.discount}
+                </p>
+              </div>
+              <div className="d-flex align-items-center justify-content-between justify-content-lg-evenly">
+                <span className="strikeDiagonal text-secondary d-flex justify-content-center align-items-center fontInter">
+                  <FaIndianRupeeSign />
+                  {car.price}
+                </span>
+                <span className="offerPrice">
+                  <FaIndianRupeeSign />
+                  {car.price}
+                </span>
+              </div>
+              <div className="d-flex justify-content-end">
+                <button className="primaryBtn" onClick={()=>handleCabBooking(car)}>
+                  BOOK NOW
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+        {/* {cars.map((car, index) => (
           <div
             className="sideBars d-flex flex-column row-gap-4 flex-md-rowsideBars d-flex flex-column flex-md-row position-relative"
             key={index}
@@ -345,7 +563,8 @@ const CarList: React.FC = () => {
               </div>
             </div>
           </div>
-        ))}
+        ))} */}
+
       </div>
     </div>
   );

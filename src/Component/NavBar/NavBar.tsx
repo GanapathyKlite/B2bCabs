@@ -71,7 +71,7 @@ const NavBar: React.FC = () => {
 
         if (response.status === 200 && response.data.status) {
           const { key } = response.data;
-          localStorage.setItem('authkey', key); 
+          sessionStorage.setItem('authkey', key); 
         } else {
           console.error('Login failed:', response.data.message);
         }
@@ -177,15 +177,14 @@ const NavBar: React.FC = () => {
     if (response?.status === 200 && response.data.status) {
       const { token } = response.data;
       navigate('/dashboard');
-      localStorage.setItem('authToken', token);
+      sessionStorage.setItem('authToken', token);
     } else if (response?.status === 200 && response.data.status === false) {
       const errorMessage = response?.data?.message;
       notyf.error(errorMessage); 
     }
-    } catch (error) {
-      console.log(error);
-        notyf.error('An unexpected error occurred');
-    }
+    }  catch (error: any) {
+  notyf.error(error.message || 'An unexpected error occurred');
+}
   };
 
   
@@ -667,8 +666,9 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
   >
     {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
   </span>   
-              {confirmPasswordError && <p className="text-danger">{confirmPasswordError}</p>}
+             
               </div>
+              {confirmPasswordError && <p className="text-danger">{confirmPasswordError}</p>}
                <div className="d-flex justify-content-center">
               <button className="primaryBtn" data-bs-dismiss="modal" disabled={!isPasswordValid}
                 style={{

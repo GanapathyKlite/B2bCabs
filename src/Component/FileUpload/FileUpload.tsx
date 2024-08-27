@@ -3,7 +3,7 @@ import DropFileInput from "./DropFileInput/DropFileInput";
 
 const FileUpload: React.FC = () => {
   const onFileChange = (files: File[]) => {
-    console.log(files);
+    // console.log(files);
   };
 
   return (

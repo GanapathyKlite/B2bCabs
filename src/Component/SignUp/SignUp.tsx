@@ -108,7 +108,7 @@ function SignUp() {
       lastname, filelist, ...filteredValues } = temp;
 
       try {
-        const key = localStorage.getItem('authkey');
+        const key = sessionStorage.getItem('authkey');
         const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/agent/registration`,filteredValues,{
           headers: {
             Authorization: `Bearer ${key}`

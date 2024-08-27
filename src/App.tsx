@@ -1,4 +1,3 @@
-// src/App.tsx
 import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import LandingPage from "./Component/Landing_Page/LandingPage";
@@ -27,6 +26,7 @@ function App() {
 
   const isDashboardRoute = location.pathname.startsWith("/dashboard");
 
+
   return (
     <div className="App">
       {isDashboardRoute ? <DashboardNavbar /> : <NavBar />}
@@ -51,6 +51,7 @@ function App() {
           />
           <Route path="/dashboard/viewprofile" element={<ViewProfile />} />
         </Route>
+
       </Routes>
     </div>
   );

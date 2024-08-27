@@ -283,6 +283,7 @@ function DashboardNavbar() {
               ref={modalBoxInputRef}
             />
           </div>
+
           <div className="col-6 d-flex align-items-center column-gap-2">
             <input
               type="radio"
@@ -302,6 +303,7 @@ function DashboardNavbar() {
         </div>
       </Modal>
     </>
+
   );
 }
 
