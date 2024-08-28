@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Range, getTrackBackground } from "react-range";
+import { FaRegSnowflake, FaMusic, FaTv } from 'react-icons/fa';
+import { GiCharging } from 'react-icons/gi';
+import { BiSolidCarGarage } from 'react-icons/bi';
 
 
 interface Car {
@@ -22,8 +25,15 @@ interface Car {
 
 interface CarFilterProps {
   cars: Car[];
-  onFilterChange: (selectedVehicleNames: string[], selectedPriceRange: [number, number]) => void;
+  onFilterChange: (selectedVehicleNames: string[], selectedPriceRange: [number, number], selectedAmenities: string[]) => void;
 }
+const amenitiesMap = {
+  "1": { icon: <FaRegSnowflake key="ac" />, name: 'AC' },
+  "2": { icon: <GiCharging key="charger" />, name: 'Charger' },
+  "3": { icon: <FaMusic key="music" />, name: 'Music' },
+  "4": { icon: <BiSolidCarGarage key="carrier" />, name: 'Carrier' },
+  "5": { icon: <FaTv key="tv" />, name: 'TV' },
+};
 
 const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange  }) => {
 
@@ -39,9 +49,11 @@ const maxPrice = Math.max(...prices);
   
 
   const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+
   useEffect(() => {
-    onFilterChange(selectedVehicleNames, priceRange);
-  }, [selectedVehicleNames, priceRange]);
+    onFilterChange(selectedVehicleNames, priceRange, selectedAmenities);
+  }, [selectedVehicleNames, priceRange, selectedAmenities]);
 
   const handleCheckboxChange = (vehicleName: string) => {
     let updatedSelection = [...selectedVehicleNames];
@@ -59,6 +71,18 @@ const maxPrice = Math.max(...prices);
     if (values.length === 2) {
       setPriceRange([values[0], values[1]]);
     }
+  };
+
+  const handleAmenityChange = (amenity: string) => {
+    let updatedSelection = [...selectedAmenities];
+
+    if (updatedSelection.includes(amenity)) {
+      updatedSelection = updatedSelection.filter((item) => item !== amenity);
+    } else {
+      updatedSelection.push(amenity);
+    }
+
+    setSelectedAmenities(updatedSelection);
   };
 
   return (
@@ -91,6 +115,31 @@ const maxPrice = Math.max(...prices);
           </div>
         ))}
       </div>
+
+       {/* Amenities */}
+       <p className="mb-2 mt-4">Amenities</p>
+        <div className="d-flex flex-wrap gap-2">
+          {Object.entries(amenitiesMap).map(([key, { icon, name }]) => (
+            <div className="form-check d-flex align-items-center" key={key}>
+              <input
+                className="form-check-input"
+                type="checkbox"
+                value={key}
+                id={`amenityCheck${key}`}
+                onChange={() => handleAmenityChange(key)}
+                checked={selectedAmenities.includes(key)}
+              />
+              <label
+                className="form-check-label d-flex align-items-center ms-2"
+                htmlFor={`amenityCheck${key}`}
+              >
+                {icon}
+                <span className="ms-2">{name}</span>
+              </label>
+            </div>
+          ))}
+        </div>
+
 
        {/* Price Range Slider */}
        <div className="mt-4">
@@ -162,6 +211,9 @@ const maxPrice = Math.max(...prices);
             <span>₹{priceRange[1].toLocaleString()}</span>
           </div>
         </div>
+
+
+        
 
 
     </div>

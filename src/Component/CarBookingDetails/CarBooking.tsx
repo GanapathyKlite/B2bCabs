@@ -1,8 +1,8 @@
-import React from "react";
+import React,{useState} from "react";
 import "./CarBooking.css";
 import carIcon from "../../Assets/Car_icon.svg";
 import Footer from "../Footer/Footer";
-import {  Tooltip } from "antd";
+import {  Tooltip, TimePicker } from "antd";
 import { useLocation } from 'react-router-dom';
 import parse from 'html-react-parser';
 
@@ -36,7 +36,6 @@ const CarBooking: React.FC = () => {
   const enddate = location.state.enddate;
   const imageURL = `${import.meta.env.VITE_API_IMG_URL}`; 
   const carImage = `${imageURL}${car.image}`;
-  console.log("amenities",car.description);
   
 
   const handleOpenTerms = (): void => {
@@ -94,6 +93,83 @@ const CarBooking: React.FC = () => {
     Carrier: <BiSolidCarGarage key="carrier" />,
     TV: <FaTv key="tv" /> 
   };
+  const [adultCount, setAdultCount] = useState<number>(0);
+  const [childCount, setChildCount] = useState<number>(0);
+
+  const totalSeats = parseInt(car.seats.split('+')[0]);
+
+  const maxAdults = parseInt(car.seats.split('+')[0]);
+
+  const handleAdultChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedAdults = parseInt(event.target.value);
+    setAdultCount(selectedAdults);
+
+    const maxChildren = totalSeats - selectedAdults;
+    setChildCount(Math.min(childCount, maxChildren)); 
+  };
+
+  const handleChildChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setChildCount(parseInt(event.target.value));
+  };
+
+  const adultOptions = Array.from({ length: maxAdults + 1 }, (_, i) => i);
+  const maxChildren = totalSeats - adultCount;
+  const childOptions = Array.from({ length: maxChildren + 1 }, (_, i) => i);
+  const isChildDropdownEnabled = adultCount > 0;
+
+  const [selectedArrival, setSelectedArrival] = useState<string>("");
+  const [arrivalDetails, setArrivalDetails] = useState({ placeholder: "Choose arrival via", label: "Arrival Details" });
+
+  const [selectedDeparture, setSelectedDeparture] = useState<string>("");
+  const [departureDetails, setDepartureDetails] = useState({ placeholder: "Choose departure via", label: "Departure Details" });
+
+  const [pickupAddress, setPickupAddress] = useState("");
+  const [dropAddress, setDropAddress] = useState("");
+  const [client_name, setClientName] = useState<string>("");
+  const [contactNumber, setContactNumber] = useState<string>("");
+  const [alternativeContactNumber, setAlternativeContactNumber] = useState<string>("");
+
+  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    const filteredValue = value.replace(/[^0-9]/g, "");
+    setter(filteredValue);
+  };
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    const filteredValue = value.replace(/[^a-zA-Z\s]/g, "");
+    setClientName(filteredValue);
+  };
+
+  
+  const getDetailsForSelection = (selection: string) => {
+    switch (selection) {
+      case "Flight":
+        return { placeholder: "Enter flight details", label: "Flight Details" };
+      case "Bus":
+        return { placeholder: "Enter bus details", label: "Bus Details" };
+      case "Train":
+        return { placeholder: "Enter train details", label: "Train Details" };
+      case "Residency":
+        return { placeholder: "Enter residency details", label: "Residency Details" };
+      default:
+        return { placeholder: "Choose via", label: "" };
+    }
+  };
+
+  const handleChange = (type: "arrival" | "departure", event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value;
+    const details = getDetailsForSelection(value);
+
+    if (type === "arrival") {
+      setSelectedArrival(value);
+      setArrivalDetails(details);
+    } else if (type === "departure") {
+      setSelectedDeparture(value);
+      setDepartureDetails(details);
+    }
+  };
+
   return (
     <>
       <div className="w-100 ReviewBookingBar">
@@ -202,9 +278,11 @@ const CarBooking: React.FC = () => {
 
                           <b>
                           {descriptionItems.map((item: string) => (
-          iconMap[item] || <span key={item} >{item}</span>
+          iconMap[item] 
         ))}
       </b>
+
+                     {/* {car.description} */}
                         </div>
                       </div>
                     </div>
@@ -317,7 +395,7 @@ const CarBooking: React.FC = () => {
             <div className="sideBars bg-light p-3">
               <div className="h5 mb-3">Trip details</div>
               <form>
-                <div className="mb-3 d-flex justify-content-between">
+                {/* <div className="mb-3 d-flex justify-content-between">
                   <div className="col-md-7">
                     <label className="font-size14">
                       <span style={{ fontWeight: "600" }}>Pick-up Address</span>
@@ -342,8 +420,8 @@ const CarBooking: React.FC = () => {
                       required
                     />
                   </div>
-                </div>
-                <div className="">
+                </div> */}
+                {/* <div className="">
                   <label htmlFor="validationCustom01" className="font-size14">
                     <span style={{ fontWeight: "600" }}>Drop-off Address </span>
                   </label>
@@ -354,28 +432,30 @@ const CarBooking: React.FC = () => {
                     placeholder="Enter drop address to know the exact fare & avoid extra charges after the trip"
                     required
                   />
-                </div>
+                </div> */}
                 <hr />
                 <div className="row">
-                  <div className="h5 mb-3">Confirm Traveller information</div>
-                  <div className="col-lg-6 d-flex flex-column gap-3">
+                  <div className="h5 mb-3">Confirm Traveller's information</div>
+                  <div className="col-lg-6 d-flex flex-column justify-content-between">
                     <div className="mb-2">
                       <label
-                        htmlFor="validationCustom01"
+                        htmlFor="client_name"
                         className="font-size14"
                       >
-                        <span style={{ fontWeight: "600" }}>Name</span>
+                        <span style={{ fontWeight: "600" }}>Primary Traveller Name</span>
                       </label>
                       <input
                         type="text"
                         className="form-control px-3 py-2"
-                        id="validationCustom01"
+                        id="client_name"
                         placeholder="Enter your full name"
+                        value={client_name}
+        onChange={handleNameChange}
                         required
                       />
                     </div>
 
-                    <div className="mb-2">
+                    {/* <div className="mb-2">
                       <label
                         htmlFor="validationCustom01"
                         className="font-size14"
@@ -395,29 +475,29 @@ const CarBooking: React.FC = () => {
                         placeholder="Enter Email ID"
                         required
                       />
-                    </div>
-                  </div>
-                  <div className="col-lg-6 d-flex flex-column justify-content-between">
+                    </div> */}
                     <div className="mb-2">
+          <label htmlFor="adultCount" className="font-size14">
+            <span style={{ fontWeight: "600" }}>Adult</span>
+          </label>
+          <select
+            className="form-control px-3 py-2"
+            id="adultCount"
+            value={adultCount}
+            onChange={handleAdultChange}
+            required
+          >
+            {adultOptions.map((num) => (
+              <option key={num} value={num}>
+                {num}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-2">
                       <label
-                        htmlFor="validationCustom01"
-                        className="font-size14"
-                      >
-                        <span style={{ fontWeight: "600" }}>
-                          Contact Number
-                        </span>
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control px-3 py-2"
-                        id="validationCustom01"
-                        placeholder="Enter 10 digit Mobile Number"
-                        required
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <label
-                        htmlFor="validationCustom01"
+                        htmlFor="alternativeContactNumber"
                         className="font-size14"
                       >
                         <span style={{ fontWeight: "600" }}>
@@ -427,11 +507,157 @@ const CarBooking: React.FC = () => {
                       <input
                         type="text"
                         className="form-control px-3 py-2"
-                        id="validationCustom01"
+                        id="alternativeContactNumber"
                         placeholder="Enter 10 digit Mobile Number"
+                        value={alternativeContactNumber}
+                        onChange={handleInputChange(setAlternativeContactNumber)}
+                        maxLength={10} 
                         required
                       />
                     </div>
+        
+        <div className="mb-2">
+                    <label className="font-size14">
+                      <span style={{ fontWeight: "600" }}>Arrival Via</span>
+                    </label>
+                    <select
+          className="form-control px-3 py-2"
+          id="arrivalvia"
+          value={selectedArrival}
+          onChange={(e) => handleChange("arrival", e)}
+          required
+        >
+          <option value="" disabled>Select Arrival Via</option>
+          <option value="Flight">Flight</option>
+          <option value="Bus">Bus</option>
+          <option value="Train">Train</option>
+          <option value="Residency">Residency</option>
+        </select>
+                  </div>
+
+                  <div className="mb-2">
+                    <label className="font-size14">
+                      <span style={{ fontWeight: "600" }}>Departure Via</span>
+                    </label>
+                    <select
+          className="form-control px-3 py-2"
+          id="departurevia"
+          value={selectedDeparture}
+          onChange={(e) => handleChange("departure", e)}
+          required
+        >
+          <option value="" disabled>Select Departure Via</option>
+          <option value="Flight">Flight</option>
+          <option value="Bus">Bus</option>
+          <option value="Train">Train</option>
+          <option value="Residency">Residency</option>
+        </select>
+                  </div>
+
+
+                  </div>
+                  <div className="col-lg-6 d-flex flex-column justify-content-between">
+                    <div className="mb-2">
+                      <label
+                        htmlFor="contactNumber"
+                        className="font-size14"
+                      >
+                        <span style={{ fontWeight: "600" }}>
+                          Contact Number
+                        </span>
+                      </label>
+                      <input 
+                       type="text"
+                       className="form-control px-3 py-2"
+                       id="contactNumber"
+                       placeholder="Enter 10 digit Mobile Number"
+                       value={contactNumber}
+                       onChange={handleInputChange(setContactNumber)}
+                       maxLength={10} 
+                       required
+                      />
+                    </div>
+                   
+                    <div className="mb-2">
+          <label htmlFor="childCount" className="font-size14">
+            <span style={{ fontWeight: "600" }}>Child</span>
+          </label>
+          <select
+            className="form-control px-3 py-2"
+            id="childCount"
+            value={childCount}
+            onChange={handleChildChange}
+            disabled={!isChildDropdownEnabled}
+            required
+          >
+            {isChildDropdownEnabled ? (
+              childOptions.map((num) => (
+                <option key={num} value={num}>
+                  {num}
+                </option>
+              ))
+            ) : (
+              <option value="">Select Adult First</option>
+            )}
+          </select>
+        </div>
+        
+        <div className="mb-2">
+  <label htmlFor="pickup_time" className="font-size14">
+    <span style={{ fontWeight: "600" }}>Pick-up Time</span>
+  </label>
+  <TimePicker
+    className="form-control px-3 py-2"
+    id="pickup_time"
+    placeholder="Enter pick-up time"
+    format="h:mm A"
+    use12Hours
+    required
+  />
+</div>
+                    
+
+        {/* <div className="mb-2">
+                    <label className="font-size14">
+                      <span style={{ fontWeight: "600" }}>Pick-up Address</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control px-3 py-2"
+                      id="validationCustom01"
+                      placeholder="Enter exact pick-up address"
+                      required
+                    />
+                  </div> */}
+                   
+                   <div className="mb-2 mt-3">
+          <label className="font-size14">
+            <span style={{ fontWeight: "600" }}>{arrivalDetails.label}</span>
+          </label>
+          <input
+            type="text"
+            className="form-control px-3 py-2"
+            placeholder={arrivalDetails.placeholder}
+            value={pickupAddress}
+            onChange={(e) => setPickupAddress(e.target.value)}
+            readOnly={!selectedArrival}
+          />
+        </div>
+
+        <div className="mb-2 mt-3">
+          <label className="font-size14">
+            <span style={{ fontWeight: "600" }}>{departureDetails.label}</span>
+          </label>
+          <input
+            type="text"
+            className="form-control px-3 py-2"
+            placeholder={departureDetails.placeholder}
+            value={dropAddress}
+            onChange={(e) => setDropAddress(e.target.value)}
+            readOnly={!selectedDeparture}
+          />
+        </div>
+
                   </div>
                 </div>
                 <div className="font-size12 mt-4">

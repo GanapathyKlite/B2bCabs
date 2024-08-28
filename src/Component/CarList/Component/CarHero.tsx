@@ -45,9 +45,9 @@ const CarHero: React.FC<CarListProps> = ({ cars, duration, km, cancelDate, error
   
   const [filteredCars, setFilteredCars] = useState<Car[]>(cars);
 
-  // The function now takes both selectedVehicleNames and selectedPriceRange as arguments
+  
   const handleFilterChange = useCallback(
-    (selectedVehicleNames: string[], selectedPriceRange: [number, number]) => {
+    (selectedVehicleNames: string[], selectedPriceRange: [number, number], selectedAmenities: string[]) => {
       let filtered = cars;
 
       // Filter by vehicle names
@@ -56,14 +56,18 @@ const CarHero: React.FC<CarListProps> = ({ cars, duration, km, cancelDate, error
       }
 
       // Filter by price range
-    filtered = filtered.filter((car) => {
-      // Remove commas and parse price
-      const price = parseFloat(car.price.replace(/,/g, ''));
-      return price >= selectedPriceRange[0] && price <= selectedPriceRange[1];
-    });
+      filtered = filtered.filter((car) => {
+        const price = parseFloat(car.price.replace(/,/g, ''));
+        return price >= selectedPriceRange[0] && price <= selectedPriceRange[1];
+      });
 
-    setFilteredCars(filtered);
-  },
+      // Filter by amenities
+      filtered = filtered.filter((car) => 
+        selectedAmenities.every((amenity) => car.amenities.includes(amenity))
+      );
+
+      setFilteredCars(filtered);
+    },
     [cars]
   );
 
