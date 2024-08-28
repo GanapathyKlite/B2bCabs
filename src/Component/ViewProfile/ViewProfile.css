@@ -1,0 +1,94 @@
+.editprofileDetailsDiv {
+  display: flex;
+  row-gap: 15px;
+  border-radius: 10px;
+  padding: 15px;
+  background-color: rgb(238, 238, 238);
+}
+.editprofileDetailsDiv .profileDetailsDiv {
+  padding: 15px;
+  border-radius: 10px;
+  background-color: rgb(238, 238, 238);
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  row-gap: 15px;
+  position: sticky;
+  top: 65px;
+  background-color: var(--whiteColor);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1882352941);
+}
+.editprofileDetailsDiv .profileDetailsDiv .profileDetailsLogoDiv {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.editprofileDetailsDiv .profileDetailsDiv .profileDetailsLogoDiv img {
+  width: 250px;
+  background-color: var(--whiteColor);
+  padding: 10px;
+  border-radius: 8px;
+}
+.editprofileDetailsDiv .profileDetailsDiv .profileDetailsShow {
+  display: flex;
+  -moz-column-gap: 15px;
+       column-gap: 15px;
+}
+.editprofileDetailsDiv .profileDetailsDiv .profileDetails {
+  display: flex;
+  row-gap: 5px;
+  flex-direction: column;
+}
+.editprofileDetailsDiv .profileDetailsDiv .profileDetails div {
+  font-size: 20px;
+  color: var(--PrimaryColor);
+  align-items: flex-start;
+  display: flex;
+  gap: 5px;
+}
+.editprofileDetailsDiv .profileDetailsDiv .profileDetails div .userIcon {
+  font-size: 18px;
+}
+.editprofileDetailsDiv .profileDetailsDiv .profileDetails div .emailIcon,
+.editprofileDetailsDiv .profileDetailsDiv .profileDetails div .mobileIcon {
+  font-size: 14px;
+}
+.editprofileDetailsDiv .profileDetailsDiv .profileDetails div:nth-child(2),
+.editprofileDetailsDiv .profileDetailsDiv .profileDetails div:nth-child(3) {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(100, 100, 100);
+}
+.editprofileDetailsDiv .personalInfoDiv {
+  padding: 10px 5px 20px;
+  background-color: var(--whiteColor);
+  border-radius: 10px;
+}
+.editprofileDetailsDiv .personalInfoDiv input {
+  outline: none;
+}
+.editprofileDetailsDiv .personalInfoDiv textarea {
+  min-height: 50px;
+}
+.editprofileDetailsDiv .personalInfoDiv .BankInfoCheckImg {
+  height: 190px;
+}
+.editprofileDetailsDiv .personalInfoDiv .BankInfoCheckImg:hover {
+  opacity: 1 !important;
+}
+.editprofileDetailsDiv .personalInfoDiv .checkBookDiv img {
+  height: 200px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  width: 100%;
+}
+.editprofileDetailsDiv .personalInfoDiv .PANImgDiv img,
+.editprofileDetailsDiv .personalInfoDiv .GSTImgDiv img {
+  height: 150px;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+  display: flex;
+  border-radius: 10px;
+}/*# sourceMappingURL=ViewProfile.css.map */

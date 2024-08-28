@@ -1,0 +1,23 @@
+.invoiceBtnDiv {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+}
+.invoiceBtnDiv button {
+  background-color: #42d27c;
+  color: var(--whiteColor);
+  width: 90%;
+  border-radius: 5px;
+  border: none;
+  font-size: 14px;
+  cursor: no-drop;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -moz-column-gap: 5px;
+       column-gap: 5px;
+}
+.invoiceBtnDiv button span {
+  font-size: 16px;
+}/*# sourceMappingURL=Invoice.css.map */
