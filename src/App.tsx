@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 import LandingPage from "./Component/Landing_Page/LandingPage";
 import NavBar from "./Component/NavBar/NavBar";
@@ -12,19 +12,47 @@ import DashboardNavbar from "./Component/Dashboard/Component/DashboardNavBar";
 import CarShowingPage from "./Component/CarList/CarShowingPage";
 import PrivateRoute from "./Component/Auth/PrivateRoute";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import UpcomingBooking from "./Component/UpcomingBooking/UpcomingBooking";
-import CanceledBooking from "./Component/CanceledBooking/CanceledBooking";
-import PastBooking from "./Component/PastBooking/PastBooking";
+// import UpcomingBooking from "./Component/UpcomingBooking/UpcomingBooking";
+// import CanceledBooking from "./Component/CanceledBooking/CanceledBooking";
+// import PastBooking from "./Component/PastBooking/PastBooking";
 import Invoice from "./Component/Invoice/Invoice";
 import DriverStatus from "./Component/DriverStatus/DriverStatus";
 import PaymentHistory from "./Component/PaymentHistory/PaymentHistory";
 import ViewProfile from "./Component/ViewProfile/ViewProfile";
 import ManageBooking from "./Component/ManageBooking/ManageBooking";
+import { useAuth } from './Component/Auth/AuthContext';
+import { useEffect } from 'react';
 
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { authToken } = useAuth();
 
   const isDashboardRoute = location.pathname.startsWith("/dashboard");
+
+  const publicRoutes = ['/', '/aboutUs', '/services', '/contact', '/signup'];
+
+  useEffect(() => {
+    if (!authToken && !publicRoutes.includes(location.pathname)) {
+      navigate('/');
+    }
+  }, [authToken, location.pathname, navigate]);
+
+  useEffect(() => {
+    if (location.pathname === '/dashboard') {
+      window.history.pushState(null, '', window.location.href);
+  
+      window.onpopstate = () => {
+        if (location.pathname === '/dashboard') {
+          window.history.go(1); 
+        }
+      };
+    }
+  
+    return () => {
+      window.onpopstate = null;
+    };
+  }, [location.pathname]);
 
 
   return (

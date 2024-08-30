@@ -110,7 +110,6 @@ const CarHero: React.FC<CarListProps> = ({ cars, duration, km, cancelDate, error
               ):null} 
 
             <CarList 
-            // cars={cars}
             cars={filteredCars}
             duration={duration} km={km}
             pickup_time={pickup_time}

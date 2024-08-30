@@ -35,21 +35,53 @@ const amenitiesMap = {
   "5": { icon: <FaTv key="tv" />, name: 'TV' },
 };
 
-const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange  }) => {
+
+const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
+  const prices = cars
+    .map((car) => parseFloat(car.price.replace(/,/g, '')))
+    .filter((price) => !isNaN(price));
+
+  const initialMinPrice = prices.length > 0 ? Math.min(...prices) : 0;
+  const initialMaxPrice = prices.length > 0 ? Math.max(...prices) : 0;
 
   const uniqueVehicleNames = Array.from(new Set(cars.map((car) => car.vehicle_name)));
   const [selectedVehicleNames, setSelectedVehicleNames] = useState<string[]>(uniqueVehicleNames);
-
-  const prices = cars
-  .map((car) => parseFloat(car.price.replace(/,/g, '')))
-  .filter((price) => !isNaN(price)); // Filter out any invalid prices
-
-const minPrice = Math.min(...prices);
-const maxPrice = Math.max(...prices);
+  const [filteredPrices, setFilteredPrices] = useState<number[]>(prices);
   
+  // Temporary min and max price for filtered cars
+  const [temporaryMinPrice, setTemporaryMinPrice] = useState<number>(initialMinPrice);
+  const [temporaryMaxPrice, setTemporaryMaxPrice] = useState<number>(initialMaxPrice);
+  
+  // Slider price range which can be adjusted by the user
+  const [priceRange, setPriceRange] = useState<[number, number]>([initialMinPrice, initialMaxPrice]);
 
-  const [priceRange, setPriceRange] = useState<[number, number]>([minPrice, maxPrice]);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+
+  // Update filtered prices and price range when selectedVehicleNames or selectedAmenities change
+  useEffect(() => {
+    const filteredCars = cars.filter((car) =>
+      selectedVehicleNames.includes(car.vehicle_name) &&
+      (selectedAmenities.length === 0 || selectedAmenities.every((amenity) => car.amenities.includes(amenity)))
+    );
+
+    const filteredPrices = filteredCars
+      .map((car) => parseFloat(car.price.replace(/,/g, '')))
+      .filter((price) => !isNaN(price));
+
+    if (filteredPrices.length > 0) {
+      const minPrice = Math.min(...filteredPrices);
+      const maxPrice = Math.max(...filteredPrices);
+
+      // Set the temporary min and max price
+      setTemporaryMinPrice(minPrice);
+      setTemporaryMaxPrice(maxPrice);
+
+      // Update the slider's price range to match the new filtered range
+      setPriceRange([minPrice, maxPrice]);
+    } else {
+      setPriceRange([initialMinPrice, initialMaxPrice]); // Reset to initial range if no cars match the filters
+    }
+  }, [selectedVehicleNames, selectedAmenities, cars]);
 
   useEffect(() => {
     onFilterChange(selectedVehicleNames, priceRange, selectedAmenities);
@@ -57,13 +89,11 @@ const maxPrice = Math.max(...prices);
 
   const handleCheckboxChange = (vehicleName: string) => {
     let updatedSelection = [...selectedVehicleNames];
-
     if (updatedSelection.includes(vehicleName)) {
       updatedSelection = updatedSelection.filter((name) => name !== vehicleName);
     } else {
       updatedSelection.push(vehicleName);
     }
-
     setSelectedVehicleNames(updatedSelection);
   };
 
@@ -75,13 +105,11 @@ const maxPrice = Math.max(...prices);
 
   const handleAmenityChange = (amenity: string) => {
     let updatedSelection = [...selectedAmenities];
-
     if (updatedSelection.includes(amenity)) {
       updatedSelection = updatedSelection.filter((item) => item !== amenity);
     } else {
       updatedSelection.push(amenity);
     }
-
     setSelectedAmenities(updatedSelection);
   };
 
@@ -141,76 +169,76 @@ const maxPrice = Math.max(...prices);
         </div>
 
 
-       {/* Price Range Slider */}
-       <div className="mt-4">
+         {/* Price Range Slider */}
+         <div className="mt-4">
           <p className="mb-2">Price Range</p>
           <Range
-            values={priceRange}
-            step={100}
-            min={minPrice}
-            max={maxPrice}
-            onChange={handleSliderChange}
-            renderTrack={({ props, children }) => (
+          values={priceRange}
+          step={100}
+          min={temporaryMinPrice} // Minimum value from the filtered cars
+          max={temporaryMaxPrice} // Maximum value from the filtered cars
+          onChange={handleSliderChange}
+          renderTrack={({ props, children }) => (
+            <div
+              onMouseDown={props.onMouseDown}
+              onTouchStart={props.onTouchStart}
+              style={{
+                ...props.style,
+                height: '36px',
+                display: 'flex',
+                width: '100%',
+              }}
+            >
               <div
-                onMouseDown={props.onMouseDown}
-                onTouchStart={props.onTouchStart}
+                ref={props.ref}
                 style={{
-                  ...props.style,
-                  height: '36px',
-                  display: 'flex',
+                  height: '5px',
                   width: '100%',
-                }}
-              >
-                <div
-                  ref={props.ref}
-                  style={{
-                    height: '5px',
-                    width: '100%',
-                    borderRadius: '4px',
-                    background: getTrackBackground({
-                      values: priceRange,
-                      colors: ['#ccc', '#548BF4', '#ccc'],
-                      min: minPrice,
-                      max: maxPrice,
-                    }),
-                    alignSelf: 'center',
-                  }}
-                >
-                  {children}
-                </div>
-              </div>
-            )}
-            renderThumb={({ props, isDragged }) => (
-              <div
-                {...props}
-                key={props.key}
-                style={{
-                  ...props.style,
-                  height: '22px',
-                  width: '22px',
                   borderRadius: '4px',
-                  backgroundColor: '#FFF',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  boxShadow: '0px 2px 6px #AAA',
+                  background: getTrackBackground({
+                    values: priceRange,
+                    colors: ['#ccc', '#548BF4', '#ccc'],
+                    min: temporaryMinPrice, // Ensure the track background includes the temporary min value
+                    max: temporaryMaxPrice, 
+                  }),
+                  alignSelf: 'center',
                 }}
               >
-                <div
-                  style={{
-                    height: '16px',
-                    width: '5px',
-                    backgroundColor: isDragged ? '#548BF4' : '#CCC',
-                  }}
-                />
+                {children}
               </div>
-            )}
-          />
-          <div className="d-flex justify-content-between mt-2">
-            <span>₹{priceRange[0].toLocaleString()}</span>
-            <span>₹{priceRange[1].toLocaleString()}</span>
-          </div>
+            </div>
+          )}
+          renderThumb={({ props, isDragged }) => (
+            <div
+              {...props}
+              key={props.key}
+              style={{
+                ...props.style,
+                height: '22px',
+                width: '22px',
+                borderRadius: '4px',
+                backgroundColor: '#FFF',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                boxShadow: '0px 2px 6px #AAA',
+              }}
+            >
+              <div
+                style={{
+                  height: '16px',
+                  width: '5px',
+                  backgroundColor: isDragged ? '#548BF4' : '#CCC',
+                }}
+              />
+            </div>
+          )}
+        />
+        <div className="d-flex justify-content-between mt-2">
+          <span>₹{priceRange[0].toLocaleString()}</span>
+          <span>₹{priceRange[1].toLocaleString()}</span>
         </div>
+      </div>
 
 
         

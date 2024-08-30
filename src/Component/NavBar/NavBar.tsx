@@ -53,6 +53,7 @@ const NavBar: React.FC = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
   const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
   const [passwordToken, setPasswordToken] = useState("");
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
   useEffect(() => {
@@ -161,6 +162,7 @@ const NavBar: React.FC = () => {
 
   const handleSubmit = async(e: FormEvent) => {
     e.preventDefault();
+    setLoading(true); 
     try {
       if (formData.remember) {
         localStorage.setItem('email', formData.email);
@@ -184,6 +186,9 @@ const NavBar: React.FC = () => {
     }
     }  catch (error: any) {
   notyf.error(error.message || 'An unexpected error occurred');
+}
+finally {
+  setLoading(false);
 }
   };
 
@@ -465,9 +470,19 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
             <div>
               </div>
             <div className="d-flex justify-content-center">
-              <button className="primaryBtn" data-bs-dismiss="modal">
-                Sign In
-              </button>
+            <button 
+        type="submit" 
+        className="primaryBtn" 
+        data-bs-dismiss="modal"
+        disabled={loading}
+        style={{ width: '100px' }}
+      >
+        {loading ? (
+          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        ) : (
+          'Sign In'
+        )}
+      </button>
             </div>
             <div
               className="text-center mt-5"
