@@ -1,6 +1,18 @@
-import { IoIosArrowDown } from "react-icons/io";
+import { useState } from "react";
 
-const CompanyInfo = () => {
+const CompanyInfo = ({ isEditable }: { isEditable: boolean }) => {
+  const [editAddress, setEditAddress] = useState<string>(
+    "No:19, New Street, Rangavilas Thottam, Muthiyalpet, Puducherry - 605003"
+  );
+  const [editPincode, setEditPincode] = useState<number>(605003);
+  const handleEditAddress = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setEditAddress(e.target.value);
+  };
+
+  const hadleEditPincode = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = Number(e.target.value);
+    setEditPincode(value);
+  };
   return (
     <>
       <div className="row row-gap-3 personalInfoDiv">
@@ -22,7 +34,7 @@ const CompanyInfo = () => {
             value="Yas Tours"
             id="company_name"
             name="company_name"
-            className={`form-control border border-secondary rounded-3 p-3 w-100`}
+            className={`form-control border-0 border-secondary rounded-3 p-2 py-1 w-100`}
           />
         </div>
         <div className="col-12 col-lg-6 ps-lg-2">
@@ -38,10 +50,10 @@ const CompanyInfo = () => {
               readOnly
               value="Private Limited"
               name="type_of_company"
-              className={`form-control border border-secondary rounded-3 p-3 w-100`}
+              className={`form-control border-0 border-secondary rounded-3 p-2 py-1 w-100`}
             />
 
-            <IoIosArrowDown className={`dropdown-arrow`} />
+            {/* <IoIosArrowDown className={`dropdown-arrow`} /> */}
           </div>
         </div>
 
@@ -56,9 +68,10 @@ const CompanyInfo = () => {
             placeholder="e.g. XYZ Street, Avenue Center"
             id="address"
             name="address"
-            value="No. : 19, New street, Rangavilas thottam, Muthiyalpet,
-            Puducherry-605003"
-            className={`form-control border border-secondary rounded-3 p-3 w-100 `}
+            readOnly={!isEditable}
+            value={editAddress}
+            onChange={handleEditAddress}
+            className={`form-control border border-secondary rounded-3 px-2 py-3 w-100 `}
           />
         </div>
 
@@ -74,9 +87,9 @@ const CompanyInfo = () => {
               id="city"
               value="Pondicherry"
               name="city"
-              className={`form-control border border-secondary rounded-3 p-3 w-100`}
+              className={`form-control border-0 border-secondary rounded-3 p-2 py-1 w-100`}
             />
-            <IoIosArrowDown className={`dropdown-arrow`} />
+            {/* <IoIosArrowDown className={`dropdown-arrow`} /> */}
           </div>
         </div>
         <div className="col-12 col-lg-6 ps-lg-2">
@@ -91,7 +104,7 @@ const CompanyInfo = () => {
               id="state"
               name="state"
               value="Puducherry"
-              className={`form-control border border-secondary rounded-3 p-3 w-100 `}
+              className={`form-control border-0 border-secondary rounded-3 p-2 py-1 w-100 `}
             />
           </div>
         </div>
@@ -107,7 +120,7 @@ const CompanyInfo = () => {
               id="country"
               value="Puducherry"
               name="country"
-              className={`form-control border border-secondary rounded-3 p-3 w-100 `}
+              className={`form-control border-0 border-secondary rounded-3 p-2 py-1 w-100 `}
             />
           </div>
         </div>
@@ -121,10 +134,12 @@ const CompanyInfo = () => {
           <input
             placeholder="e.g. 123456"
             id="pincode"
+            readOnly={!isEditable}
             name="pincode"
-            value="605003"
+            value={editPincode}
+            onChange={hadleEditPincode}
             maxLength={6}
-            className={`form-control border border-secondary rounded-3 p-3 w-100`}
+            className={`form-control border border-secondary rounded-3 p-2 w-100`}
           />
         </div>
       </div>

@@ -21,7 +21,7 @@ const BankInfo = () => {
             id="account_no"
             value="01234567890123"
             name="account_no"
-            className="form-control border border-secondary rounded-3 p-3 w-100"
+            className="form-control border-0 border-secondary rounded-3 px-2 py-1 w-100"
           />
         </div>
         <div className="col-12 col-lg-6 ps-lg-2">
@@ -37,7 +37,7 @@ const BankInfo = () => {
             id="beneficiary_name"
             value="YasTrous"
             name="beneficiary_name"
-            className="form-control border border-secondary rounded-3 p-3 w-100"
+            className="form-control border-0 border-secondary rounded-3 px-2 py-1 w-100"
           />
         </div>
         <div className="col-12">
@@ -53,7 +53,7 @@ const BankInfo = () => {
             id="ifc_code"
             name="ifc_code"
             value="ICIC0000269"
-            className="form-control border border-secondary rounded-3 p-3 w-100"
+            className="form-control border-0 border-secondary rounded-3 px-2 py-1 w-100"
           />
         </div>
 

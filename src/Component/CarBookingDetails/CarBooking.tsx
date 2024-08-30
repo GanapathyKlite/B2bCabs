@@ -1,28 +1,65 @@
 import React from "react";
 import "./CarBooking.css";
-import carIcon from "../../Assets/Car_icon.svg";
 import Footer from "../Footer/Footer";
-import {  Tooltip } from "antd";
-import { useLocation } from 'react-router-dom';
-import parse from 'html-react-parser';
+import { Tooltip } from "antd";
+import { useLocation } from "react-router-dom";
+import parse from "html-react-parser";
+import { Modal } from "antd";
 
 // Icons Start
-import {
-  FaArrowRightArrowLeft,
-  FaCheck,
-  FaCircleCheck,
-} from "react-icons/fa6";
+import { FaArrowRightArrowLeft, FaCheck, FaCircleCheck } from "react-icons/fa6";
 import { GrMapLocation } from "react-icons/gr";
 import { TbClockX } from "react-icons/tb";
+import {
+  IoMdArrowRoundForward,
+  IoIosArrowForward,
+  IoIosArrowDropdownCircle,
+} from "react-icons/io";
+import { SiRazorpay } from "react-icons/si";
+import { BsCcCircleFill } from "react-icons/bs";
+import { GiWallet } from "react-icons/gi";
 import { FaGasPump, FaRegSnowflake, FaTv, FaMusic } from "react-icons/fa";
 import { BiSolidCarGarage } from "react-icons/bi";
-import { GiCharging, GiCarDoor } from "react-icons/gi";
+import { GiCharging } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
-import { GoDotFill } from "react-icons/go";
-import { BsExclamationCircle } from "react-icons/bs";
+import { BsCurrencyRupee, BsExclamationCircle } from "react-icons/bs";
 // Icons End
 
+// mui
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+
+const paymentOptions = [
+  {
+    paymentType: "Wallet",
+    paymentIcon: <GiWallet />,
+  },
+  {
+    paymentType: "Razorpay",
+    paymentIcon: <SiRazorpay />,
+  },
+  {
+    paymentType: "CCAvenue",
+    paymentIcon: <BsCcCircleFill />,
+  },
+];
+
 const CarBooking: React.FC = () => {
+  const [paymentModalBoxOpen, setPaymentModalBoxOpen] =
+    React.useState<boolean>(false);
+  const [modalBoxLoading, setModalBoxLoading] = React.useState<boolean>(true);
+
+  const showModalBox = () => {
+    setPaymentModalBoxOpen(true);
+    setModalBoxLoading(true);
+
+    // Simple loading mock. You should add cleanup logic in real world.
+    setTimeout(() => {
+      setModalBoxLoading(false);
+    }, 20);
+  };
+
   React.useEffect(() => {
     document.documentElement.scrollTop = document.documentElement.clientHeight;
     document.documentElement.scrollLeft = document.documentElement.clientWidth;
@@ -34,14 +71,13 @@ const CarBooking: React.FC = () => {
   const endcity = location.state.endcity;
   const startdate = location.state.startdate;
   const enddate = location.state.enddate;
-  const imageURL = `${import.meta.env.VITE_API_IMG_URL}`; 
+  const imageURL = `${import.meta.env.VITE_API_IMG_URL}`;
   const carImage = `${imageURL}${car.image}`;
-  console.log("amenities",car.description);
-  
+  console.log("amenities", car.description);
 
   const handleOpenTerms = (): void => {
     const newWindow: Window | null = window.open("", "_blank");
-  
+
     if (newWindow) {
       newWindow.document.write(`<html>
         <head>
@@ -86,13 +122,13 @@ const CarBooking: React.FC = () => {
       newWindow.document.close();
     }
   };
-  const descriptionItems = car.description.split('|');
+  const descriptionItems = car.description.split("|");
   const iconMap: { [key: string]: JSX.Element } = {
     AC: <FaRegSnowflake key="ac" />,
     Charger: <GiCharging key="charger" />,
     Music: <FaMusic key="music" />,
     Carrier: <BiSolidCarGarage key="carrier" />,
-    TV: <FaTv key="tv" /> 
+    TV: <FaTv key="tv" />,
   };
   return (
     <>
@@ -104,25 +140,28 @@ const CarBooking: React.FC = () => {
             style={{ fontWeight: "var(--font300)" }}
           >
             {/* <span>Bangalore</span> */}
-            { startcity.city}
+            {startcity.city}
             {endcity ? <FaArrowRightArrowLeft /> : null}
             {/* <span>Puducherry, India</span> */}
-           {endcity ? endcity.city : null} 
+            {endcity ? endcity.city : null}
           </div>
           <div
             className="d-flex column-gap-3 font-size14"
             style={{ fontWeight: "var(--font300)" }}
           >
             {/* <span>Round Trip</span>| */}
-            <span>Pickup : 
-              {/* Thu, 15 Feb 24, 12:55 PM */}
-              { startdate}
-              </span>
-              {enddate?(<> <span>
-               |  Drop : {/*Sat, 17 Feb 24, 10:55 AM */}
-                { enddate}
-                </span></>):null}
-            
+            <span>
+              Pickup :{/* Thu, 15 Feb 24, 12:55 PM */}
+              {startdate}
+            </span>
+            {enddate ? (
+              <>
+                <span>
+                  | Drop : {/*Sat, 17 Feb 24, 10:55 AM */}
+                  {enddate}
+                </span>
+              </>
+            ) : null}
           </div>
         </div>
       </div>
@@ -133,7 +172,11 @@ const CarBooking: React.FC = () => {
             <div className="sideBars bg-light d-flex justify-content-between">
               <div className="col-lg-3 d-flex">
                 <div className="carIcon d-flex align-items-center justify-content-center">
-                  <img style={{objectFit: "contain"}} src={carImage} alt="caricon" />
+                  <img
+                    style={{ objectFit: "contain" }}
+                    src={carImage}
+                    alt="caricon"
+                  />
                 </div>
               </div>
               <div className="col-lg-8 d-flex">
@@ -143,7 +186,7 @@ const CarBooking: React.FC = () => {
                       <b>
                         {/* Dzire, Etios */}
                         {car.vehicle_name}
-                        </b>
+                      </b>
                     </span>
                     <span className="similarCarName">or similar</span>
                   </div>
@@ -168,10 +211,12 @@ const CarBooking: React.FC = () => {
                       <div className="d-flex font-size14 w-100">
                         <div className="col-lg-4">Extra km fare </div>
                         <div className="col-lg-8 fontInter">
-                          {/* ₹10.8/km after 755 kms */}
-                          ₹ {car.extra_km_fare} /km after  {" "}
-                           {car.extra_duration_fare ? car.extra_duration_fare: car.km}
-                           {" "}km
+                          {/* ₹10.8/km after 755 kms */}₹ {car.extra_km_fare}{" "}
+                          /km after{" "}
+                          {car.extra_duration_fare
+                            ? car.extra_duration_fare
+                            : car.km}{" "}
+                          km
                         </div>
                       </div>
                     </div>
@@ -196,15 +241,10 @@ const CarBooking: React.FC = () => {
                       <div className="d-flex w-100">
                         <div className="col-lg-4 font-size14">Amenities</div>
                         <div className="d-flex col-lg-8 text-primary gap-3 align-items-center">
-                          {/* <FaRegSnowflake />
-                          <GiCharging />
-                          <FaTv /> */}
-
-                          <b>
-                          {descriptionItems.map((item: string) => (
-          iconMap[item] || <span key={item} >{item}</span>
-        ))}
-      </b>
+                          {descriptionItems.map(
+                            (item: string) =>
+                              iconMap[item] || <span key={item}>{item}</span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -239,9 +279,10 @@ const CarBooking: React.FC = () => {
                   <div>
                     <GoDotFill style={{ fontSize: "11px" }} /> Driver Allowance
                   </div> */}
-                    <div className="custom-list-style">{parse (car.inclusion)}</div>
+                  <div className="custom-list-style">
+                    {parse(car.inclusion)}
+                  </div>
                 </div>
-              
               </div>
 
               <div className="right_side col-6 d-flex gap-3 flex-column">
@@ -306,11 +347,10 @@ const CarBooking: React.FC = () => {
                   </div>
                 </div> */}
                 <div className="font-size14 d-flex flex-column gap-3">
-                <div className="custom-list-style">{parse (car.exclusion)}</div>
-
+                  <div className="custom-list-style">
+                    {parse(car.exclusion)}
+                  </div>
                 </div>
-                
-                
               </div>
             </div>
 
@@ -445,11 +485,11 @@ const CarBooking: React.FC = () => {
                   </span>
                   and
                   <span
-      style={{ color: "var(--PrimaryColor)", cursor: "pointer" }}
-      onClick={handleOpenTerms}
-    >
-      Terms of Service
-    </span>
+                    style={{ color: "var(--PrimaryColor)", cursor: "pointer" }}
+                    onClick={handleOpenTerms}
+                  >
+                    Terms of Service
+                  </span>
                 </div>
               </form>
             </div>
@@ -540,88 +580,86 @@ const CarBooking: React.FC = () => {
                 <span style={{ color: "var(--PrimaryColor)" }}>
                   <FaCircleCheck />
                 </span>
-                <span className="font-size11" >
+                <span className="font-size11">
                   {/* <div dangerouslySetInnerHTML={{ __html: car.cancel_policy }} /> */}
-                  Free Cancellation before 
-                  { startdate}
+                  Free Cancellation before
+                  {startdate}
                   {/* 19 Feb 2024, 10:45 AM IST */}
                 </span>
                 <span style={{ color: "var(--PrimaryColor)" }}>
-                <Tooltip
-        title={
-          <div className="">
-            <div dangerouslySetInnerHTML={{ __html: car.cancel_policy }} />
-          </div>
-        }
-        trigger="hover"
-        arrowPointAtCenter  
-      >
-        <span style={{ color: "var(--PrimaryColor)" }}>
-        <BsExclamationCircle />
-        </span>
-      </Tooltip>
-                  
+                  <Tooltip
+                    title={
+                      <div className="">
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: car.cancel_policy,
+                          }}
+                        />
+                      </div>
+                    }
+                    trigger="hover"
+                    arrowPointAtCenter
+                  >
+                    <span style={{ color: "var(--PrimaryColor)" }}>
+                      <BsExclamationCircle />
+                    </span>
+                  </Tooltip>
                 </span>
               </div>
 
               <div className="payment sideBars">
-                <button className="primaryBtn mb-3 w-100">
-                  Pay <span style={{ fontFamily: "Inter !important" }}>₹</span>
-                  <span>1,469</span> Now
+                <button
+                  className="primaryBtn mb-3 w-100"
+                  onClick={showModalBox}
+                >
+                  Pay Now
                 </button>
                 <div className="d-flex flex-column gap-3">
                   <div>
                     <div className="d-flex align-items-center justify-content-between gap-3">
-                      <div className="d-flex align-items-center gap-3">
+                      <div className="d-flex align-items-center gap-2">
                         <input
-                          className="form-check-input"
+                          // className="form-check-input"
                           type="radio"
                           name="exampleRadios"
-                          id="exampleRadios2"
-                          value="option2"
+                          id="paymentOption1"
+                          value="paymentOption1"
                           checked
                         />
-                        <label>
-                          <div>
-                            <div className="font-size14">
-                              Make part payment now
-                            </div>
-                            <div className="font-size12">
-                              Pay the rest to the driver
-                            </div>
+                        <label htmlFor="paymentOption1">
+                          <div className="font-size14">
+                            Make part payment now
+                          </div>
+                          <div className="font-size12">
+                            Pay the rest to the driver
                           </div>
                         </label>
                       </div>
                       <div style={{ fontFamily: "Inter !important" }}>
                         <b>
-                          <span>₹</span> 1,450
+                          <BsCurrencyRupee /> 1,450
                         </b>
                       </div>
                     </div>
                   </div>
                   <div>
                     <div className="d-flex align-items-center justify-content-between gap-3">
-                      <div className="d-flex align-items-center gap-3">
+                      <div className="d-flex align-items-center gap-2">
                         <input
-                          className="form-check-input"
                           type="radio"
                           name="exampleRadios"
-                          id="exampleRadios2"
-                          value="option2"
-                          checked
+                          id="paymentOption2"
+                          value="paymentOption2"
                         />
-                        <div>
+                        <label htmlFor="paymentOption2">
                           <div className="font-size14">
                             Make full payment now
                           </div>
-                        </div>
+                        </label>
                       </div>
                       <div>
                         <b>
-                          <span style={{ fontFamily: "Inter !important" }}>
-                            ₹
-                          </span>{" "}
-                          {/* 7,109 */}
+                          <BsCurrencyRupee />
                           {car.total_price}
                         </b>
                       </div>
@@ -643,87 +681,49 @@ const CarBooking: React.FC = () => {
                     </div>
                     <div className="d-flex align-items-center justify-content-end gap-2">
                       <div className="strikeDiagonal font-size12 text-secondary d-flex justify-content-center align-items-center fontInter">
-                        ₹ 
-                        {/* 10,054 */}
+                        <BsCurrencyRupee />
                         {car.total_price}
                       </div>
                       <div className="font-size25 fontWeight500 fontInter">
-                        {/* ₹ 1,150 */}
-                        ₹  {car.total_price}
+                        <BsCurrencyRupee />
+                        {car.total_price}
                       </div>
                     </div>
-              
+
                     <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Tooltip
-        title={
-          <div className="">
-            <ul className="m-0 p-0">
-              <li>
-                <span>Base Fare: </span>
-                <span>
-                  {/* 2084 */}
-                  {car.basic_rate}
-                  </span>
-              </li>
-              {/* <li>
-                <span>State TAX</span>
-                <span>250</span>
-              </li>
-              <li>
-                <span>Toll Charges</span>
-                <span>210</span>
-              </li> */}
-              <li>
-                <span>Taxes & Fees: </span>
-                <span>
-                  {/* 223 */}
-                  {car.tax_amount}
-                  </span>
-              </li>
-            </ul>
-          </div>
-        }
-        trigger="hover"
-        arrowPointAtCenter  
-      >
-        <span style={{ color: "var(--PrimaryColor)" }}>
-          Fare Breakup
-        </span>
-      </Tooltip>
-    </div>
-                    
-                    {/* <div className="font-size14 text-end position-relative">
-                      
-                      <span style={{ color: "var(--PrimaryColor)" }}>
-                        Fare Breakup
-                      </span>
-                      <div className="position-absolute text-light p-2 rounded bg-dark">
-                        <ul>
-                          <li>
-                            <span>Base Fare</span>
-                            <span>2084</span>
-                          </li>
-                          <li>
-                            <span>State TAX</span>
-                            <span>250</span>
-                          </li>
-                          <li>
-                            <span>Toll Charges</span>
-                            <span>210</span>
-                          </li>
-                          <li>
-                            <span>Taxes & Fees</span>
-                            <span>223</span>
-                          </li>
-                        </ul>
-                      </div>
-                    </div> */}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {/* <Tooltip
+                        title={
+                          <div className="">
+                            <ul className="m-0 p-0">
+                              <li>
+                                <span>Base Fare: </span>
+                                <span>
+                                  {car.basic_rate}
+                                </span>
+                              </li>
+                              <li>
+                                <span>Taxes & Fees: </span>
+                                <span>
+                                  {car.tax_amount}
+                                </span>
+                              </li>
+                            </ul>
+                          </div>
+                        }
+                        trigger="hover"
+                        arrowPointAtCenter
+                      >
+                        <span style={{ color: "var(--PrimaryColor)" }}>
+                          Fare Breakup
+                        </span>
+                      </Tooltip> */}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -731,6 +731,92 @@ const CarBooking: React.FC = () => {
           </div>
         </div>
       </div>
+      <Modal
+        title={<p className="m-0">Select Payment Mode</p>}
+        footer={null}
+        loading={modalBoxLoading}
+        className="selectPaymentMode col-12 col-md-6"
+        // style={{ minWidth: "350", maxWidth: "550px" }}
+        open={paymentModalBoxOpen}
+        onCancel={() => setPaymentModalBoxOpen(false)}
+      >
+        <div className="paymentDetailsDiv">
+          <div className="paymentDetails">
+            <Accordion className="bg-transparent shadow-none w-100 flex-column">
+              <AccordionSummary
+                expandIcon={<IoIosArrowDropdownCircle />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+                className="p-0 m-0 dashBoardNavBarTitle w-100"
+              >
+                <div className="dueAmountNowDiv">
+                  <div>Due Now</div>
+                  <div className="dueAmount">
+                    <BsCurrencyRupee />
+                    1,857
+                  </div>
+                </div>
+              </AccordionSummary>
+              <AccordionDetails className="dueAmountFareBarkUp">
+                <ul className="m-0 px-2 pt-2">
+                  <li>
+                    <span>
+                      <span></span>
+                      <span>Base Fare:</span>
+                    </span>
+                    <span className="amount">{car.basic_rate}</span>
+                  </li>
+                  <li>
+                    <span>
+                      <span></span>
+                      <span>Taxes & Fees:</span>
+                    </span>
+                    <span className="amount">{car.tax_amount}</span>
+                  </li>
+                </ul>
+              </AccordionDetails>
+            </Accordion>
+          </div>
+          <div className="travelTypeDiv">
+            <hr />
+            <div className="travelType">Trip Type: Airport Transfers</div>
+          </div>
+          <div className="carBookingAddressDetailsDiv">
+            <div className="carBookingAddressDetails">
+              <p>
+                No: 19, New Street, Rangavilas Thottam, Muthiyalpet,
+                Puducherry-605003
+              </p>
+              <IoMdArrowRoundForward />
+              <p>Chennai International Airport </p>
+            </div>
+            <div className="pickTimeDetails">
+              Pickup on: Thu, 7 Dec 23 | 10:00 AM
+            </div>
+          </div>
+        </div>
+
+        <div className="paymentOption">
+          <p>Pay Options</p>
+          <div className="paymentOptionType">
+            <ul>
+              {paymentOptions.map((paymentOption, index) => (
+                <li key={index}>
+                  <button className="paymentOptionBtn">
+                    <span>
+                      {paymentOption.paymentIcon}
+                      {paymentOption.paymentType}
+                    </span>
+                  </button>
+
+                  <IoIosArrowForward />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Modal>
+
       <Footer />
     </>
   );

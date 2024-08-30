@@ -8,15 +8,23 @@ import Footer from "../Footer/Footer";
 
 const LandingPage = () => {
   return (
-    <div>
-      <Hero />
-      <Services />
-      <Facts />
-      <WhyChooseUs />
+    <>
+      <div id="Hero">
+        <Hero />
+      </div>
+      <div id="ourService">
+        <Services />
+      </div>
+      <div id="Contact">
+        <Facts />
+      </div>
+      <div id="whyChooseUs">
+        <WhyChooseUs />
+      </div>
       <KeyFeatures />
       <Ads />
       <Footer />
-    </div>
+    </>
   );
 };
 

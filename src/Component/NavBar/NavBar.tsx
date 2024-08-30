@@ -6,12 +6,13 @@ import Navbar from "react-bootstrap/Navbar";
 import "./NavBar.css";
 import Modal from "react-bootstrap/Modal";
 import Offcanvas from "react-bootstrap/Offcanvas";
+import ScrollspyNav from "react-ui-scrollspy";
 import { NavLink, Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Notyf } from "notyf";
-import { Typography, Box, LinearProgress, } from '@mui/material';
-import { useAuth } from '../Auth/AuthContext';
+import { Typography, Box, LinearProgress } from "@mui/material";
+import { useAuth } from "../Auth/AuthContext";
 
 // Initialize Notyf instance with updated configuration
 const notyf = new Notyf({
@@ -33,24 +34,34 @@ interface PasswordForm {
 const NavBar: React.FC = () => {
   const isSignUpRoute = location.pathname.startsWith("/signup");
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [shownewPassModal, setShownewPassModal] = useState(false);
   const [showOffcanvas, setShowOffcanvas] = useState<boolean>(false); // State for Offcanvas visibility
-  const [formData, setFormData] = useState<LoginForm>({ email: '', password: '' ,remember: false,});
-  const [passwordFormData, setPasswordFormData] = useState<PasswordForm>({newPassword: '',confirmPassword: ''});
+  const [formData, setFormData] = useState<LoginForm>({
+    email: "",
+    password: "",
+    remember: false,
+  });
+  const [passwordFormData, setPasswordFormData] = useState<PasswordForm>({
+    newPassword: "",
+    confirmPassword: "",
+  });
   const [countdown, setCountdown] = useState(30);
   const [showOTPField, setShowOTPField] = useState(true);
   const [showResendButton, setShowResendButton] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [show, setShow] = useState(false);
   const [issubmitButtonDisabled, setIssubmitButtonDisabled] = useState(false);
   const [isresendButtonDisabled, setIsresendButtonDisabled] = useState(true);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<
+    string | null
+  >(null);
   const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
   const [passwordToken, setPasswordToken] = useState("");
   const { login } = useAuth();
@@ -58,26 +69,29 @@ const NavBar: React.FC = () => {
   useEffect(() => {
     const loginData = {
       username: "Agent Panel",
-      password: "agent@2024"
+      password: "agent@2024",
     };
 
     const getAuthKey = async () => {
       try {
-        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/login`, loginData, {
-          headers: {
-            'Content-Type': 'application/json',
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/login`,
+          loginData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
           }
-        });
+        );
 
         if (response.status === 200 && response.data.status) {
           const { key } = response.data;
-          sessionStorage.setItem('authkey', key); 
+          sessionStorage.setItem("authkey", key);
         } else {
-          console.error('Login failed:', response.data.message);
+          console.error("Login failed:", response.data.message);
         }
       } catch (error) {
         console.log(error);
-        
       }
     };
 
@@ -102,20 +116,30 @@ const NavBar: React.FC = () => {
 
   useEffect(() => {
     // Check if the password meets the criteria and confirm password matches
-    const passwordValidation = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    const isValidPassword = passwordValidation.test(passwordFormData.newPassword);
-    const doPasswordsMatch = passwordFormData.newPassword === passwordFormData.confirmPassword;
+    const passwordValidation =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const isValidPassword = passwordValidation.test(
+      passwordFormData.newPassword
+    );
+    const doPasswordsMatch =
+      passwordFormData.newPassword === passwordFormData.confirmPassword;
 
-    setPasswordError(isValidPassword ? null : 'Password must contain atleast one capital letter, one special character, one integer and small letters, length should be more than 7');
-    setConfirmPasswordError(doPasswordsMatch ? null : 'Passwords do not match.');
+    setPasswordError(
+      isValidPassword
+        ? null
+        : "Password must contain atleast one capital letter, one special character, one integer and small letters, length should be more than 7"
+    );
+    setConfirmPasswordError(
+      doPasswordsMatch ? null : "Passwords do not match."
+    );
 
     setIsPasswordValid(isValidPassword && doPasswordsMatch);
   }, [passwordFormData]);
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem('email');
-    const storedPassword = localStorage.getItem('password');
-    const rememberMe = localStorage.getItem('rememberMe') === 'true';
+    const storedEmail = localStorage.getItem("email");
+    const storedPassword = localStorage.getItem("password");
+    const rememberMe = localStorage.getItem("rememberMe") === "true";
 
     if (rememberMe && storedEmail && storedPassword) {
       setFormData({
@@ -140,16 +164,13 @@ const NavBar: React.FC = () => {
     navigate("/signup");
   };
 
-  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
-  
-  
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -159,158 +180,172 @@ const NavBar: React.FC = () => {
     });
   };
 
-  const handleSubmit = async(e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       if (formData.remember) {
-        localStorage.setItem('email', formData.email);
-        localStorage.setItem('password', formData.password);
-        localStorage.setItem('rememberMe', 'true');
+        localStorage.setItem("email", formData.email);
+        localStorage.setItem("password", formData.password);
+        localStorage.setItem("rememberMe", "true");
       } else {
-        localStorage.removeItem('email');
-        localStorage.removeItem('password');
-        localStorage.removeItem('rememberMe');
+        localStorage.removeItem("email");
+        localStorage.removeItem("password");
+        localStorage.removeItem("rememberMe");
       }
-      
+
       const response = await login(formData);
 
-    if (response?.status === 200 && response.data.status) {
-      const { token } = response.data;
-      navigate('/dashboard');
-      sessionStorage.setItem('authToken', token);
-    } else if (response?.status === 200 && response.data.status === false) {
-      const errorMessage = response?.data?.message;
-      notyf.error(errorMessage); 
+      if (response?.status === 200 && response.data.status) {
+        const { token } = response.data;
+        navigate("/dashboard");
+        sessionStorage.setItem("authToken", token);
+      } else if (response?.status === 200 && response.data.status === false) {
+        const errorMessage = response?.data?.message;
+        notyf.error(errorMessage);
+      }
+    } catch (error: any) {
+      notyf.error(error.message || "An unexpected error occurred");
     }
-    }  catch (error: any) {
-  notyf.error(error.message || 'An unexpected error occurred');
-}
   };
 
-  
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
   const togglePasswordVisibility2 = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-  
+
   const expand = "lg";
-  
+
   const validateEmail = (email: string) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
-const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const emailValue = e.target.value;
-  setEmail(emailValue);
-  setIsEmailValid(validateEmail(emailValue));
-};
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const emailValue = e.target.value;
+    setEmail(emailValue);
+    setIsEmailValid(validateEmail(emailValue));
+  };
 
-const handleEmailSubmit = async(e: React.FormEvent) => {
-  e.preventDefault();
-  if (isEmailValid) {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isEmailValid) {
       try {
         setIssubmitButtonDisabled(true);
         setIsresendButtonDisabled(!isresendButtonDisabled);
-        
-        const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/agent/forgot-password`, { verifyEmail: email });
+
+        const response = await axios.put(
+          `${import.meta.env.VITE_API_BASE_URL}/agent/forgot-password`,
+          { verifyEmail: email }
+        );
         if (response.status === 200 && response.data.status) {
           notyf.success(response.data.message);
           setShow(true);
           setShowOTPField(true);
           setShowResendButton(false);
           setCountdown(30);
-        } else if(response.status === 200 && response.data.status === false){
+        } else if (response.status === 200 && response.data.status === false) {
           setIssubmitButtonDisabled(false);
           setIsresendButtonDisabled(false);
           const errorMessage = response?.data?.message;
           notyf.error(errorMessage);
         }
       } catch (error) {
-        
         if (axios.isAxiosError(error)) {
-          const errorMessage = error.response?.data?.message || 'An error occurred';
+          const errorMessage =
+            error.response?.data?.message || "An error occurred";
           notyf.error(errorMessage);
         } else {
-          notyf.error('An unexpected error occurred');
+          notyf.error("An unexpected error occurred");
         }
       }
-  }
-};
+    }
+  };
 
-const handleOtp = async(e: React.FormEvent) => {
-  e.preventDefault();
-  if (isEmailValid) {
+  const handleOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isEmailValid) {
       try {
-        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/verifyOTP`, {"otp": otp,"EmailORMobile":email,"type":"agent"});
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/verifyOTP`,
+          { otp: otp, EmailORMobile: email, type: "agent" }
+        );
         if (response.status === 200 && response.data.status) {
           notyf.success(response.data.message);
           setShow(true);
-          setShowResendButton(false); 
+          setShowResendButton(false);
           setShowForgotPasswordModal(false);
           setShownewPassModal(true);
           setPasswordToken(response.data.token);
-        } else if(response.status === 200 && response.data.status === false){
+        } else if (response.status === 200 && response.data.status === false) {
           const errorMessage = response?.data?.message;
           notyf.error(errorMessage);
         }
       } catch (error) {
-        
         if (axios.isAxiosError(error)) {
-          const errorMessage = error.response?.data?.message || 'An error occurred';
+          const errorMessage =
+            error.response?.data?.message || "An error occurred";
           notyf.error(errorMessage);
         } else {
-          notyf.error('An unexpected error occurred');
+          notyf.error("An unexpected error occurred");
         }
       }
-  }
-  
-}
-const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  const invalidKeys = ['e', 'E', '+', '-'];
-  const isNavigationKey = [
-    'Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Delete', 'Home', 'End'
-  ].includes(e.key);
+    }
+  };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const invalidKeys = ["e", "E", "+", "-"];
+    const isNavigationKey = [
+      "Backspace",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowUp",
+      "ArrowDown",
+      "Tab",
+      "Delete",
+      "Home",
+      "End",
+    ].includes(e.key);
 
-  if (isNavigationKey || e.key === 'Enter') {
-    return;
-  }
+    if (isNavigationKey || e.key === "Enter") {
+      return;
+    }
 
-  if (invalidKeys.includes(e.key) || !/\d/.test(e.key)) {
+    if (invalidKeys.includes(e.key) || !/\d/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handlePasswordSubmit = async (e: FormEvent) => {
     e.preventDefault();
-  }
-};
+    if (isPasswordValid) {
+      try {
+        const response = await axios.put(
+          `${import.meta.env.VITE_API_BASE_URL}/agent/reset-password`,
+          { token: passwordToken, newPassword: passwordFormData.newPassword }
+        );
+        if (response.status === 200 && response.data.status) {
+          notyf.success(response.data.message);
 
-const handlePasswordSubmit = async(e: FormEvent)=>{
-  e.preventDefault();
-  if (isPasswordValid) {
-    try {
-      const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/agent/reset-password`, {"token": passwordToken,"newPassword":passwordFormData.newPassword});
-      if (response.status === 200 && response.data.status) {
-        notyf.success(response.data.message);
-        
-        setShownewPassModal(false);
-        setShowModal(true);
-      } else if(response.status === 200 && response.data.status === false){
-        const errorMessage = response?.data?.message;
-        notyf.error(errorMessage);
-      }
-    } catch (error) {
-      
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || 'An error occurred';
-        notyf.error(errorMessage);
-      } else {
-        notyf.error('An unexpected error occurred');
+          setShownewPassModal(false);
+          setShowModal(true);
+        } else if (response.status === 200 && response.data.status === false) {
+          const errorMessage = response?.data?.message;
+          notyf.error(errorMessage);
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const errorMessage =
+            error.response?.data?.message || "An error occurred";
+          notyf.error(errorMessage);
+        } else {
+          notyf.error("An unexpected error occurred");
+        }
       }
     }
-}
-  
-}
+  };
   return (
-    <div className="navBarDiv">
+    <div className="navBarDiv" style={{ scrollPaddingTop: "20%" }}>
       <Navbar expand={expand} className="navBarBackGround">
         <Container>
           <Navbar.Brand className="m-0 d-block d-lg-none" href="/">
@@ -335,53 +370,36 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
               {isSignUpRoute ? (
                 <></>
               ) : (
-                <Nav className="justify-content-center row-gap-4 align-items-center">
-                  <NavLink
-                    className="py-0 px-4 NavBarLink"
-                    to="/"
-                    end
-                    onClick={handleCloseOffcanvas}
+                <>
+                  <Nav className="justify-content-center row-gap-4 align-items-center">
+                    <ScrollspyNav
+                      scrollTargetIds={[
+                        "Hero",
+                        "aboutUs",
+                        "ourService",
+                        "Contact",
+                      ]}
+                      activeNavClass="navBarCompoundActive"
+                      scrollDuration="1000"
+                      headerBackground="true"
+                    >
+                      <div className="navBarLinks d-flex flex-column flex-lg-row">
+                        <a href="#Hero">Home</a>
+                        <a href="#ourService">Services</a>
+                        <a href="#whyChooseUs">Why Choose Us</a>
+                        <a href="#Contact">Contact Us</a>
+                      </div>
+                    </ScrollspyNav>
+                  </Nav>
+                  <button
+                    className="primaryBtn"
+                    type="button"
+                    onClick={handleShowModal}
                   >
-                    {({ isActive }) => (
-                      <span className={isActive ? "active" : ""}>Home</span>
-                    )}
-                  </NavLink>
-                  <NavLink
-                    className="py-0 px-4 NavBarLink"
-                    to="/aboutUs"
-                    onClick={handleCloseOffcanvas}
-                  >
-                    {({ isActive }) => (
-                      <span className={isActive ? "active" : ""}>About Us</span>
-                    )}
-                  </NavLink>
-                  <NavLink
-                    className="py-0 px-4 NavBarLink"
-                    to="/services"
-                    onClick={handleCloseOffcanvas}
-                  >
-                    {({ isActive }) => (
-                      <span className={isActive ? "active" : ""}>Services</span>
-                    )}
-                  </NavLink>
-                  <NavLink
-                    className="py-0 px-4 NavBarLink"
-                    to="/contact"
-                    onClick={handleCloseOffcanvas}
-                  >
-                    {({ isActive }) => (
-                      <span className={isActive ? "active" : ""}>Contact</span>
-                    )}
-                  </NavLink>
-                </Nav>
+                    Agent Login
+                  </button>
+                </>
               )}
-              <button
-                className="primaryBtn"
-                type="button"
-                onClick={handleShowModal}
-              >
-                Agent Login
-              </button>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
         </Container>
@@ -425,12 +443,9 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
                 required
                 autoComplete="off"
               />
-               <span
-    onClick={togglePasswordVisibility}
-    className="passwordEye"
-  >
-    {showPassword ? <FaEye /> : <FaEyeSlash />}
-  </span>
+              <span onClick={togglePasswordVisibility} className="passwordEye">
+                {showPassword ? <FaEye /> : <FaEyeSlash />}
+              </span>
             </div>
 
             <div
@@ -462,8 +477,7 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
                 </Link>
               </div>
             </div>
-            <div>
-              </div>
+            <div></div>
             <div className="d-flex justify-content-center">
               <button className="primaryBtn" data-bs-dismiss="modal">
                 Sign In
@@ -484,145 +498,170 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
           </form>
         </Modal.Body>
       </Modal>
-      <Modal show={showForgotPasswordModal} 
-      backdrop="static"
-      onHide={() => {
-        setShowForgotPasswordModal(false);
-        setIssubmitButtonDisabled(false);
-        setShow(false);
-        setOtp("");}} centered>
+      <Modal
+        show={showForgotPasswordModal}
+        backdrop="static"
+        onHide={() => {
+          setShowForgotPasswordModal(false);
+          setIssubmitButtonDisabled(false);
+          setShow(false);
+          setOtp("");
+        }}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Forgot Password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        
-      <Typography variant="body1" gutterBottom>
-        Enter your registered Email id below to receive Login OTP
-      </Typography>
-      <Box
-      >
-        <div className="inputBoxDiv">
-        <label htmlFor="email">
-        Email <span className="text-danger">*</span>
-      </label>
-
-      <input
-    type="email"
-    id="email"
-    disabled={showOTPField && show}
-    placeholder="Enter your email id"
-    value={email}
-    onChange={handleEmailChange}
-    className={`loginFormInputBox ${!isEmailValid && email !== '' ? 'is-invalid' : ''}`} // Add 'is-invalid' class if email is not valid
-  />
-  
-  {!isEmailValid && email !== '' && (
-    <p className="text-danger">Please enter a valid email</p>
-  )}
-            </div>
-       {!show ? (
-       
-       <div className="d-flex justify-content-center">
-              <button className="primaryBtn" data-bs-dismiss="modal" 
-               disabled={!isEmailValid || issubmitButtonDisabled}
-               onClick={handleEmailSubmit}
-                style={{
-                  marginTop: '20px',
-                  backgroundColor: !isEmailValid || issubmitButtonDisabled ? '#d3d3d3' : '#089848', 
-                  color: '#fff',
-                  cursor: !isEmailValid || issubmitButtonDisabled ? 'default' : 'pointer', 
-                  border: 'none',
-                }}>
-                Submit
-              </button>
-            </div>
-       ):null}
-       
-      </Box>
-      {show ? 
-      (<Box >
-
-{showOTPField && (
-        <div>
-        <h5 style={{ textAlign: 'center', marginTop: '20px' }}>Verify OTP</h5>
-         
-          <div className="inputBoxDiv">
-  <label htmlFor="email">
-    OTP <span className="text-danger">*</span>
-  </label>
-          <input
-          className="loginFormInputBox"
-            placeholder="Enter the OTP"
-            maxLength={4}
-            onChange={e=>{
-              setOtp(e.target.value)
-          }}
-          onKeyDown={handleKeyDown}
-            type="text"
-          />
-          </div>
-          <Typography variant="body2" color="textSecondary" style={{ marginTop: '10px' }}>
-            Time remaining: {countdown} seconds
+          <Typography variant="body1" gutterBottom>
+            Enter your registered Email id below to receive Login OTP
           </Typography>
-          <LinearProgress
-            variant="determinate"
-            value={(countdown / 30) * 100}
-            style={{ marginTop: '10px' }}
-          />
-        </div>
-      )}
-{showResendButton && (
-        <div className="d-flex justify-content-center">
-        <button className="primaryBtn" data-bs-dismiss="modal" 
-        onClick={handleEmailSubmit}
-        style={{
-          marginTop: '20px',
-          backgroundColor: isresendButtonDisabled ? '#d3d3d3' : '#089848', 
-          color: '#fff',
-          cursor: isresendButtonDisabled ? 'not-allowed' : 'pointer', 
-          border: 'none',
-        }}
-        disabled={ isresendButtonDisabled}>
-          Resend OTP
-        </button>
-      </div>
-      )}
-      {!showResendButton && (
-        <div className="d-flex justify-content-center">
-        <button className="primaryBtn" data-bs-dismiss="modal" 
-       disabled={!otp}
-       onClick={handleOtp}
-       style={{
-        marginTop: '20px',
-        backgroundColor: !otp ? '#d3d3d3' : '#089848', 
-        color: '#fff',
-        cursor: !otp ? 'not-allowed' : 'pointer', 
-        border: 'none',
-      }}
-      >
-          Verify
-        </button>
-      </div>
-      )
+          <Box>
+            <div className="inputBoxDiv">
+              <label htmlFor="email">
+                Email <span className="text-danger">*</span>
+              </label>
 
-      }
+              <input
+                type="email"
+                id="email"
+                disabled={showOTPField && show}
+                placeholder="Enter your email id"
+                value={email}
+                onChange={handleEmailChange}
+                className={`loginFormInputBox ${
+                  !isEmailValid && email !== "" ? "is-invalid" : ""
+                }`} // Add 'is-invalid' class if email is not valid
+              />
 
-        </Box>):null}
+              {!isEmailValid && email !== "" && (
+                <p className="text-danger">Please enter a valid email</p>
+              )}
+            </div>
+            {!show ? (
+              <div className="d-flex justify-content-center">
+                <button
+                  className="primaryBtn"
+                  data-bs-dismiss="modal"
+                  disabled={!isEmailValid || issubmitButtonDisabled}
+                  onClick={handleEmailSubmit}
+                  style={{
+                    marginTop: "20px",
+                    backgroundColor:
+                      !isEmailValid || issubmitButtonDisabled
+                        ? "#d3d3d3"
+                        : "#089848",
+                    color: "#fff",
+                    cursor:
+                      !isEmailValid || issubmitButtonDisabled
+                        ? "default"
+                        : "pointer",
+                    border: "none",
+                  }}
+                >
+                  Submit
+                </button>
+              </div>
+            ) : null}
+          </Box>
+          {show ? (
+            <Box>
+              {showOTPField && (
+                <div>
+                  <h5 style={{ textAlign: "center", marginTop: "20px" }}>
+                    Verify OTP
+                  </h5>
+
+                  <div className="inputBoxDiv">
+                    <label htmlFor="email">
+                      OTP <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      className="loginFormInputBox"
+                      placeholder="Enter the OTP"
+                      maxLength={4}
+                      onChange={(e) => {
+                        setOtp(e.target.value);
+                      }}
+                      onKeyDown={handleKeyDown}
+                      type="text"
+                    />
+                  </div>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    style={{ marginTop: "10px" }}
+                  >
+                    Time remaining: {countdown} seconds
+                  </Typography>
+                  <LinearProgress
+                    variant="determinate"
+                    value={(countdown / 30) * 100}
+                    style={{ marginTop: "10px" }}
+                  />
+                </div>
+              )}
+              {showResendButton && (
+                <div className="d-flex justify-content-center">
+                  <button
+                    className="primaryBtn"
+                    data-bs-dismiss="modal"
+                    onClick={handleEmailSubmit}
+                    style={{
+                      marginTop: "20px",
+                      backgroundColor: isresendButtonDisabled
+                        ? "#d3d3d3"
+                        : "#089848",
+                      color: "#fff",
+                      cursor: isresendButtonDisabled
+                        ? "not-allowed"
+                        : "pointer",
+                      border: "none",
+                    }}
+                    disabled={isresendButtonDisabled}
+                  >
+                    Resend OTP
+                  </button>
+                </div>
+              )}
+              {!showResendButton && (
+                <div className="d-flex justify-content-center">
+                  <button
+                    className="primaryBtn"
+                    data-bs-dismiss="modal"
+                    disabled={!otp}
+                    onClick={handleOtp}
+                    style={{
+                      marginTop: "20px",
+                      backgroundColor: !otp ? "#d3d3d3" : "#089848",
+                      color: "#fff",
+                      cursor: !otp ? "not-allowed" : "pointer",
+                      border: "none",
+                    }}
+                  >
+                    Verify
+                  </button>
+                </div>
+              )}
+            </Box>
+          ) : null}
         </Modal.Body>
       </Modal>
 
-      <Modal show={shownewPassModal} 
-      backdrop="static"
-      onHide={()=>{
-        setShownewPassModal(false)
-      }} centered>
+      <Modal
+        show={shownewPassModal}
+        backdrop="static"
+        onHide={() => {
+          setShownewPassModal(false);
+        }}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>New Password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <form className="loginForm" onSubmit={handlePasswordSubmit}>
+          <form className="loginForm" onSubmit={handlePasswordSubmit}>
             <div className="inputBoxDiv">
-            
               <label htmlFor="newPassword">
                 Enter New Password <span className="text-danger">*</span>
               </label>
@@ -637,18 +676,15 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
                 required
                 autoComplete="off"
               />
-                    <span  className="passwordEye"
-    onClick={togglePasswordVisibility}
-  >
-    {showPassword ? <FaEye /> : <FaEyeSlash />}
-  </span>   
-             
+              <span className="passwordEye" onClick={togglePasswordVisibility}>
+                {showPassword ? <FaEye /> : <FaEyeSlash />}
+              </span>
             </div>
             {passwordError && <p className="text-danger">{passwordError}</p>}
 
             <div className="inputBoxDiv">
               <label htmlFor="confirmPassword">
-               Confirm Password <span className="text-danger">*</span>
+                Confirm Password <span className="text-danger">*</span>
               </label>
               <input
                 type={showConfirmPassword ? "text" : "password"}
@@ -661,28 +697,32 @@ const handlePasswordSubmit = async(e: FormEvent)=>{
                 required
                 autoComplete="off"
               />
-                <span  className="passwordEye"
-    onClick={togglePasswordVisibility2}
-  >
-    {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
-  </span>   
-             
-              </div>
-              {confirmPasswordError && <p className="text-danger">{confirmPasswordError}</p>}
-               <div className="d-flex justify-content-center">
-              <button className="primaryBtn" data-bs-dismiss="modal" disabled={!isPasswordValid}
+              <span className="passwordEye" onClick={togglePasswordVisibility2}>
+                {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
+              </span>
+            </div>
+            {confirmPasswordError && (
+              <p className="text-danger">{confirmPasswordError}</p>
+            )}
+            <div className="d-flex justify-content-center">
+              <button
+                className="primaryBtn"
+                data-bs-dismiss="modal"
+                disabled={!isPasswordValid}
                 style={{
-                  marginTop: '20px',
-                  backgroundColor: !isPasswordValid ? '#d3d3d3' : '#089848', 
-                  color: '#fff',
-                  cursor: !isPasswordValid ? 'default' : 'pointer', 
-                  border: 'none',
-                }}>
+                  marginTop: "20px",
+                  backgroundColor: !isPasswordValid ? "#d3d3d3" : "#089848",
+                  color: "#fff",
+                  cursor: !isPasswordValid ? "default" : "pointer",
+                  border: "none",
+                }}
+              >
                 Submit
               </button>
-            </div></form>
+            </div>
+          </form>
         </Modal.Body>
-        </Modal>
+      </Modal>
     </div>
   );
 };
