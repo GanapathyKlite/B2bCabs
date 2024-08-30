@@ -12,21 +12,27 @@ import DashboardNavbar from "./Component/Dashboard/Component/DashboardNavBar";
 import CarShowingPage from "./Component/CarList/CarShowingPage";
 import PrivateRoute from "./Component/Auth/PrivateRoute";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+
 import UpcomingBooking from "./Component/ManageBooking/Component/UpcomingBooking";
 import CanceledBooking from "./Component/ManageBooking/Component/CanceledBooking";
 import PastBooking from "./Component/ManageBooking/Component/PastBooking";
+
 import Invoice from "./Component/Invoice/Invoice";
 import DriverStatus from "./Component/DriverStatus/DriverStatus";
 import PaymentHistory from "./Component/PaymentHistory/PaymentHistory";
 import ViewProfile from "./Component/ViewProfile/ViewProfile";
 import ManageBooking from "./Component/ManageBooking/ManageBooking";
+
+
 import { useEffect } from "react";
 import { useAuth } from "./Component/Auth/AuthContext";
+
 
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const { authToken } = useAuth();
+
 
   const publicRoutes = ["/", "/signup"];
 
@@ -35,10 +41,12 @@ function App() {
   useEffect(() => {
     if (!authToken && !publicRoutes.includes(location.pathname)) {
       navigate("/");
+
     }
   }, [authToken, location.pathname, navigate]);
 
   useEffect(() => {
+
     if (location.pathname === "/dashboard") {
       window.history.pushState(null, "", window.location.href);
 
@@ -49,10 +57,12 @@ function App() {
       };
     }
 
+
     return () => {
       window.onpopstate = null;
     };
   }, [location.pathname]);
+
 
   return (
     <div className="App">
