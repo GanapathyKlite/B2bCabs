@@ -23,7 +23,7 @@ const CompanyIDProofInfo = () => {
             id="pan_no"
             value="ABCTY1234D"
             name="pan_no"
-            className="form-control border border-secondary rounded-3 p-3 w-100"
+            className="form-control border-0 border-secondary rounded-3 px-2 py-1 w-100"
           />
         </div>
 
@@ -50,7 +50,7 @@ const CompanyIDProofInfo = () => {
             id="gst_no"
             value="10AAJCR2207E1Z2"
             name="gst_no"
-            className="form-control border border-secondary rounded-3 p-3 w-100"
+            className="form-control border-0 border-secondary rounded-3 px-2 py-1 w-100"
           />
         </div>
 

@@ -1,13 +1,7 @@
-
 .navbar-brand {
   width: 150px;
 }
 
-.NavBarLink {
-  font-weight: 300 !important;
-  color: var(--SecondaryColor) !important;
-  font-size: 18px !important;
-}
 .agentLoginBtn {
   border: none;
   color: var(--whiteColor);
@@ -24,35 +18,30 @@
 
 /* start NavBar link style for bottom line */
 
-.NavBarLink {
-  cursor: pointer;
-  position: relative;
-}
-
-.NavBarLink::after {
+/* .navBarLinks::after {
   content: "";
   position: absolute;
-  width: 30%;
+  width: 7%;
   height: 2px;
   bottom: 0px;
-  left: 20px;
+  left: 0;
   transform: scaleX(0);
   background: var(--PrimaryColor);
   transform-origin: center;
   transition: transform 0.5s ease-out;
 }
 
-.NavBarLink:hover::after {
+.navBarLinks:hover::after {
   color: var(--blackColor);
   transform: scaleX(1);
   transform-origin: bottom left;
 }
 
-.NavBarLink.active::after {
+.navBarLinks.active::after {
   transform: scaleX(1);
   background: var(--PrimaryColor);
   transform-origin: center;
-}
+} */
 
 /* end NavBar link style for bottom line */
 
@@ -200,4 +189,47 @@
 
 .is-invalid {
   border-color: red;
+}
+
+.navBarLinks {
+  display: flex;
+  align-items: center;
+  gap: 45px;
+  font-weight: 300 !important;
+  color: var(--SecondaryColor) !important;
+  font-size: 18px !important;
+  cursor: pointer;
+  position: relative;
+}
+
+.navBarLinks a {
+  color: var(--SecondaryColor) !important;
+  position: relative;
+  text-decoration: none;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+.navBarLinks a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--PrimaryColor);
+  transition: width 0.3s ease-in-out;
+}
+
+.navBarLinks a:hover::after {
+  width: 50%;
+}
+
+.navBarLinks a.active::after {
+  width: 50%;
+  background-color: var(--PrimaryColor);
+}
+
+/* Adjust the styling for the active link, if necessary */
+.navBarCompoundActive a {
+  color: var(--PrimaryColor) !important;
 }

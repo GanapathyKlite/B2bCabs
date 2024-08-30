@@ -2,7 +2,10 @@ import "./Services.css";
 
 export const Services = () => {
   return (
-    <section className="we-offer-area text-center bg-gray pt-3 pb-5 px-lg-5 ">
+    <section
+      className="we-offer-area text-center bg-gray pt-3 pb-5 px-lg-5"
+      id="ourServicesSection"
+    >
       <div className="container-fluid ">
         <div className="row">
           <div className="centerDiv">

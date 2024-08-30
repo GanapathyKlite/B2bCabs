@@ -53,3 +53,213 @@
 .fontWeight500 {
   font-weight: 500;
 }
+
+.selectPaymentMode {
+  .ant-modal-content {
+    background-color: #efefef !important;
+    padding: 20px 15px !important;
+    .ant-modal-header {
+      background-color: transparent !important;
+    }
+    .ant-modal-body {
+      display: flex;
+      row-gap: 15px;
+      flex-direction: column;
+      .paymentDetailsDiv {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+        box-shadow: 0 0 10px #0000002e;
+        border-radius: 6px;
+        background-color: var(--whiteColor);
+        .paymentDetails {
+          display: flex;
+          width: 100%;
+          justify-content: space-between;
+          align-items: center;
+
+          div:last-child {
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+          }
+
+          .MuiAccordion-region {
+            width: 100%;
+          }
+
+          .dashBoardNavBarTitle {
+            .dueAmountNowDiv {
+              display: flex;
+              justify-content: space-between;
+              width: 100%;
+              .dueAmount {
+                display: flex;
+                align-items: center;
+                color: var(--PrimaryColor);
+                font-size: 16px;
+                font-weight: 500;
+                svg {
+                  font-size: 16px;
+                }
+              }
+            }
+            svg {
+              font-size: 20px;
+              color: var(--PrimaryColor);
+            }
+          }
+          .dueAmountFareBarkUp {
+            margin: 0;
+            padding: 0 !important;
+            width: 100%;
+            ul {
+              margin: 0;
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              row-gap: 5px;
+              li {
+                justify-content: space-between;
+                display: flex;
+                width: 100%;
+                span {
+                  font-size: 14px;
+                  font-weight: 300 !important;
+                  // color: var(--PrimaryColor);
+                }
+                .amount {
+                  font-size: 14px;
+                  color: gray;
+                  font-weight: 400 !important;
+                }
+              }
+            }
+          }
+        }
+        .travelTypeDiv {
+          position: relative;
+          hr {
+            margin: 0 !important;
+            color: gray;
+            width: 100%;
+          }
+          .travelType {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            background-color: var(--whiteColor);
+            padding: 2.5px 10px 0;
+            border-radius: 50px;
+            border: 1px solid lightgray;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            text-wrap: nowrap;
+            font-weight: 500;
+            color: var(--PrimaryColor);
+          }
+        }
+        .carBookingAddressDetailsDiv {
+          display: flex;
+          width: 100%;
+          row-gap: 5px;
+          margin-top: 5px;
+          flex-direction: column;
+          .carBookingAddressDetails {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            column-gap: 10px;
+            justify-content: space-between;
+            p {
+              margin: 0 !important;
+              text-wrap: nowrap;
+              overflow: hidden;
+              font-size: 16px;
+              font-weight: 500;
+              width: 50%;
+              text-overflow: ellipsis;
+            }
+            svg {
+              flex-grow: 1;
+              font-size: 18px;
+              color: var(--PrimaryColor);
+            }
+          }
+          .pickTimeDetails {
+            font-size: 14px;
+            font-weight: 300;
+          }
+        }
+        p {
+          font-size: 14px;
+          font-weight: 300;
+        }
+      }
+      .paymentOption {
+        p {
+          margin: 0 0 7.5px;
+          font-size: 16px;
+          font-weight: 600;
+        }
+        .paymentOptionType {
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          box-shadow: 0 0 10px #0000002e;
+          row-gap: 10px;
+          border-radius: 6px;
+          background-color: var(--whiteColor);
+
+          ul {
+            padding: 0;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+            margin: 0;
+            li {
+              display: flex;
+              padding: 10px 5px;
+              align-items: center;
+              justify-content: space-between;
+              width: 100%;
+              gap: 5px;
+              border-radius: 8px;
+              transition: 0.2s linear background-color;
+              button {
+                border: none;
+                background-color: transparent;
+                span {
+                  display: flex;
+                  gap: 15px;
+                  font-size: 14px;
+                  font-weight: 500;
+                  align-items: center;
+                  justify-content: center;
+                  svg {
+                    font-size: 20px;
+                    color: gray;
+                  }
+                }
+              }
+
+              svg {
+                font-size: 18px;
+              }
+
+              &:hover {
+                background-color: lightgray;
+                svg {
+                  color: var(--PrimaryColor);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

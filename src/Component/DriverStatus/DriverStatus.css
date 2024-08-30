@@ -1,14 +1,30 @@
 .driverNameSpan {
   font-size: 14px;
-  color: var(--PrimaryColor);
   font-weight: 500 !important;
   display: flex;
   -moz-column-gap: 5px;
        column-gap: 5px;
   align-items: center;
 }
-.driverNameSpan span {
+.driverNameSpan .driverStatusDetails {
+  font-size: 14px;
+  font-weight: 500 !important;
+  display: flex;
+  gap: 2.5px;
+  align-items: center;
+}
+.driverNameSpan .driverStatusDetails span {
   cursor: pointer;
+}
+
+.driverNameDiv {
+  font-size: 14px;
+  color: var(--PrimaryColor);
+  font-weight: 500 !important;
+  display: flex;
+  -moz-column-gap: 5px;
+       column-gap: 5px;
+  align-items: center;
 }
 
 .driverSMSDetailsBtnDiv {

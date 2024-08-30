@@ -52,7 +52,7 @@ const items = [
 ];
 export const WhyChooseUs = () => {
   return (
-    <div className="bg-gray py-3 ">
+    <section className="bg-gray py-3" id="whyChooseUsSection">
       <section className="container">
         <div className="row">
           <div className="centerDiv">
@@ -79,6 +79,6 @@ export const WhyChooseUs = () => {
           ))}
         </div>
       </section>
-    </div>
+    </section>
   );
 };

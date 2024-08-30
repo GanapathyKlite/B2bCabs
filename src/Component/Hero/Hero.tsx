@@ -1,10 +1,10 @@
 import "./Hero.css";
-import Car from "../../Assets/car.png";
+import Car from "../../Assets/taxi.png";
 
 export const Hero = () => {
   return (
     <>
-      <section className="container-fluid container-lg heroHeight">
+      <section className="container-fluid container-lg heroHeight" id="heroSection">
         <div className="pt-lg-5 pt-md-3"></div>
         <div className="row align-items-center">
           <section className="col-12 col-md-6 pt-5">
