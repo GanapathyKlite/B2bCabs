@@ -7,7 +7,7 @@ import "./NavBar.css";
 import Modal from "react-bootstrap/Modal";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import ScrollspyNav from "react-ui-scrollspy";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Notyf } from "notyf";
@@ -183,7 +183,7 @@ const NavBar: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
     try {
       if (formData.remember) {
         localStorage.setItem("email", formData.email);
@@ -207,15 +207,9 @@ const NavBar: React.FC = () => {
       }
     } catch (error: any) {
       notyf.error(error.message || "An unexpected error occurred");
+    } finally {
+      setLoading(false);
     }
-
-    }  catch (error: any) {
-  notyf.error(error.message || 'An unexpected error occurred');
-}
-finally {
-  setLoading(false);
-}
-
   };
 
   const togglePasswordVisibility = () => {
@@ -489,19 +483,23 @@ finally {
             </div>
             <div></div>
             <div className="d-flex justify-content-center">
-            <button 
-        type="submit" 
-        className="primaryBtn" 
-        data-bs-dismiss="modal"
-        disabled={loading}
-        style={{ width: '100px' }}
-      >
-        {loading ? (
-          <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        ) : (
-          'Sign In'
-        )}
-      </button>
+              <button
+                type="submit"
+                className="primaryBtn"
+                data-bs-dismiss="modal"
+                disabled={loading}
+                style={{ width: "100px" }}
+              >
+                {loading ? (
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                ) : (
+                  "Sign In"
+                )}
+              </button>
             </div>
             <div
               className="text-center mt-5"
