@@ -20,7 +20,7 @@
   background-color: var(--whiteColor);
   position: relative;
   padding: 20px;
-  box-shadow: 0 2px 15px rgba(51, 41, 41, 0.278);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2784313725);
 }
 .profile .profileCircle {
   background-color: var(--PrimaryColor);
@@ -31,16 +31,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
 }
 
 .profileImage {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
 }/*# sourceMappingURL=DashboardNavBar.css.map */
-
-.profileImage img {
-  object-fit: cover; 
-  border-radius: 50%; 
-}

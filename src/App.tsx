@@ -12,43 +12,52 @@ import DashboardNavbar from "./Component/Dashboard/Component/DashboardNavBar";
 import CarShowingPage from "./Component/CarList/CarShowingPage";
 import PrivateRoute from "./Component/Auth/PrivateRoute";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-// import UpcomingBooking from "./Component/UpcomingBooking/UpcomingBooking";
-// import CanceledBooking from "./Component/CanceledBooking/CanceledBooking";
-// import PastBooking from "./Component/PastBooking/PastBooking";
+
+import UpcomingBooking from "./Component/ManageBooking/Component/UpcomingBooking";
+import CanceledBooking from "./Component/ManageBooking/Component/CanceledBooking";
+import PastBooking from "./Component/ManageBooking/Component/PastBooking";
+
 import Invoice from "./Component/Invoice/Invoice";
 import DriverStatus from "./Component/DriverStatus/DriverStatus";
 import PaymentHistory from "./Component/PaymentHistory/PaymentHistory";
 import ViewProfile from "./Component/ViewProfile/ViewProfile";
 import ManageBooking from "./Component/ManageBooking/ManageBooking";
-import { useAuth } from './Component/Auth/AuthContext';
-import { useEffect } from 'react';
+
+
+import { useEffect } from "react";
+import { useAuth } from "./Component/Auth/AuthContext";
+
 
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const { authToken } = useAuth();
 
-  const isDashboardRoute = location.pathname.startsWith("/dashboard");
 
-  const publicRoutes = ['/', '/aboutUs', '/services', '/contact', '/signup'];
+  const publicRoutes = ["/", "/signup"];
+
+  const isDashboardRoute = location.pathname.startsWith("/dashboard");
 
   useEffect(() => {
     if (!authToken && !publicRoutes.includes(location.pathname)) {
-      navigate('/');
+      navigate("/");
+
     }
   }, [authToken, location.pathname, navigate]);
 
   useEffect(() => {
-    if (location.pathname === '/dashboard') {
-      window.history.pushState(null, '', window.location.href);
-  
+
+    if (location.pathname === "/dashboard") {
+      window.history.pushState(null, "", window.location.href);
+
       window.onpopstate = () => {
-        if (location.pathname === '/dashboard') {
-          window.history.go(1); 
+        if (location.pathname === "/dashboard") {
+          window.history.go(1);
         }
       };
     }
-  
+
+
     return () => {
       window.onpopstate = null;
     };
@@ -60,9 +69,6 @@ function App() {
       {isDashboardRoute ? <DashboardNavbar /> : <NavBar />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/aboutUs" element={<AboutUs />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/contact" element={<Contact />} />
         <Route path="/signup" element={<SignUp />} />
 
         {/* Protected Routes */}
@@ -70,7 +76,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/cablist" element={<CarShowingPage />} />
           <Route path="/dashboard/cabbooking" element={<CarBooking />} />
-          <Route path="/dashboard/managebooking" element={<ManageBooking />} />         
+          <Route path="/dashboard/managebooking" element={<ManageBooking />} />
           <Route path="/dashboard/driverstatus" element={<DriverStatus />} />
           <Route path="/dashboard/invoice" element={<Invoice />} />
           <Route
@@ -79,7 +85,6 @@ function App() {
           />
           <Route path="/dashboard/viewprofile" element={<ViewProfile />} />
         </Route>
-
       </Routes>
     </div>
   );

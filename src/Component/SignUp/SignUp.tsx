@@ -11,8 +11,10 @@ import SuccessPage from "../forms/SuccessPage";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { formValidationSchema } from "./types";
 import "./SignUp.css";
-import axios from 'axios';
+import axios from "axios";
 import { Notyf } from "notyf";
+import { IoIosArrowForward } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 const notyf = new Notyf({
   duration: 4000,
@@ -22,8 +24,8 @@ const notyf = new Notyf({
 });
 type FormValues = typeof initialValues;
 const initialValues = {
-  name_title:"Mr.",
-  name:"",
+  name_title: "Mr.",
+  name: "",
   firstname: "",
   lastname: "",
   email_id: "",
@@ -72,7 +74,6 @@ function SignUp() {
     updatedSteps[currentIndex] = true;
     setCompletedSteps(updatedSteps);
     setCurrentIndex(currentIndex + 1);
-    
   };
 
   const back = () => {
@@ -95,50 +96,78 @@ function SignUp() {
     }
   };
 
-  const handleSubmit = async (  values: FormValues, actions: FormikHelpers<typeof initialValues>) => {
+  const handleSubmit = async (
+    values: FormValues,
+    actions: FormikHelpers<typeof initialValues>
+  ) => {
     try {
       const temp = { ...values };
 
-    temp.name = `${temp.firstname} ${temp.lastname}`;
-    temp.state = temp.id_state;
-    temp.city = temp.id_city;
-    temp.country = temp.id_country;
+      temp.name = `${temp.firstname} ${temp.lastname}`;
+      temp.state = temp.id_state;
+      temp.city = temp.id_city;
+      temp.country = temp.id_country;
 
-    const { gstimage, logoimage, panimage, rcimage, id_state, id_city, id_country, firstname,
-      lastname, filelist, ...filteredValues } = temp;
+      const {
+        gstimage,
+        logoimage,
+        panimage,
+        rcimage,
+        id_state,
+        id_city,
+        id_country,
+        firstname,
+        lastname,
+        filelist,
+        ...filteredValues
+      } = temp;
 
       try {
-        const key = sessionStorage.getItem('authkey');
-        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/agent/registration`,filteredValues,{
-          headers: {
-            Authorization: `Bearer ${key}`
+        const key = sessionStorage.getItem("authkey");
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/agent/registration`,
+          filteredValues,
+          {
+            headers: {
+              Authorization: `Bearer ${key}`,
+            },
           }
-        });
+        );
         if (response.status === 200 && response.data.status) {
-          setSuccess(true); 
-        } else if(response.status === 200 && response.data.status === false){
+          setSuccess(true);
+        } else if (response.status === 200 && response.data.status === false) {
           const errorMessage = response?.data?.message;
           notyf.error(errorMessage);
         }
       } catch (error) {
-        
         if (axios.isAxiosError(error)) {
-          const errorMessage = error.response?.data?.message || 'An error occurred';
+          const errorMessage =
+            error.response?.data?.message || "An error occurred";
           notyf.error(errorMessage);
         } else {
-          notyf.error('An unexpected error occurred');
+          notyf.error("An unexpected error occurred");
         }
       }
-      
     } catch (error) {
-      console.error('Error during registration:', error);
+      console.error("Error during registration:", error);
     } finally {
       actions.setSubmitting(false);
     }
   };
+  const navigate = useNavigate();
+  const handleBreadCrumbClick = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <div className="container">
+      <div className="pt-3 d-flex justify-content-between align-items-center">
+        <div className="breadcrumbDiv">
+          <span onClick={() => handleBreadCrumbClick("/")}>Home</span>
+          <IoIosArrowForward /> <span>Sign In</span>
+        </div>
+        <div className="signUpTitle">New Registration Form</div>
+      </div>
       <div className="row justify-content-center align-items-center p-0 py-lg-3">
         <div className="d-flex justify-content-between desktopShadow flex-column flex-lg-row bg-light pb-3 p-md-4 rounded-3">
           <StepNav
@@ -155,10 +184,9 @@ function SignUp() {
                   validationSchema={setValidationSchema()}
                   validateOnChange={true}
                   validateOnBlur={true}
-                  
                   onSubmit={(values, actions) => {
                     if (currentIndex === 3) {
-                      handleSubmit(values, actions); 
+                      handleSubmit(values, actions);
                     } else {
                       next();
                       actions.setTouched({});

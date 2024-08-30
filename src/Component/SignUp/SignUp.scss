@@ -9,7 +9,7 @@
 .desktopShadow {
   box-shadow: none;
 }
-.stepLine{
+.stepLine {
   height: 100%;
   z-index: -1;
   left: 20px;
@@ -95,4 +95,20 @@ textarea {
   right: 0px;
   top: 0px;
   width: 100%;
+}
+
+.breadcrumbDiv {
+  color: gray;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  span:last-child {
+    color: var(--PrimaryColor);
+  }
+}
+
+.signUpTitle {
+  font-size: 18px;
+  font-weight: 500;
 }

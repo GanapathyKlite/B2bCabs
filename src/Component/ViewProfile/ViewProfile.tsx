@@ -11,18 +11,33 @@ import BankInfo from "./Component/BankInfo";
 
 import CompanyIDProofInfo from "./Component/CompanyIDProofInfo";
 import Footer from "../Footer/Footer";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ViewProfile = () => {
+  const [isEditable, setIsEditable] = useState(false);
+  const handleEditClick = () => {
+    setIsEditable(!isEditable);
+  };
+  const navigate = useNavigate();
+
+  const handleBreadCrumbClick = (path: string) => {
+    navigate(path);
+  };
+
   return (
     <>
       <div className="container pt-3 pb-5">
-        <div>
-          Dashboard <IoIosArrowForward /> View Profile
+        <div className="breadcrumbDiv">
+          <span onClick={() => handleBreadCrumbClick("/dashboard")}>
+            Dashboard
+          </span>
+          <IoIosArrowForward /> <span>View Profile</span>
         </div>
         <div className="row justify-content-center mt-3 row-gap-4 editprofileDetailsDiv">
           <div className="col-8 d-flex flex-column row-gap-4">
-            <PersonalInfo />
-            <CompanyInfo />
+            <PersonalInfo isEditable={isEditable} />
+            <CompanyInfo isEditable={isEditable} />
             <BankInfo />
             <CompanyIDProofInfo />
           </div>
@@ -51,8 +66,11 @@ const ViewProfile = () => {
                   8838167633
                 </div>
               </div>
-              <button className="primaryBtn d-flex gap-2 align-items-center justify-content-center">
-                Edit
+              <button
+                className="primaryBtn d-flex gap-2 align-items-center justify-content-center"
+                onClick={handleEditClick}
+              >
+                {isEditable ? "Update" : "Edit"}
                 <span>
                   <FaUserEdit />
                 </span>

@@ -3,9 +3,12 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Footer from "../Footer/Footer";
-import UpcomingBooking from "../UpcomingBooking/UpcomingBooking";
-import PastBooking from "../PastBooking/PastBooking";
-import CanceledBooking from "../CanceledBooking/CanceledBooking";
+import "./ManageBooking.css";
+import UpcomingBooking from "./Component/UpcomingBooking";
+import PastBooking from "./Component/PastBooking";
+import CanceledBooking from "./Component/CanceledBooking";
+import { useNavigate } from "react-router-dom";
+import { IoIosArrowForward } from "react-icons/io";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -43,11 +46,26 @@ export default function ManageBooking() {
     setValue(newValue);
   };
 
+  const navigate = useNavigate();
+  const handleBreadCrumbClick = (path: string) => {
+    navigate(path);
+  };
+
   return (
     <>
       <div className="container">
         <div className="row row-gap-3 align-items-center justify-content-center py-3">
           <div className="col-12 col-md-9 col-lg-7">
+            <div className="pb-2 d-flex justify-content-between align-items-center">
+              <div className="breadcrumbDiv">
+                <span onClick={() => handleBreadCrumbClick("/dashboard")}>
+                  Dashboard
+                </span>
+                <IoIosArrowForward /> <span>Manage Booking</span>
+              </div>
+              <div className="signUpTitle">Manage Booking Details</div>
+            </div>
+
             <Box sx={{ width: "100%" }}>
               <Box sx={{ borderColor: "divider" }}>
                 <Tabs
@@ -56,9 +74,21 @@ export default function ManageBooking() {
                   onChange={handleChange}
                   aria-label="basic tabs example"
                 >
-                  <Tab label="Upcoming Booking" {...a11yProps(0)} />
-                  <Tab label="Past Booking" {...a11yProps(1)} />
-                  <Tab label="Canceled Booking" {...a11yProps(2)} />
+                  <Tab
+                    className="flex-grow-1"
+                    label="Upcoming Booking"
+                    {...a11yProps(0)}
+                  />
+                  <Tab
+                    className="flex-grow-1"
+                    label="Past Booking"
+                    {...a11yProps(1)}
+                  />
+                  <Tab
+                    className="flex-grow-1"
+                    label="Canceled Booking"
+                    {...a11yProps(2)}
+                  />
                 </Tabs>
               </Box>
               <CustomTabPanel value={value} index={0}>

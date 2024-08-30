@@ -1,6 +1,11 @@
-import { IoIosArrowDown } from "react-icons/io";
+import { useState } from "react";
 
-const PersonalInfo = () => {
+const PersonalInfo = ({ isEditable }: { isEditable: boolean }) => {
+  const [editMobileNumber, setEditMobileNumber] = useState<number>(8838167633);
+  const handleEditMobileNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const mobileNumber = Number(e.target.value);
+    setEditMobileNumber(mobileNumber);
+  };
   return (
     <>
       <div className="row row-gap-3 personalInfoDiv">
@@ -20,9 +25,9 @@ const PersonalInfo = () => {
               readOnly
               value="Mr"
               name="name_title"
-              className={`border border-secondary rounded-3 p-3 w-100`}
+              className="border-0 border-secondary rounded-3 p-2 py-1 w-100"
             />
-            <IoIosArrowDown className={`dropdown-arrow`} />
+            {/* <IoIosArrowDown className={`dropdown-arrow`} /> */}
           </div>
         </div>
 
@@ -40,7 +45,7 @@ const PersonalInfo = () => {
             value="Ganapathy"
             id="firstname"
             name="firstname"
-            className={`border border-secondary rounded-3 p-3 w-100`}
+            className={`border-0 border-secondary rounded-3 p-2 py-1 w-100`}
           />
         </div>
 
@@ -58,7 +63,7 @@ const PersonalInfo = () => {
             value="Manohkar"
             id="lastname"
             name="lastname"
-            className={`border border-secondary rounded-3 p-3 w-100 $`}
+            className={`border-0 border-secondary rounded-3 p-2 py-1 w-100 $`}
           />
         </div>
         <div className="col-12">
@@ -75,7 +80,7 @@ const PersonalInfo = () => {
             value="Ganapathy@klitetechnology.com"
             id="email_id"
             name="email_id"
-            className={`border border-secondary rounded-3 p-3 w-100 min-height-[50px]`}
+            className={`border-0 border-secondary rounded-3 p-2 py-1 w-100 min-height-[50px]`}
           />
         </div>
         <div className="col-12 col-lg-6 pe-lg-2 d-flex flex-column">
@@ -90,10 +95,11 @@ const PersonalInfo = () => {
             placeholder="e.g. 1234567890"
             id="mobile_no"
             name="mobile_no"
-            readOnly
-            value="8838167633"
+            disabled={!isEditable}
+            value={editMobileNumber}
+            onChange={handleEditMobileNumber}
             maxLength={10}
-            className={`border border-secondary rounded-3 p-3 w-100`}
+            className={`border border-secondary rounded-3 p-2 w-100`}
           />
         </div>
         <div className="col-12 col-lg-6 ps-lg-2 d-flex flex-column">
@@ -111,7 +117,7 @@ const PersonalInfo = () => {
             readOnly
             value="3367618388"
             maxLength={10}
-            className={`border border-secondary rounded-3 p-3 w-100`}
+            className={`border-0 border-secondary rounded-3 p-2 py-1 w-100`}
           />
         </div>
       </div>

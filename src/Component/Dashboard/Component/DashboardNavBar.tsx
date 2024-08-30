@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 // import Profile from "../../../Assets/Profile.png";
 import "./CSS/DashboardNavBar.css";
 import Logo from "../../../Assets/B2b_Main_Logo_.svg";
+import walletIcon from "../../../Assets/wallet.svg";
 // React Icon
 import { IoAddCircle, IoNotifications } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
@@ -22,8 +23,12 @@ import { MdOutlineEditCalendar } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { FaCreditCard, FaFileInvoice } from "react-icons/fa6";
 import { AiOutlineLogout } from "react-icons/ai";
+
 import axios from 'axios';
 import { Notyf } from "notyf";
+
+import { RiMoneyRupeeCircleFill } from "react-icons/ri";
+
 
 // ant Desing
 import { Modal } from "antd";
@@ -259,12 +264,20 @@ function DashboardNavbar() {
                 </div>
                 <hr className="my-0" />
                 <div className="d-flex justify-content-between align-items-center">
-                  {/* <div><img src="" alt="" /></div> */}
-                  <div style={{ fontSize: "25px", fontWeight: "500" }}>
-                    <span style={{ fontFamily: "Outfit , sans-serif" }}>
-                      <BsCurrencyRupee />
+                  <div
+                    className="d-flex align-items-center gap-2"
+                    style={{ fontSize: "25px", fontWeight: "500" }}
+                  >
+                    <span style={{ width: "40px" }}>
+                      <img src={walletIcon} alt="walletIcon" />
                     </span>
+                    <span>
+                      <BsCurrencyRupee />
+                      {userData.currentBalance}
+                    </span>
+
                     &nbsp; {walletcash}
+
                   </div>
                   <div className="d-flex align-items-center">
                     <button className="primaryBtn" onClick={handleAddCash}>
@@ -313,7 +326,10 @@ function DashboardNavbar() {
                       id="panel1-header"
                       className="px-0 py-2 m-0 dashBoardNavBarTitle"
                     >
-                      Finance Details
+                      <span className="text-secondary">
+                        <RiMoneyRupeeCircleFill />
+                      </span>
+                      &nbsp; Finance Details
                     </AccordionSummary>
                     <AccordionDetails>
                       <Nav.Link
@@ -345,7 +361,7 @@ function DashboardNavbar() {
                       aria-controls="panel1-content"
                       id="panel1-header"
                     >
-                      <span>
+                      <span className="text-secondary">
                         <BiSupport />
                       </span>
                       &nbsp;Support
@@ -367,7 +383,7 @@ function DashboardNavbar() {
                     className="py-2 dashBoardNavBarTitle"
                     href="#action2"
                   >
-                    <span>
+                    <span className="text-secondary">
                       <FaUsers />
                     </span>
                     &nbsp;User Management
@@ -376,7 +392,7 @@ function DashboardNavbar() {
                     className="py-2 dashBoardNavBarTitle"
                     href="#action2"
                   >
-                    <span>
+                    <span className="text-secondary">
                       <IoNotifications />
                     </span>
                     &nbsp; Notification
@@ -393,7 +409,7 @@ function DashboardNavbar() {
                   </Nav.Link>
                 </div>
 
-                <div className="navAD"></div>
+                {/* <div className="navAD"></div> */}
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
@@ -458,7 +474,6 @@ function DashboardNavbar() {
         </div>
       </Modal>
     </>
-
   );
 }
 

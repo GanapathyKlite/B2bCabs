@@ -6,6 +6,8 @@ import "./PaymentHistory.css";
 import Footer from "../Footer/Footer";
 import LastTransaction from "./Component/LastTransaction";
 import DetailedStatement from "./Component/DetailedStatement";
+import { useNavigate } from "react-router-dom";
+import { IoIosArrowForward } from "react-icons/io";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -43,14 +45,26 @@ export default function BasicTabs() {
     setValue(newValue);
   };
 
+  const navigate = useNavigate();
+  const handleBreadCrumbClick = (path: string) => {
+    navigate(path);
+  };
   return (
     <>
       <div className="container">
+        <div className="row align-items-center justify-content-center pt-3">
+          <div className="col-12 col-md-9 col-lg-7 d-flex justify-content-between align-items-center">
+            <div className="breadcrumbDiv">
+              <span onClick={() => handleBreadCrumbClick("/dashboard")}>
+                Dashboard
+              </span>
+              <IoIosArrowForward /> <span>Payment Details</span>
+            </div>
+            <div className="signUpTitle">Payment History</div>
+          </div>
+        </div>
         <div className="row row-gap-3 align-items-center justify-content-center py-3">
           <div className="col-12 col-md-9 col-lg-7">
-            <div className="DashBoardNavBarListTitle pt-1 pb-2 px-2">
-              Payment History
-            </div>
             <Box>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
