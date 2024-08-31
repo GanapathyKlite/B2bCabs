@@ -133,6 +133,7 @@ function DashboardNavbar() {
                   }
                 );
                 if (response.status === 200 && response.data.status) {
+                  notyf.success("Amount added to Wallet successfully");
                   setwalletcash(response.data.message.CurrentBalance);
                   let sessionDataString = sessionStorage.getItem("userData");
                   if (sessionDataString !== null) {
@@ -144,7 +145,7 @@ function DashboardNavbar() {
                       JSON.stringify(sessionData)
                     );
                   }
-                  notyf.success("Amount added to Wallet successfully");
+                  
                 }
               } catch (error) {
                 setLoading(false);

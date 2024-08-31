@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import carIcon from "../../../Assets/Car_icon.svg";
 import CarIconSUV from "../../../Assets/Car_icon_SUV.svg";
 import { GrMapLocation } from "react-icons/gr";
@@ -268,11 +268,17 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
   const {authToken} = useAuth();
   const navigate = useNavigate();
   const [tripType, setTripType] = useState("");
-  const handleCabBooking = async(car: any) => {
+
+  useEffect(() => { 
     const storedtripType = sessionStorage.getItem("tripType");
     if(storedtripType){
       setTripType(storedtripType)
     }
+   }, []);
+  
+
+  const handleCabBooking = async(car: any) => {
+    
     let  start_city, end_city ;
     const storedstartCitySuggestion = sessionStorage.getItem('startCitySuggestion'); 
     const storedendCitySuggestion = sessionStorage.getItem('endCitySuggestion');
@@ -307,7 +313,7 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
      }
    );
    if (response.data.status) {
-    navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city, startdate: start_date}});
+    navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city, startdate: start_date,tripType : "Airport transfer"}});
    } 
 
    } catch (error) {
@@ -329,7 +335,7 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
     );
     if (response.data.status) {
      navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city,
-      startdate: startrangedate, enddate: endrangedate
+      startdate: startrangedate, enddate: endrangedate, tripType: "Day Rental"
      }});
     } 
  
@@ -351,7 +357,7 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
         }
       );
       if (response.data.status) {
-       navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, startdate: start_date}});
+       navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, startdate: start_date, tripType: "Hour Rental"}});
       } 
    
       } catch (error) {

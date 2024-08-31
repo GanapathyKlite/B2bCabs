@@ -168,7 +168,7 @@ const DashboardHero: React.FC = () => {
         } catch (error) {
           console.error("Error fetching geocode data", error);
         } finally {
-          setToggled(false);
+          setToggled(true);
         }
       });
     } else {

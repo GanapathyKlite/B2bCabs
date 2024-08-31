@@ -1,12 +1,12 @@
 import React,{useState, useRef, useEffect} from "react";
 import "./CarBooking.css";
 import Footer from "../Footer/Footer";
-
+import { useAuth } from "../Auth/AuthContext";
 import {  Tooltip, TimePicker } from "antd";
 import { useLocation } from "react-router-dom";
 import parse from "html-react-parser";
 import { Modal } from "antd";
-
+import axios from "axios";
 
 // Icons Start
 import { FaArrowRightArrowLeft, FaCheck, FaCircleCheck } from "react-icons/fa6";
@@ -23,6 +23,7 @@ import { GiWallet } from "react-icons/gi";
 import { FaGasPump, FaRegSnowflake, FaTv, FaMusic } from "react-icons/fa";
 import { BiSolidCarGarage } from "react-icons/bi";
 import { GiCharging } from "react-icons/gi";
+import dayjs, { Dayjs } from "dayjs";
 import { IoClose } from "react-icons/io5";
 import { BsCurrencyRupee, BsExclamationCircle } from "react-icons/bs";
 // Icons End
@@ -48,6 +49,8 @@ const paymentOptions = [
 ];
 
 const CarBooking: React.FC = () => {
+
+  const { authToken, userData } = useAuth();
   const [paymentModalBoxOpen, setPaymentModalBoxOpen] =
     React.useState<boolean>(false);
   const [modalBoxLoading, setModalBoxLoading] = React.useState<boolean>(true);
@@ -75,6 +78,9 @@ const CarBooking: React.FC = () => {
   const enddate = location.state.enddate;
   const imageURL = `${import.meta.env.VITE_API_IMG_URL}`;
   const carImage = `${imageURL}${car.image}`;
+  const tripType = location.state.tripType;
+
+  const formattedDate = dayjs(startdate, "DD-MM-YYYY").format("ddd, DD MMM YYYY");
 
 
   const handleOpenTerms = (): void => {
@@ -171,13 +177,16 @@ const CarBooking: React.FC = () => {
   const [dropAddress, setDropAddress] = useState("");
   const [client_name, setClientName] = useState<string>("");
   const [contactNumber, setContactNumber] = useState<string>("");
+  const [contactNoCountryCode, setContactNoCountryCode] = useState('+91');
   const [alternativeContactNumber, setAlternativeContactNumber] = useState<string>("");
+  const [alternateNoCountryCode, setAlternateNoCountryCode] = useState('+91');
   const [isFormValid, setIsFormValid] = useState(false);
   const [isAgreed, setIsAgreed] = useState<boolean>(false);
   const [pickupTime, setPickupTime] = useState<Dayjs | null>(null);
   const [error, setError] = useState<{ [key: string]: string }>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const formRef = useRef<HTMLFormElement>(null);
+  const [vehicleType, setVehicleType] = useState("");
 
   
   const validateForm = () => {
@@ -188,8 +197,10 @@ const CarBooking: React.FC = () => {
     // const isAlternateValid = AlternateNumber.length >9;
     const isAdultCountValid = adultCount > 0;
     const isArrivalViaValid = selectedArrival.trim() !== "";
+    const isDepartureViaValid = selectedDeparture.trim() !== "";
     const isPickupTimeValid = pickupTime !== null;
     const isPickupAddressValid = pickupAddress !== "";
+    const isDropAddressValid = dropAddress !== "";
   
     if (!isNameValid) {
       newError.clientName = 'Name is required';
@@ -206,11 +217,17 @@ const CarBooking: React.FC = () => {
     if (!isArrivalViaValid) {
       newError.arrivalVia = 'Arrival Via is required';
     }
+    if (!isDepartureViaValid) {
+      newError.departureVia = 'Departure Via is required';
+    }
     if (!isPickupTimeValid) {
       newError.pickupTime = 'Pick-up time is required';
     }
     if (!isPickupAddressValid) {
       newError.pickupAddress = 'Pick-up address is required';
+    }
+    if (!isDropAddressValid) {
+      newError.dropAddress = 'Drop address is required';
     }
     if (!isAgreed) {
       newError.isAgreed = 'You must agree to the terms to proceed';
@@ -235,7 +252,6 @@ const CarBooking: React.FC = () => {
   
       case "contactNumber":
         if (contactNumber.length !== 10) {
-          console.log(contactNumber.length, "----length");
           newError.contactNumber = "Contact Number must be 10 digits";
         } else {
           delete newError.contactNumber;
@@ -246,7 +262,10 @@ const CarBooking: React.FC = () => {
         if (alternativeContactNumber.length > 0 && alternativeContactNumber.length < 10) {
           
           newError.alternativeContactNumber = "Alternate Number must be 10 digits";
-        } else {
+        }  else if (alternativeContactNumber === contactNumber) {
+          newError.alternativeContactNumber = "Alternate Number cannot be the same as Contact Number";
+        } 
+         else {
           delete newError.alternativeContactNumber;
         }
         break;
@@ -266,6 +285,14 @@ const CarBooking: React.FC = () => {
             delete newError.arrivalVia;
           }
           break;
+
+          case "departureVia":
+          if (selectedDeparture.trim() === "") {
+            newError.departureVia = "Departure Via is required";
+          } else {
+            delete newError.departureVia;
+          }
+          break;
     
           case 'pickupTime':
       if (pickupTime === null) {
@@ -280,6 +307,14 @@ const CarBooking: React.FC = () => {
             newError.pickupAddress = "Pick-up address is required";
           } else {
             delete newError.pickupAddress;
+          }
+          break;
+
+          case "dropAddress":
+          if (dropAddress.trim() === "") {
+            newError.dropAddress = "Drop address is required";
+          } else {
+            delete newError.dropAddress;
           }
           break;
     
@@ -365,8 +400,25 @@ const CarBooking: React.FC = () => {
     }
   }, [pickupTime, touched.pickupTime]);
 
+  useEffect(() =>{
+if(car.vehicle_name == "Suv"){
+  setVehicleType("1")
+} else if( car.vehicle_name == "Sedan"){
+  setVehicleType("2")
+} else if( car.vehicle_name == "Large Coach"){
+  setVehicleType("4")
+} else if( car.vehicle_name == "Hatchback"){
+  setVehicleType("5")
+} else if( car.vehicle_name == "Mini Coach"){
+  setVehicleType("6")
+} else if( car.vehicle_name == "Tempo Traveller"){
+  setVehicleType("7")
+}
+  },[])
+
   const handleTimeChange = (time: Dayjs | null) => {
     setPickupTime(time);
+    
   };
 
   const handleFocus = () => {
@@ -392,16 +444,78 @@ const CarBooking: React.FC = () => {
   };
 
   const handlePayNow = () => {
+
     setTouched(prev => ({ ...prev, pickupTime: true }));
     if (formRef.current) {
       formRef.current.scrollIntoView({ behavior: 'smooth' });
     }
     const isValid = validateForm();
     if (isValid) {
-      console.log("form is valid");
+      showModalBox();
       
     }
   };
+
+  const handlePayment = async(paymentType : string)=>{
+   if(paymentType === "Wallet"){
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/payment/wallet`,
+        {
+          amount: amount,
+          is_recharge: false,
+          agent_id: userData.id,
+          client_name: client_name,
+          contact_no: contactNumber,
+          contact_no_country_code : contactNoCountryCode,
+          al_contact_no: alternativeContactNumber,
+          al_contact_no_country_code: alternateNoCountryCode,
+          // "package_type":"Holiday Package",
+          arrival: car.start_city,
+          arrival_via: selectedArrival,
+          arrival_details: pickupAddress,
+          departure: car.end_city,
+          departure_via: selectedDeparture,
+          departure_details: dropAddress,
+          vehicle_type: vehicleType,
+          is_gst: true, 
+          no_of_adult: adultCount,
+          no_of_kids: childCount,
+          infant: 0,
+          no_of_days: car.no_of_days,
+          start_date: startdate ,
+          end_date: enddate ,
+          // "trip_date":{"1":"20-03-2024","2":"21-03-2024"},
+          // "start_city":{"1":"Pondicherry","2":"Yercaud"},
+          // "end_city":{"1":"Yercaud","2":"Pondicherry"},
+          // itinerary: car.itinerary,
+            payment_type: "Wallet",
+          pickup_location: pickupAddress,
+          drop_location: dropAddress,
+          pickup_time: formattedPickupTime,
+          // "hour_rental_type": "2",  
+          }
+          ,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      if (response.status === 200 && response.data.status) {
+        console.log(response.data.message);
+      }
+   }catch(error){
+    console.log(error);
+    
+   }
+  }
+    
+  }
+
+  const formattedPickupTime = pickupTime?.format('h:mm A');
+  const amount =  parseFloat(car.total_price.replace(/,/g, ''));
+
   return (
     <>
       <div className="w-100 ReviewBookingBar">
@@ -695,6 +809,26 @@ const CarBooking: React.FC = () => {
                           Alternative Contact Number
                         </span>
                       </label>
+                      <div className="row">
+    <div className="col-3">
+      <select
+        className="form-control px-3 py-2"
+        value={alternateNoCountryCode}
+        onChange={(e) => setAlternateNoCountryCode(e.target.value)}
+      >
+        <option value="+91">+91</option>
+          <option value="+1">+1</option>
+          <option value="+44">+44</option>
+          <option value="+90">+90</option>
+          <option value="+92">+92</option>
+          <option value="+94">+94</option>
+          <option value="+60">+60</option>
+          <option value="+61">+61</option>
+          <option value="+33">+33</option>
+      </select>
+    </div>
+
+    <div className="col-9">
                       <input
                         type="text"
                         className="form-control px-3 py-2"
@@ -705,6 +839,8 @@ const CarBooking: React.FC = () => {
                         onChange={handleInputChange(setAlternativeContactNumber,"alternativeContactNumber")}
                         maxLength={10} 
                       />
+                      </div>
+                      </div>
         {error.alternativeContactNumber && <div className="text-danger mt-2">{error.alternativeContactNumber}</div>}
 
                     </div>
@@ -739,6 +875,8 @@ const CarBooking: React.FC = () => {
           id="departurevia"
           value={selectedDeparture}
           onChange={(e) => handleChange("departure", e)}
+          onBlur={()=>validateField("departureVia")}
+          required
         >
           <option value="" disabled>Select Departure Via</option>
           <option value="Flight">Flight</option>
@@ -746,6 +884,8 @@ const CarBooking: React.FC = () => {
           <option value="Train">Train</option>
           <option value="Residency">Residency</option>
         </select>
+        {error.departureVia && <div className="text-danger mt-2">{error.departureVia}</div>}
+
                   </div>
 
 
@@ -760,17 +900,41 @@ const CarBooking: React.FC = () => {
                           Contact Number
                         </span>
                       </label>
-                      <input 
-                       type="text"
-                       className="form-control px-3 py-2"
-                       id="contactNumber"
-                       placeholder="Enter 10 digit Mobile Number"
-                       value={contactNumber}
-                       onChange={handleInputChange(setContactNumber, "contactNumber")}
-                       onBlur={() => validateField("contactNumber")}
-                       maxLength={10} 
-                       required
-                      />
+                     
+                     <div className="row">
+    <div className="col-3">
+      <select
+        className="form-control px-3 py-2"
+        value={contactNoCountryCode}
+        onChange={(e) => setContactNoCountryCode(e.target.value)}
+      >
+        <option value="+91">+91</option>
+          <option value="+1">+1</option>
+          <option value="+44">+44</option>
+          <option value="+90">+90</option>
+          <option value="+92">+92</option>
+          <option value="+94">+94</option>
+          <option value="+60">+60</option>
+          <option value="+61">+61</option>
+          <option value="+33">+33</option>
+      </select>
+    </div>
+
+    <div className="col-9">
+      <input
+        type="text"
+        className="form-control px-3 py-2"
+        id="contactNumber"
+        placeholder="Enter 10 digit Mobile Number"
+        value={contactNumber}
+        onChange={handleInputChange(setContactNumber, "contactNumber")}
+        onBlur={() => validateField("contactNumber")}
+        maxLength={10}
+        required
+      />
+    </div>
+  </div>
+
                       {error.contactNumber && <div className="text-danger mt-2">{error.contactNumber}</div>}
                     </div>
                    
@@ -848,8 +1012,11 @@ const CarBooking: React.FC = () => {
             placeholder={departureDetails.placeholder}
             value={dropAddress}
             onChange={(e) => setDropAddress(e.target.value)}
+            onBlur={()=>validateField("dropAddress")}
             readOnly={!selectedDeparture}
+            required
           />
+            {error.dropAddress && <div className="text-danger mt-2">{error.dropAddress}</div>}
         </div>
 
                   </div>
@@ -1010,9 +1177,9 @@ const CarBooking: React.FC = () => {
 
                 <button className="primaryBtn mb-3 w-100" onClick={handlePayNow} 
                  style={{
-                  opacity: client_name && selectedArrival && isAgreed && pickupAddress 
+                  opacity: client_name && selectedArrival && selectedDeparture && isAgreed && pickupAddress && dropAddress
                   && pickupTime && adultCount && contactNumber  ? 1 : 0.5,
-                  cursor: client_name && selectedArrival && isAgreed && pickupAddress 
+                  cursor: client_name && selectedArrival && selectedDeparture && isAgreed && pickupAddress && dropAddress
                   && pickupTime && adultCount && contactNumber ?'pointer' :  'not-allowed'
                 }}>
                   Pay Now
@@ -1160,7 +1327,7 @@ const CarBooking: React.FC = () => {
                   <div>Due Now</div>
                   <div className="dueAmount">
                     <BsCurrencyRupee />
-                    1,857
+                    {car.total_price}
                   </div>
                 </div>
               </AccordionSummary>
@@ -1186,19 +1353,28 @@ const CarBooking: React.FC = () => {
           </div>
           <div className="travelTypeDiv">
             <hr />
-            <div className="travelType">Trip Type: Airport Transfers</div>
+            <div className="travelType">Trip Type: {tripType}</div>
           </div>
           <div className="carBookingAddressDetailsDiv">
             <div className="carBookingAddressDetails">
               <p>
-                No: 19, New Street, Rangavilas Thottam, Muthiyalpet,
-                Puducherry-605003
+                {/* No: 19, New Street, Rangavilas Thottam, Muthiyalpet,
+                Puducherry-605003 */}
+                {pickupAddress}
               </p>
               <IoMdArrowRoundForward />
-              <p>Chennai International Airport </p>
+              <p>
+                {/* Chennai International Airport  */}
+                {dropAddress}
+                </p>
             </div>
             <div className="pickTimeDetails">
-              Pickup on: Thu, 7 Dec 23 | 10:00 AM
+              Pickup on:  {" "}
+              {formattedDate} |{" "}
+
+              { pickupTime?.format('h:mm A')}
+              {/* Thu, 7 Dec 23 | 10:00 AM */}
+
             </div>
           </div>
         </div>
@@ -1208,8 +1384,10 @@ const CarBooking: React.FC = () => {
           <div className="paymentOptionType">
             <ul>
               {paymentOptions.map((paymentOption, index) => (
-                <li key={index}>
-                  <button className="paymentOptionBtn">
+                <li key={index}  onClick={()=>{handlePayment(paymentOption.paymentType)}}>
+                  <button className="paymentOptionBtn"
+                  
+                   >
                     <span>
                       {paymentOption.paymentIcon}
                       {paymentOption.paymentType}
