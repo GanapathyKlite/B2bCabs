@@ -364,6 +364,37 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
        console.log(error);
        
       }}
+      if(tripType === "Holidays Package"){
+        
+        let packageId;
+        try {
+          const storedPackageid = sessionStorage.getItem("packageId");
+      if(storedPackageid){
+        packageId = storedPackageid;
+      }
+         const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/price/holidayPackage/selectedPrice`,
+            {packageId: packageId,vehicle_id: car.vehicle_id, travel_date: startrangedate}
+
+            ,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response.data.status) {
+         navigate("/dashboard/cabbooking",{state: {car: response.data.data,
+          // startcity: start_city, endcity: end_city,
+          startdate: startrangedate, enddate: endrangedate, tripType: "Holidays Package",
+          seats: car.seats, packageId : packageId
+         }});
+        } 
+     
+        } catch (error) {
+         console.log(error);
+         
+        }}
 
 
    

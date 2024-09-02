@@ -46,7 +46,7 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
 
   const uniqueVehicleNames = Array.from(new Set(cars.map((car) => car.vehicle_name)));
   const [selectedVehicleNames, setSelectedVehicleNames] = useState<string[]>(uniqueVehicleNames);
-  const [filteredPrices, setFilteredPrices] = useState<number[]>(prices);
+  // const [filteredPrices, setFilteredPrices] = useState<number[]>(prices);
   
   // Temporary min and max price for filtered cars
   const [temporaryMinPrice, setTemporaryMinPrice] = useState<number>(initialMinPrice);

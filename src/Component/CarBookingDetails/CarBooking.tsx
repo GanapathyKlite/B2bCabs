@@ -7,6 +7,8 @@ import { useLocation } from "react-router-dom";
 import parse from "html-react-parser";
 import { Modal } from "antd";
 import axios from "axios";
+import { Notyf } from "notyf";
+import { useNavigate } from "react-router-dom";
 
 // Icons Start
 import { FaArrowRightArrowLeft, FaCheck, FaCircleCheck } from "react-icons/fa6";
@@ -33,6 +35,23 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 
+const notyf = new Notyf({
+  duration: 4000,
+  position: { x: "right", y: "top" },
+  ripple: true,
+  dismissible: true,
+  types: [
+    {
+      type: "success",
+      className: "custom-success-notification",
+    },
+    {
+      type: "error",
+      className: "custom-error-notification",
+    },
+  ],
+});
+
 const paymentOptions = [
   {
     paymentType: "Wallet",
@@ -54,12 +73,13 @@ const CarBooking: React.FC = () => {
   const [paymentModalBoxOpen, setPaymentModalBoxOpen] =
     React.useState<boolean>(false);
   const [modalBoxLoading, setModalBoxLoading] = React.useState<boolean>(true);
+  const [holidaystartcityid, setholidaystartcityid] = useState("");
+  const [holidayendcityid, setholidayendcityid] = useState("");
 
   const showModalBox = () => {
     setPaymentModalBoxOpen(true);
     setModalBoxLoading(true);
 
-    // Simple loading mock. You should add cleanup logic in real world.
     setTimeout(() => {
       setModalBoxLoading(false);
     }, 20);
@@ -70,6 +90,22 @@ const CarBooking: React.FC = () => {
     document.documentElement.scrollLeft = document.documentElement.clientWidth;
   }, []);
 
+  useEffect(() => {
+    const storedholidaystartCity = sessionStorage.getItem('holidaystartCity'); 
+    const storedholidayendCity = sessionStorage.getItem('holidayendCity');
+    if (storedholidaystartCity) {
+            
+            
+      const suggestionObject = JSON.parse(storedholidaystartCity);
+    setholidaystartcityid(suggestionObject.id_city); 
+    }
+      if (storedholidayendCity) {
+        const suggestionObject = JSON.parse(storedholidayendCity);
+    setholidayendcityid(suggestionObject.id_city); 
+      }
+    
+  }, []); 
+
   const location = useLocation();
   const car = location.state.car;
   const startcity = location.state.startcity;
@@ -79,6 +115,8 @@ const CarBooking: React.FC = () => {
   const imageURL = `${import.meta.env.VITE_API_IMG_URL}`;
   const carImage = `${imageURL}${car.image}`;
   const tripType = location.state.tripType;
+  const seats = location.state.seats;
+  const packageId = location.state.packageId;
 
   const formattedDate = dayjs(startdate, "DD-MM-YYYY").format("ddd, DD MMM YYYY");
 
@@ -140,10 +178,10 @@ const CarBooking: React.FC = () => {
   };
   const [adultCount, setAdultCount] = useState<number>(0);
   const [childCount, setChildCount] = useState<number>(0);
+  
+  const totalSeats = seats ? parseInt(seats.split('+')[0]) : parseInt(car.seats?.split('+')[0]);
 
-  const totalSeats = parseInt(car.seats.split('+')[0]);
-
-  const maxAdults = parseInt(car.seats.split('+')[0]);
+  const maxAdults = seats ? parseInt(seats.split('+')[0]) : parseInt(car.seats?.split('+')[0]);
 
   const handleAdultChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedAdults = parseInt(event.target.value);
@@ -414,12 +452,17 @@ if(car.vehicle_name == "Suv"){
 } else if( car.vehicle_name == "Tempo Traveller"){
   setVehicleType("7")
 }
+
+console.log(car,"----car");
+
   },[])
 
   const handleTimeChange = (time: Dayjs | null) => {
     setPickupTime(time);
     
   };
+
+  const navigate = useNavigate();
 
   const handleFocus = () => {
     setTouched(prev => ({ ...prev, pickupTime: true }));
@@ -464,17 +507,19 @@ if(car.vehicle_name == "Suv"){
         {
           amount: amount,
           is_recharge: false,
-          agent_id: userData.id,
+          agent_id: parseInt(userData.id ?? "0"),
+          holiday_package_id: parseInt(packageId) ,
           client_name: client_name,
           contact_no: contactNumber,
           contact_no_country_code : contactNoCountryCode,
           al_contact_no: alternativeContactNumber,
           al_contact_no_country_code: alternateNoCountryCode,
-          // "package_type":"Holiday Package",
-          arrival: car.start_city,
+          package_type:"Holiday Package",
+          // package_type:"Day Rental",
+          arrival: holidaystartcityid,
           arrival_via: selectedArrival,
           arrival_details: pickupAddress,
-          departure: car.end_city,
+          departure: holidayendcityid,
           departure_via: selectedDeparture,
           departure_details: dropAddress,
           vehicle_type: vehicleType,
@@ -482,18 +527,18 @@ if(car.vehicle_name == "Suv"){
           no_of_adult: adultCount,
           no_of_kids: childCount,
           infant: 0,
-          no_of_days: car.no_of_days,
+          no_of_days: parseInt(car.no_of_days),
           start_date: startdate ,
           end_date: enddate ,
-          // "trip_date":{"1":"20-03-2024","2":"21-03-2024"},
-          // "start_city":{"1":"Pondicherry","2":"Yercaud"},
-          // "end_city":{"1":"Yercaud","2":"Pondicherry"},
-          // itinerary: car.itinerary,
-            payment_type: "Wallet",
+          trip_date:{"1":startdate,"2":enddate},
+          start_city:{"1": car.itinerary[0].from_name,"2":car.itinerary[0].to_name},
+          end_city:{"1":car.itinerary[0].to_name,"2":car.itinerary[0].from_name},
+          itinerary: car.itinerary,
+          payment_type: "Wallet",
           pickup_location: pickupAddress,
           drop_location: dropAddress,
           pickup_time: formattedPickupTime,
-          // "hour_rental_type": "2",  
+          hour_rental_type: "0"  
           }
           ,
         {
@@ -503,6 +548,18 @@ if(car.vehicle_name == "Suv"){
         }
       );
       if (response.status === 200 && response.data.status) {
+        notyf.success("Payment Successful");
+        navigate("/dashboard");
+        let sessionDataString = sessionStorage.getItem("userData");
+                  if (sessionDataString !== null) {
+                    let sessionData = JSON.parse(sessionDataString);
+                    sessionData.currentBalance =
+                      response.data.message.current_balance;
+                    sessionStorage.setItem(
+                      "userData",
+                      JSON.stringify(sessionData)
+                    );
+                  }
         console.log(response.data.message);
       }
    }catch(error){
@@ -526,7 +583,8 @@ if(car.vehicle_name == "Suv"){
             style={{ fontWeight: "var(--font300)" }}
           >
             {/* <span>Bangalore</span> */}
-            {startcity.city}
+            {car.route ? car.route : null}
+            {startcity?.city}
             {endcity ? <FaArrowRightArrowLeft /> : null}
             {/* <span>Puducherry, India</span> */}
             {endcity ? endcity.city : null}
@@ -583,7 +641,7 @@ if(car.vehicle_name == "Suv"){
                         {car.vehicle_name}
                         </li> */}
                       {/* <li>AC</li> */}
-                      <li>{car.seats} Seats</li>
+                      <li>{seats ? seats : car.seats} Seats</li>
                     </span>
                   </div>
                   <div className="d-flex gap-2 flex-column w-100">

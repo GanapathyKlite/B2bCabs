@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SUVCab from "../../../Assets/SUV.svg";
 import { Modal } from "antd";
 import { Notyf } from "notyf";
@@ -7,48 +7,62 @@ import resultNotFount from "../../../Assets/recordNotFound.png";
 import { CiSearch } from "react-icons/ci";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
+import { useAuth } from "../../Auth/AuthContext";
+import axios from "axios";
 
 const { RangePicker } = DatePicker;
 
-const upcomingBookingData = [
-  {
-    cabType: "Dzire, Etios",
-    similar: "or similar",
-    bookingId: "BTU01CT0000001",
-    bookingType: "Airport Transfer",
-    bookingDate: "Tue 05, Mar 2023 7:00 PM",
-    startAddress:
-      "No: 19, new street, rangavilas thottam, Muthiyalpet, Puducherry-605003",
-    endAddress: "Elnet Software City, Tharamani, Chennai, Tamil Nadu 600113",
-  },
-  {
-    cabType: "Innova, Ertiga",
-    similar: "or similar",
-    bookingId: "BTU01CT0000002",
-    bookingType: "Daily Rental",
-    bookingDate: "Wed 06, Mar 2023 9:00 AM",
-    startAddress: "123, Anna Nagar, Chennai, Tamil Nadu 600040",
-    endAddress: "Koyambedu Bus Stand, Chennai, Tamil Nadu 600107",
-  },
-  {
-    cabType: "Innova, Ertiga",
-    similar: "or similar",
-    bookingId: "BTU01CT0000003",
-    bookingType: "Hourly Rental",
-    bookingDate: "Wed 06, Mar 2023 9:00 AM",
-    startAddress: "123, Anna Nagar, Chennai, Tamil Nadu 600040",
-    endAddress: "Koyambedu Bus Stand, Chennai, Tamil Nadu 600107",
-  },
-  {
-    cabType: "Innova, Ertiga",
-    similar: "or similar",
-    bookingId: "BTU01CT0000004",
-    bookingType: "Holiday Package",
-    bookingDate: "Wed 06, Mar 2023 9:00 AM",
-    startAddress: "123, Anna Nagar, Chennai, Tamil Nadu 600040",
-    endAddress: "Koyambedu Bus Stand, Chennai, Tamil Nadu 600107",
-  },
-];
+interface upcomingBooking {
+  drop_location : string;
+image : string;
+package_type : string;
+pickup_location : string;
+pickup_time : string;
+ref_no : string;
+start_date : string;
+vehicle_name : string;
+status: number;
+}
+
+// const upcomingBookingData = [
+//   {
+//     cabType: "Dzire, Etios",
+//     similar: "or similar",
+//     bookingId: "BTU01CT0000001",
+//     bookingType: "Airport Transfer",
+//     bookingDate: "Tue 05, Mar 2023 7:00 PM",
+//     startAddress:
+//       "No: 19, new street, rangavilas thottam, Muthiyalpet, Puducherry-605003",
+//     endAddress: "Elnet Software City, Tharamani, Chennai, Tamil Nadu 600113",
+//   },
+//   {
+//     cabType: "Innova, Ertiga",
+//     similar: "or similar",
+//     bookingId: "BTU01CT0000002",
+//     bookingType: "Daily Rental",
+//     bookingDate: "Wed 06, Mar 2023 9:00 AM",
+//     startAddress: "123, Anna Nagar, Chennai, Tamil Nadu 600040",
+//     endAddress: "Koyambedu Bus Stand, Chennai, Tamil Nadu 600107",
+//   },
+//   {
+//     cabType: "Innova, Ertiga",
+//     similar: "or similar",
+//     bookingId: "BTU01CT0000003",
+//     bookingType: "Hourly Rental",
+//     bookingDate: "Wed 06, Mar 2023 9:00 AM",
+//     startAddress: "123, Anna Nagar, Chennai, Tamil Nadu 600040",
+//     endAddress: "Koyambedu Bus Stand, Chennai, Tamil Nadu 600107",
+//   },
+//   {
+//     cabType: "Innova, Ertiga",
+//     similar: "or similar",
+//     bookingId: "BTU01CT0000004",
+//     bookingType: "Holiday Package",
+//     bookingDate: "Wed 06, Mar 2023 9:00 AM",
+//     startAddress: "123, Anna Nagar, Chennai, Tamil Nadu 600040",
+//     endAddress: "Koyambedu Bus Stand, Chennai, Tamil Nadu 600107",
+//   },
+// ];
 
 // Initialize Notyf instance with updated configuration
 const notyf = new Notyf({
@@ -73,6 +87,31 @@ const disabledDate = (current: dayjs.Dayjs) => {
   return current && current < dayjs().startOf("day");
 };
 const UpcomingBooking: React.FC = () => {
+  const {userData, authToken} = useAuth();
+  const [upcomingBookingData, setupcomingBookingData] = useState<upcomingBooking[]>([]);
+
+  useEffect(() => {
+    const fetchupBooking = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/client/upComingBooking/${userData.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`
+          },
+        }
+      );
+      if(response.data.status){
+        setupcomingBookingData(response.data.data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    
+  }
+  fetchupBooking();
+
+  },[]);
   const [reasonModalBoxOpen, setReasonModalBoxOpen] =
     React.useState<boolean>(false);
 
@@ -83,7 +122,6 @@ const UpcomingBooking: React.FC = () => {
   >(null);
 
   const handleCancelClick = (index: number) => {
-    console.log("Cancel button clicked for index:", index);
     setSelectedBookingIndex(index);
     setReasonModalBoxOpen(true);
   };
@@ -125,25 +163,22 @@ const UpcomingBooking: React.FC = () => {
 
   const filterUpcomingBooking = upcomingBookingData.filter(
     (UpcomingData) =>
-      UpcomingData.cabType
+      UpcomingData.vehicle_name
         .toLowerCase()
         .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.similar
+      UpcomingData.ref_no
         .toLowerCase()
         .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.bookingId
+      UpcomingData.package_type
         .toLowerCase()
         .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.bookingType
+      UpcomingData.start_date
         .toLowerCase()
         .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.bookingDate
+      UpcomingData.pickup_location
         .toLowerCase()
         .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.startAddress
-        .toLowerCase()
-        .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.endAddress
+      UpcomingData.drop_location
         .toLowerCase()
         .includes(searchUpcomingBooking.toLowerCase())
   );
@@ -192,14 +227,15 @@ const UpcomingBooking: React.FC = () => {
                       </div>
 
                       <div className="upcomingBookingCabType">
-                        <span>{booking.cabType}</span>
-                        <span>{booking.similar}</span>
+                        <span>{booking.vehicle_name}</span>
+                        {/* <span>{booking.similar}</span> */}
+                        <span>or similar</span>
                       </div>
                     </div>
                     <div className="upcomingBookingCabDetails">
-                      <span>{booking.bookingId}</span>
-                      <span>{booking.bookingType}</span>
-                      <span>{booking.bookingDate}</span>
+                      <span>{booking.ref_no}</span>
+                      <span>{booking.package_type}</span>
+                      <span>{ dayjs(booking.start_date, "DD-MM-YYYY").format("ddd D, MMM YYYY")} {booking.pickup_time}</span>
                     </div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center flex-column flex-lg-row row-gap-3">
@@ -210,8 +246,8 @@ const UpcomingBooking: React.FC = () => {
                         <span className="addressStartAndEndCircle"></span>
                       </div>
                       <div className="upcomingBookingAddressDetails col-11">
-                        <p>{booking.startAddress}</p>
-                        <p>{booking.endAddress}</p>
+                        <p>{booking.pickup_location}</p>
+                        <p>{booking.drop_location}</p>
                       </div>
                     </div>
                     <div className="upcomingBookingDetailsBtnDiv col-12 col-lg-3">
@@ -220,7 +256,7 @@ const UpcomingBooking: React.FC = () => {
                       </button>
                       <button
                         onClick={() =>
-                          handleEditClick(index, booking.bookingType)
+                          handleEditClick(index, booking.package_type)
                         }
                       >
                         Edit
@@ -274,17 +310,17 @@ const UpcomingBooking: React.FC = () => {
         onCancel={() => setEditModalBox(false)}
       >
         {selectedBooking &&
-          selectedBooking.bookingType === "Airport Transfer" && (
+          selectedBooking.package_type === "Airport Transfer" && (
             <div className="d-flex flex-column row-gap-3">Airport Transfer</div>
           )}
-        {selectedBooking && selectedBooking.bookingType === "Daily Rental" && (
+        {selectedBooking && selectedBooking.package_type === "Daily Rental" && (
           <div className="d-flex flex-column row-gap-3">Daily Rental</div>
         )}
-        {selectedBooking && selectedBooking.bookingType === "Hourly Rental" && (
+        {selectedBooking && selectedBooking.package_type === "Hourly Rental" && (
           <div className="d-flex flex-column row-gap-3">Hourly Rental</div>
         )}
         {selectedBooking &&
-          selectedBooking.bookingType === "Holiday Package" && (
+          selectedBooking.package_type === "Holiday Package" && (
             <div className="d-flex flex-column row-gap-3">Holiday Package</div>
           )}
       </Modal>
