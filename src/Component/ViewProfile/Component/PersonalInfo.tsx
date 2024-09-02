@@ -31,16 +31,27 @@ interface PersonalInfoProps {
   profile: Profile;
   onValidationChange: (isValid: boolean) => void;
   onMobileNumberChange: (mobileNumber: number | null) => void;
+  setResetMobileNumberError: React.Dispatch<React.SetStateAction<(() => void) | null>>;
 }
 
-const PersonalInfo = ({ isEditable, profile, onValidationChange, onMobileNumberChange }: PersonalInfoProps) => {
+const PersonalInfo = ({ isEditable, profile, onValidationChange, onMobileNumberChange,  setResetMobileNumberError }: PersonalInfoProps) => {
   const [editMobileNumber, setEditMobileNumber] = useState<number | null>(null);
   const [mobileNumberError, setMobileNumberError] = useState<string | null>(null);
+// useEffect(() => {
+//   if (profile.mobile_no) {
+//     setEditMobileNumber(parseInt(profile.mobile_no));
+//   }
+// }, [profile.mobile_no]); 
+
 useEffect(() => {
   if (profile.mobile_no) {
     setEditMobileNumber(parseInt(profile.mobile_no));
   }
-}, [profile.mobile_no]); 
+
+  setResetMobileNumberError(() => () => setMobileNumberError(null));
+
+  return () => setResetMobileNumberError(null);
+}, [profile.mobile_no, setResetMobileNumberError]);
 
 
 
@@ -49,26 +60,36 @@ const handleEditMobileNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
   const numericValue = inputValue.replace(/[^0-9]/g, "");
   const numberValue = numericValue === "" ? null : Number(numericValue);
   setEditMobileNumber(numberValue);
-  onMobileNumberChange(numberValue); 
-  validateField("contactNumber");
-};
+  onMobileNumberChange(numberValue);
 
-const validateField = (field: string) => {
-  switch (field) {
-    case "contactNumber":
-      if (editMobileNumber === null || editMobileNumber.toString().length !== 10) {
-        setMobileNumberError("Contact Number must be exactly 10 digits");
-        onValidationChange(false); 
-      } else {
-        setMobileNumberError(null);
-        onValidationChange(true); 
-      }
-      break;
-      
-    default:
-      break;
+  if (numericValue.length < 10) {
+    setMobileNumberError("Contact Number must be exactly 10 digits");
+    onValidationChange(false);
+  } else if (numericValue.length === 10) {
+    setMobileNumberError(null);
+    onValidationChange(true);
+  } else {
+    setMobileNumberError("Contact Number must be exactly 10 digits");
+    onValidationChange(false);
   }
 };
+
+// const validateField = (field: string) => {
+//   switch (field) {
+//     case "contactNumber":
+//       if (editMobileNumber === null || editMobileNumber.toString().length !== 10) {
+//         setMobileNumberError("Contact Number must be exactly 10 digits");
+//         onValidationChange(false); 
+//       } else {
+//         setMobileNumberError(null);
+//         onValidationChange(true); 
+//       }
+//       break;
+      
+//     default:
+//       break;
+//   }
+// };
 
   return (
     <>
@@ -167,7 +188,7 @@ const validateField = (field: string) => {
             name="mobile_no"
             disabled={!isEditable}
             value={editMobileNumber !== null ? editMobileNumber : ""}
-            onBlur={() => validateField("contactNumber")}
+            // onBlur={() => validateField("contactNumber")}
             onChange={handleEditMobileNumber}
             maxLength={10}
             className={`border border-secondary rounded-3 p-2 w-100`}

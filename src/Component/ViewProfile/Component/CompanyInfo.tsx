@@ -32,9 +32,10 @@ interface CompanyInfoProps {
   onValidationChange: (isValid: boolean) => void;
   onAddressChange: (address: string) => void;
   onPincodeChange: (pincode: number | null) => void;
-  
+  setResetPincodeError: React.Dispatch<React.SetStateAction<(() => void) | null>>;
+  setResetAddressError: React.Dispatch<React.SetStateAction<(() => void) | null>>;
 }
-const CompanyInfo = ({ isEditable, profile,onValidationChange, onAddressChange, onPincodeChange }: CompanyInfoProps) => {
+const CompanyInfo = ({ isEditable, profile,onValidationChange, onAddressChange, onPincodeChange, setResetPincodeError,setResetAddressError }: CompanyInfoProps) => {
   const [editAddress, setEditAddress] = useState<string>(
     profile.address ?? ""
   );
@@ -49,9 +50,16 @@ const CompanyInfo = ({ isEditable, profile,onValidationChange, onAddressChange, 
     if (profile.address) {
       setEditAddress(profile.address);
     }
-  }, [profile.pincode, profile.address]);
 
-  
+    setResetPincodeError(() => () => setpincodeError(null));
+    
+    setResetAddressError(() => () => setaddressError(null));
+    return () =>{
+      setResetPincodeError(null);
+      setResetAddressError(null);
+    }
+  }, [profile.pincode, profile.address, setResetPincodeError, setResetAddressError]);
+
 
   
 
@@ -68,7 +76,18 @@ const CompanyInfo = ({ isEditable, profile,onValidationChange, onAddressChange, 
     const pincode = numericValue === "" ? null : Number(numericValue);
     setEditPincode(pincode);
     onPincodeChange(pincode); 
-    validateField("pincode");
+
+  if (numericValue.length !== 6) {
+    setpincodeError("Pincode must be exactly 6 digits");
+    onValidationChange(false);
+  } else if (numericValue.length === 6) {
+    setpincodeError(null);
+    onValidationChange(true);
+  } else {
+    setpincodeError("Pincode must be exactly 6 digits");
+    onValidationChange(false);
+  }
+    // validateField("pincode");
   };
 
   const validateField = (field: string) => {
@@ -95,7 +114,6 @@ const CompanyInfo = ({ isEditable, profile,onValidationChange, onAddressChange, 
     // onValidationChange(!pincodeError && !addressError);
   };
   useEffect(() => {
-    // This useEffect will run whenever pincodeError or addressError changes
     onValidationChange(!pincodeError && !addressError);
   }, [pincodeError, addressError, editAddress]);
   
@@ -235,7 +253,7 @@ const CompanyInfo = ({ isEditable, profile,onValidationChange, onAddressChange, 
             name="pincode"
             value={editPincode !== null ? editPincode : ""}
             onChange={handleEditPincode}
-            onBlur={() => validateField("pincode")}
+            // onBlur={() => validateField("pincode")}
             maxLength={6}
             className={`form-control border border-secondary rounded-3 p-2 w-100`}
           />

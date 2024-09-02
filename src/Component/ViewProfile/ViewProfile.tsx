@@ -65,7 +65,6 @@ const ViewProfile = () => {
   };
 
   const handleCompanyValidationChange = (isValid: boolean) => {
-    console.log("company",isValid);
     
     setIsDisabled(!isValid);
   };
@@ -154,11 +153,6 @@ const ViewProfile = () => {
   };
 
   useEffect(() => {
-
-    console.log(profileData.mobile_no,"current");
-    console.log(initialProfileData.mobile_no, "initial");
-    
-    
     if (
       profileData.mobile_no == initialProfileData.mobile_no &&
       profileData.address === initialProfileData.address &&
@@ -167,6 +161,17 @@ const ViewProfile = () => {
       setIsDisabled(true);
     } 
   }, [profileData, initialProfileData, handleMobileNumberChange, handleAddressChange, handlePincodeChange]);
+  const [resetMobileNumberError, setResetMobileNumberError] = useState<(() => void) | null>(null);
+  const [resetpincodeError, setResetPincodeError] = useState<(() => void) | null>(null);
+  const [resetAddressError, setResetAddressError] = useState<(() => void) | null>(null);
+
+  const handleCancelClick = () => {
+    setIsEditable(false);
+    setProfileData(initialProfileData);
+    if (resetMobileNumberError) resetMobileNumberError();
+    if (resetpincodeError) resetpincodeError();
+    if (resetAddressError) resetAddressError();
+  };
   return (
     <>
       <div className="container pt-3 pb-5">
@@ -180,12 +185,15 @@ const ViewProfile = () => {
           <div className="col-8 d-flex flex-column row-gap-4">
             <PersonalInfo isEditable={isEditable}  profile={profileData}
              onValidationChange={handleValidationChange}
-            onMobileNumberChange={handleMobileNumberChange} />
+            onMobileNumberChange={handleMobileNumberChange} 
+            setResetMobileNumberError={setResetMobileNumberError} />
             <CompanyInfo isEditable={isEditable}
               profile={profileData}
               onAddressChange={handleAddressChange}
               onPincodeChange={handlePincodeChange}
               onValidationChange={handleCompanyValidationChange} 
+              setResetPincodeError={setResetPincodeError} 
+              setResetAddressError = {setResetAddressError}
               />
             <BankInfo  profile={profileData}/>
             <CompanyIDProofInfo  profile={profileData}/>
@@ -217,8 +225,8 @@ const ViewProfile = () => {
                   <span className="mobileIcon">
                     <IoCall />
                   </span>
-                  {/* 8838167633 */}
-                  {userData.mobile}
+                  {/* {userData.mobile} */}
+                  {initialProfileData.mobile_no}
                 </div>
               </div>
               
@@ -254,9 +262,7 @@ const ViewProfile = () => {
                   <button
                   style={{backgroundColor: "gray"}}
                     className="primaryBtn d-flex gap-2 align-items-center justify-content-center"
-                    onClick={() => {
-                      setIsEditable(false);
-                    }}
+                    onClick={handleCancelClick}
                   >
                     Cancel
                   </button>
