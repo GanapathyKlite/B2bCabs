@@ -33,6 +33,15 @@ interface AuthContextType {
   setTripType: React.Dispatch<React.SetStateAction<string>>;
   hourTime: string;
   setHourTime: React.Dispatch<React.SetStateAction<string>>;
+  setUserData: React.Dispatch<React.SetStateAction<{
+    id: string | null;
+    companyName: string | null;
+    name: string | null;
+    mobile: string | null;
+    email: string | null;
+    logo: string | null;
+    currentBalance: string | null;
+  }>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -150,6 +159,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       value={{
         authToken,
         userData,
+        setUserData,
         login,
         logout,
         inputValueOne,

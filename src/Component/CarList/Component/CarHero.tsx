@@ -1,8 +1,9 @@
-
 import React, { useState, useCallback  } from "react";
-import { FaCircleCheck } from "react-icons/fa6";
+// import { FaCircleCheck } from "react-icons/fa6";
 import CarFilter from "./CarFilter";
 import CarList from "./CarList";
+import resultNotFount from "../../../Assets/recordNotFound.png";
+import "./CarHero.css";
 
 interface Car {
   name: string;
@@ -12,7 +13,6 @@ interface Car {
   description: string;
   extraKmFare: string;
   cancellationPolicy: string;
-  // amenities: JSX.Element[];
   amenities: string[];
   originalPrice: string;
   offerPrice: string;
@@ -86,25 +86,23 @@ const CarHero: React.FC<CarListProps> = ({ cars, duration, km, cancelDate, error
           
             
               <div className="col-lg-9">
-              <div className="pt-3 px-2 pb-4 z-n1">
+              {/* <div className="pt-3 px-2 pb-4 z-n1">
               <div className="d-flex w-100 bg-success-subtle py-3 px-3 rounded align-items-center gap-3 text-success-emphasis">
                 <FaCircleCheck className="opacity-50" />
                 Free Cancellation before {cancelDate}
               </div>
-            </div>
+            </div> */}
               {duration.length !== 0 ?(
                 <div className="pt-2 px-2 pb-4 z-n1">
                 <div className="card pt-2 px-2 pb-2 z-n1">
-    <p className="mb-0">Distance for selected route is {km} km</p>
-    <p className="mb-0">Approx : {duration}</p>
+    <p className="mb-0">Distance for selected route is {km} km |<span>  Approx : {duration}</span></p>
 </div>
 </div>
               ):null} 
               {period.noOfDays !== 0 && period.noOfNights !== 0?(
                 <div className="pt-2 px-2 pb-4 z-n1">
                 <div className="card pt-2 px-2 pb-2 z-n1">
-    <p className="mb-0">Number of Days: {period.noOfDays}</p>
-    <p className="mb-0">Number of Nights: {period.noOfNights}</p>
+    <p className="mb-0"> {period.noOfNights} Night ,<span> {period.noOfDays} Days</span></p>
 </div>
 </div>
               ):null} 
@@ -122,10 +120,11 @@ const CarHero: React.FC<CarListProps> = ({ cars, duration, km, cancelDate, error
             </div>
           </>):(<>
             <div className="col-12 text-center my-5">
-              <div className="col-12 text-center my-4 my-md-5 my-lg-7 py-3 py-md-4 py-lg-5">
-            {errorMessage ? errorMessage:  <p>No data available</p>}
-            </div>
-            </div>
+  <div className="col-12 text-center compact-container py-3 py-md-4 py-lg-5">
+    <img src={resultNotFount} alt="resultNotFount" className="compact-image" />
+    <div className="recordFound compact-text">No Record Found</div>
+  </div>
+</div>
           </>)}
          
         </div>

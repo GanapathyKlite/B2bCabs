@@ -1,0 +1,14 @@
+.compact-container {
+    margin: 2rem 0; /* Reduce the margin size */
+    padding: 2rem; /* Reduce padding for compactness */
+  }
+  
+  .compact-image {
+    width: 250px; /* Adjust the image width */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
+  .compact-text {
+    font-size: 1rem; /* Adjust the font size */
+    margin-top: 1rem; /* Adjust spacing between image and text */
+  }

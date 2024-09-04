@@ -357,7 +357,7 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
         }
       );
       if (response.data.status) {
-       navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, startdate: start_date, tripType: "Hour Rental"}});
+       navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, startdate: start_date, tripType: "Hour Rental", hour_rental_type: hourTime}});
       } 
    
       } catch (error) {
@@ -386,7 +386,7 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
         if (response.data.status) {
          navigate("/dashboard/cabbooking",{state: {car: response.data.data,
           // startcity: start_city, endcity: end_city,
-          startdate: startrangedate, enddate: endrangedate, tripType: "Holidays Package",
+          startdate: startrangedate, enddate: endrangedate, tripType: "Holiday Package",
           seats: car.seats, packageId : packageId
          }});
         } 
@@ -447,7 +447,7 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
                       </div>
                     </div>
                   </div> */}
-                  <div className="d-flex font-size14">
+                  {/* <div className="d-flex font-size14">
                     <div className="text-success pe-3">
                       <TbClockX />
                     </div>
@@ -458,11 +458,11 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
                         of departure
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="d-flex align-items-center">
-                    <div className="text-success pe-3">
+                    {/* <div className="text-success pe-3">
                       <FaGasPump />
-                    </div>
+                    </div> */}
                     <div className="d-flex col-11 col-md-8">
                       <div className="d-flex col-5 font-size14">Amenities</div>
                       {/* <div className="d-flex col-6 gap-3 align-items-center text-success">
@@ -492,10 +492,10 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
                 </p>
               </div>
               <div className="d-flex align-items-center justify-content-between justify-content-lg-evenly">
-                <span className="strikeDiagonal text-secondary d-flex justify-content-center align-items-center fontInter">
+                {/* <span className="strikeDiagonal text-secondary d-flex justify-content-center align-items-center fontInter">
                   <FaIndianRupeeSign />
                   {car.price}
-                </span>
+                </span> */}
                 <span className="offerPrice">
                   <FaIndianRupeeSign />
                   {car.price}

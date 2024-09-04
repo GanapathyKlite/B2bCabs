@@ -7,22 +7,25 @@ import { useLocation } from "react-router-dom";
 import parse from "html-react-parser";
 import { Modal } from "antd";
 import axios from "axios";
+import { AxiosError } from "axios";
 import { Notyf } from "notyf";
 import { useNavigate } from "react-router-dom";
+import useRazorpay from "react-razorpay";
 
 // Icons Start
 import { FaArrowRightArrowLeft, FaCheck, FaCircleCheck } from "react-icons/fa6";
 import { GrMapLocation } from "react-icons/gr";
-import { TbClockX } from "react-icons/tb";
+// import { TbClockX } from "react-icons/tb";
 import {
   IoMdArrowRoundForward,
   IoIosArrowForward,
   IoIosArrowDropdownCircle,
 } from "react-icons/io";
+import { IoIosArrowDown } from "react-icons/io";
 import { SiRazorpay } from "react-icons/si";
 import { BsCcCircleFill } from "react-icons/bs";
 import { GiWallet } from "react-icons/gi";
-import { FaGasPump, FaRegSnowflake, FaTv, FaMusic } from "react-icons/fa";
+import { FaRegSnowflake, FaTv, FaMusic } from "react-icons/fa";
 import { BiSolidCarGarage } from "react-icons/bi";
 import { GiCharging } from "react-icons/gi";
 import dayjs, { Dayjs } from "dayjs";
@@ -69,12 +72,13 @@ const paymentOptions = [
 
 const CarBooking: React.FC = () => {
 
-  const { authToken, userData } = useAuth();
+  const { authToken, userData, setUserData } = useAuth();
   const [paymentModalBoxOpen, setPaymentModalBoxOpen] =
     React.useState<boolean>(false);
   const [modalBoxLoading, setModalBoxLoading] = React.useState<boolean>(true);
   const [holidaystartcityid, setholidaystartcityid] = useState("");
   const [holidayendcityid, setholidayendcityid] = useState("");
+  const [Razorpay] = useRazorpay();
 
   const showModalBox = () => {
     setPaymentModalBoxOpen(true);
@@ -94,8 +98,6 @@ const CarBooking: React.FC = () => {
     const storedholidaystartCity = sessionStorage.getItem('holidaystartCity'); 
     const storedholidayendCity = sessionStorage.getItem('holidayendCity');
     if (storedholidaystartCity) {
-            
-            
       const suggestionObject = JSON.parse(storedholidaystartCity);
     setholidaystartcityid(suggestionObject.id_city); 
     }
@@ -117,6 +119,7 @@ const CarBooking: React.FC = () => {
   const tripType = location.state.tripType;
   const seats = location.state.seats;
   const packageId = location.state.packageId;
+  const hourTime = location.state.hour_rental_type;
 
   const formattedDate = dayjs(startdate, "DD-MM-YYYY").format("ddd, DD MMM YYYY");
 
@@ -499,6 +502,8 @@ console.log(car,"----car");
     }
   };
 
+  const profileImage = `${imageURL}${userData.logo}`;
+
   const handlePayment = async(paymentType : string)=>{
    if(paymentType === "Wallet"){
     try {
@@ -508,37 +513,38 @@ console.log(car,"----car");
           amount: amount,
           is_recharge: false,
           agent_id: parseInt(userData.id ?? "0"),
-          holiday_package_id: parseInt(packageId) ,
+          holiday_package_id: packageId ? parseInt(packageId) : 0,
           client_name: client_name,
           contact_no: contactNumber,
           contact_no_country_code : contactNoCountryCode,
           al_contact_no: alternativeContactNumber,
           al_contact_no_country_code: alternateNoCountryCode,
-          package_type:"Holiday Package",
-          // package_type:"Day Rental",
-          arrival: holidaystartcityid,
+          package_type: tripType,
+          arrival: car.start_city ? car.start_city.toString() : holidaystartcityid,
           arrival_via: selectedArrival,
           arrival_details: pickupAddress,
-          departure: holidayendcityid,
+          departure: car.end_city ? car.end_city.toString() : holidayendcityid,
           departure_via: selectedDeparture,
           departure_details: dropAddress,
           vehicle_type: vehicleType,
-          is_gst: true, 
+          is_gst: car.tax_amount !== "0" ? true : false, 
           no_of_adult: adultCount,
           no_of_kids: childCount,
           infant: 0,
           no_of_days: parseInt(car.no_of_days),
           start_date: startdate ,
-          end_date: enddate ,
-          trip_date:{"1":startdate,"2":enddate},
-          start_city:{"1": car.itinerary[0].from_name,"2":car.itinerary[0].to_name},
-          end_city:{"1":car.itinerary[0].to_name,"2":car.itinerary[0].from_name},
-          itinerary: car.itinerary,
+          end_date: enddate ? enddate :  startdate,
+          trip_date:{"1":startdate,"2":enddate ? enddate :  startdate},
+          start_city:{"1": car.itinerary ? car.itinerary[0].from_name : startcity.city,
+                      "2": car.itinerary? car.itinerary[0].to_name : endcity?.city || ""},
+          end_city:{"1": car.itinerary? car.itinerary[0].to_name : endcity?.city || "",
+                    "2": car.itinerary? car.itinerary[0].from_name : startcity.city},
+          itinerary: car.itinerary ? car.itinerary : "",
           payment_type: "Wallet",
           pickup_location: pickupAddress,
           drop_location: dropAddress,
           pickup_time: formattedPickupTime,
-          hour_rental_type: "0"  
+          hour_rental_type: hourTime? hourTime : "0"  
           }
           ,
         {
@@ -559,13 +565,146 @@ console.log(car,"----car");
                       "userData",
                       JSON.stringify(sessionData)
                     );
+                    setUserData(sessionData);
                   }
         console.log(response.data.message);
       }
    }catch(error){
+    notyf.error("Something went wrong")
     console.log(error);
     
    }
+  }
+  else if(paymentType === "Razorpay"){
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/razorpay/create/orderId`,
+        {
+          amount: amount,
+          is_recharge: false,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      if (response.status === 200 && response.data.status) {
+        const { orderId, receipt } = response.data.data;
+
+        const options = {
+          key: "rzp_test_FIbXKAkHk9VvXS",
+            amount: amount.toString(),
+          currency: "INR",
+          name: "Klite cabs",
+          description: "Credits towards consultation",
+          image: profileImage,
+          order_id: orderId,
+          handler: async function (response: any) {
+            let razorpay_order_id = response.razorpay_order_id;
+            let razorpay_signature = response.razorpay_signature;
+            let razorpay_payment_id = response.razorpay_payment_id;
+
+            try {
+
+              const response = await axios.post(
+                `${
+                  import.meta.env.VITE_API_BASE_URL
+                }/razorpay/capture-payment`,
+                {
+                  receipt: receipt,
+                  amount: amount,
+                  is_recharge: false,
+                  razorpay_order_id: razorpay_order_id,
+                  razorpay_payment_id: razorpay_payment_id,
+                  razorpay_signature: razorpay_signature,
+                 
+                  agent_id: parseInt(userData.id ?? "0"),
+                  holiday_package_id: packageId ? parseInt(packageId) : 0,
+                  client_name: client_name,
+                  contact_no: contactNumber,
+                  contact_no_country_code : contactNoCountryCode,
+                  al_contact_no: alternativeContactNumber,
+                  al_contact_no_country_code: alternateNoCountryCode,
+                  package_type: tripType,
+                  arrival: car.start_city ? car.start_city.toString() : holidaystartcityid,
+                  arrival_via: selectedArrival,
+                  arrival_details: pickupAddress,
+                  departure: car.end_city ? car.end_city.toString() : holidayendcityid,
+                  departure_via: selectedDeparture,
+                  departure_details: dropAddress,
+                  vehicle_type: vehicleType,
+                  is_gst: car.tax_amount !== "0" ? true : false, 
+                  no_of_adult: adultCount,
+                  no_of_kids: childCount,
+                  infant: 0,
+                  no_of_days: parseInt(car.no_of_days),
+                  start_date: startdate ,
+                  end_date: enddate ? enddate :  startdate,
+                  trip_date:{"1":startdate,"2":enddate ? enddate :  startdate},
+                  start_city:{"1": car.itinerary ? car.itinerary[0].from_name : startcity.city,
+                              "2": car.itinerary? car.itinerary[0].to_name : endcity?.city || ""},
+                  end_city:{"1": car.itinerary? car.itinerary[0].to_name : endcity?.city || "",
+                            "2": car.itinerary? car.itinerary[0].from_name : startcity.city},
+                  itinerary: car.itinerary ? car.itinerary : "",
+                  payment_type: "Wallet",
+                  pickup_location: pickupAddress,
+                  drop_location: dropAddress,
+                  pickup_time: formattedPickupTime,
+                  hour_rental_type: hourTime? hourTime : "0"
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${authToken}`,
+                  },
+                }
+              );
+              if (response.status === 200 && response.data.status) {
+                notyf.success("Payment Successful");
+                navigate("/dashboard");
+                
+              }
+            } catch (error) {
+              notyf.error("Something went wrong")
+              console.log(error, "error");
+            }
+          },
+          prefill: {
+            name: userData.name || "",
+            email: userData.email || "",
+            contact: userData.mobile || "",
+          },
+          notes: {
+            address: "Razorpay Corporate Office",
+          },
+          theme: {
+            color: "#3399cc",
+          },
+        };
+
+        const rzp1 = new Razorpay(options);
+
+        rzp1.on("payment.failed", function (response: any) {
+          // alert(response.error.code);
+          // alert(response.error.description);
+          // alert(response.error.source);
+          // alert(response.error.step);
+          // alert(response.error.reason);
+          // alert(response.error.metadata.order_id);
+          // alert(response.error.metadata.payment_id);
+        });
+
+        rzp1.open();
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        notyf.error("Network error");
+      }
+      console.log(error, "error");
+    }
+  } else if(paymentType === "CCAvenue"){
+    console.log("cc avenue payment");
+    
   }
     
   }
@@ -577,7 +716,9 @@ console.log(car,"----car");
     <>
       <div className="w-100 ReviewBookingBar">
         <div className="container text-light py-3 px-2 d-flex flex-column gap-2">
-          <div className="titleReviewBooking">Review Booking</div>
+          <div className="titleReviewBooking">
+            {/* Review Booking  */}
+             {tripType}  </div>
           <div
             className="d-flex align-items-center column-gap-3 font-size14"
             style={{ fontWeight: "var(--font300)" }}
@@ -588,24 +729,25 @@ console.log(car,"----car");
             {endcity ? <FaArrowRightArrowLeft /> : null}
             {/* <span>Puducherry, India</span> */}
             {endcity ? endcity.city : null}
+
+            <span>
+              Pickup : 
+             {" "} {startdate}
+            </span>
+            {enddate ? (
+              <>
+                <span>
+                  | Drop : 
+                  {" "}{enddate}
+                </span>
+              </>
+            ) : null}
           </div>
           <div
             className="d-flex column-gap-3 font-size14"
             style={{ fontWeight: "var(--font300)" }}
           >
-            {/* <span>Round Trip</span>| */}
-            <span>
-              Pickup :{/* Thu, 15 Feb 24, 12:55 PM */}
-              {startdate}
-            </span>
-            {enddate ? (
-              <>
-                <span>
-                  | Drop : {/*Sat, 17 Feb 24, 10:55 AM */}
-                  {enddate}
-                </span>
-              </>
-            ) : null}
+            
           </div>
         </div>
       </div>
@@ -632,30 +774,32 @@ console.log(car,"----car");
                         {car.vehicle_name}
                       </b>
                     </span>
-                    <span className="similarCarName">or similar</span>
+                   
                   </div>
                   <div className="d-inline-flex">
-                    <span className="d-flex gap-2" style={{ fontSize: "14px" }}>
+                  <span className="similarCarName">or similar</span>
+                    {/* <span className="d-flex gap-2" style={{ fontSize: "14px" }}> */}
                       {/* <li>
                         Sedan
                         {car.vehicle_name}
                         </li> */}
                       {/* <li>AC</li> */}
-                      <li>{seats ? seats : car.seats} Seats</li>
-                    </span>
+                      {/* <li>{seats ? seats : car.seats} Seats</li> */}
+                    {/* </span> */}
                   </div>
                   <div className="d-flex gap-2 flex-column w-100">
-                    <p className="m-0">
+                    {/* <p className="m-0">
                       <b>Spacious Car</b>
-                    </p>
-                    <div className="d-flex">
+                    </p> */}
+                    {car.extra_km_fare !== undefined ?(<>
+                      <div className="d-flex">
                       <div className="text-primary pe-3">
                         <GrMapLocation />
                       </div>
                       <div className="d-flex font-size14 w-100">
                         <div className="col-lg-4">Extra km fare </div>
                         <div className="col-lg-8 fontInter">
-                          {/* ₹10.8/km after 755 kms */}₹ {car.extra_km_fare}{" "}
+                          ₹ {car.extra_km_fare}{" "}
                           /km after{" "}
                           {car.extra_duration_fare
                             ? car.extra_duration_fare
@@ -663,9 +807,10 @@ console.log(car,"----car");
                           km
                         </div>
                       </div>
-                    </div>
+                    </div></>): null}
+                    
 
-                    <div className="d-flex font-size14">
+                    {/* <div className="d-flex font-size14">
                       <div className="text-primary pe-3">
                         <TbClockX />
                       </div>
@@ -676,43 +821,39 @@ console.log(car,"----car");
                           of departure
                         </div>
                       </div>
-                    </div>
+                    </div> */}
 
-                    <div className="d-flex align-items-center w-100">
-                      <div className="text-primary pe-3">
+                    {/* <div className="d-flex align-items-center w-100"> */}
+                      {/* <div className="text-primary pe-3">
                         <FaGasPump />
-                      </div>
-                      <div className="d-flex w-100">
-                        <div className="col-lg-4 font-size14">Amenities</div>
-                        <div className="d-flex col-lg-8 text-primary gap-3 align-items-center">
+                      </div> */}
+                      <div className="d-flex font-size14 w-100">
+                        {/* <div className="col-lg-4 font-size14">Amenities</div> */}
+                        {/* <div className="d-flex col-lg-8 text-primary gap-3 align-items-center"> */}
 
-                          {/* <FaRegSnowflake />
-                          <GiCharging />
-                          <FaTv /> */}
-
-                          <b>
+                          {/* <b>
                           {descriptionItems.map((item: string) => (
           iconMap[item] 
         ))}
-      </b>
+      </b> */}
 
-                     {/* {car.description} */}
+                {car.description}    
 
-                        </div>
+                        {/* </div> */}
                       </div>
-                    </div>
+                    {/* </div> */}
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="sideBars bg-light">
+            {/* <div className="sideBars bg-light">
               <div className="h5">Driver & Cab details</div>
               <div className="font-size14">
                 Cab and driver details will be shared up to 30 mins prior to
                 departure.
               </div>
-            </div>
+            </div> */}
 
             <div className="sideBars d-flex bg-light">
               <div className="left_side d-flex gap-3 flex-column col-6">
@@ -841,6 +982,7 @@ console.log(car,"----car");
           <label htmlFor="adultCount" className="font-size14">
             <span style={{ fontWeight: "600" }}>Adult</span>
           </label>
+          <div className="select-wrapper">
           <select
             className="form-control px-3 py-2"
             id="adultCount"
@@ -855,6 +997,8 @@ console.log(car,"----car");
               </option>
             ))}
           </select>
+          <IoIosArrowDown className="dropdown-arrow" />
+</div>
           {error.adultCount && <div className="text-danger mt-2">{error.adultCount}</div>}
         </div>
 
@@ -864,7 +1008,7 @@ console.log(car,"----car");
                         className="font-size14"
                       >
                         <span style={{ fontWeight: "600" }}>
-                          Alternative Contact Number
+                          Alternative Contact Number (optional)
                         </span>
                       </label>
                       <div className="row">
@@ -891,7 +1035,7 @@ console.log(car,"----car");
                         type="text"
                         className="form-control px-3 py-2"
                         id="alternativeContactNumber"
-                        placeholder="Enter 10 digit Mobile Number"
+                        placeholder="Enter Alternate Number"
                         value={alternativeContactNumber}
                         onBlur={() => validateField("AlternateNumber")}
                         onChange={handleInputChange(setAlternativeContactNumber,"alternativeContactNumber")}
@@ -907,6 +1051,7 @@ console.log(car,"----car");
                     <label className="font-size14">
                       <span style={{ fontWeight: "600" }}>Arrival Via</span>
                     </label>
+                    <div className="select-wrapper">
                     <select
           className="form-control px-3 py-2"
           id="arrivalvia"
@@ -921,6 +1066,8 @@ console.log(car,"----car");
           <option value="Train">Train</option>
           <option value="Residency">Residency</option>
         </select>
+        <IoIosArrowDown className="dropdown-arrow" />
+</div>
         {error.arrivalVia && <div className="text-danger mt-2">{error.arrivalVia}</div>}
                   </div>
 
@@ -928,6 +1075,7 @@ console.log(car,"----car");
                     <label className="font-size14">
                       <span style={{ fontWeight: "600" }}>Departure Via</span>
                     </label>
+                    <div className="select-wrapper">
                     <select
           className="form-control px-3 py-2"
           id="departurevia"
@@ -942,6 +1090,8 @@ console.log(car,"----car");
           <option value="Train">Train</option>
           <option value="Residency">Residency</option>
         </select>
+        <IoIosArrowDown className="dropdown-arrow" />
+</div>
         {error.departureVia && <div className="text-danger mt-2">{error.departureVia}</div>}
 
                   </div>
@@ -983,7 +1133,7 @@ console.log(car,"----car");
         type="text"
         className="form-control px-3 py-2"
         id="contactNumber"
-        placeholder="Enter 10 digit Mobile Number"
+        placeholder="Enter Mobile Number"
         value={contactNumber}
         onChange={handleInputChange(setContactNumber, "contactNumber")}
         onBlur={() => validateField("contactNumber")}
@@ -1000,6 +1150,7 @@ console.log(car,"----car");
           <label htmlFor="childCount" className="font-size14">
             <span style={{ fontWeight: "600" }}>Child</span>
           </label>
+          <div className="select-wrapper">
           <select
             className="form-control px-3 py-2"
             id="childCount"
@@ -1018,6 +1169,8 @@ console.log(car,"----car");
               <option value="">Select Adult First</option>
             )}
           </select>
+          <IoIosArrowDown className="dropdown-arrow" />
+</div>
         </div>
 
         <div className="mb-2">
@@ -1100,24 +1253,24 @@ console.log(car,"----car");
                 {error.isAgreed && <div className="text-danger mt-2">{error.isAgreed}</div>}
                 <div className="font-size12 ml-2"> By proceeding to book, I Agree to B2b Cab's
                   <span style={{ color: "var(--PrimaryColor)" }}>
-                    Privacy Policy
+                   {" "} Privacy Policy
                   </span>
                   ,
                   <span style={{ color: "var(--PrimaryColor)" }}>
-                    User Agreement
+                   {" "} User Agreement
                   </span>
-                  and
+                 {" "} and
                   <span
 
       style={{ color: "var(--PrimaryColor)"}}
       
     >
-      Terms of Service
+    {" "}  Terms of Service
     </span></div>
 
               </form>
             </div>
-            <div className="sideBars bg-light">
+            {/* <div className="sideBars bg-light">
               <div className="h5 mb-3">Read before you book!</div>
               <div className="row">
                 <div className="col-6 d-flex flex-column gap-3">
@@ -1192,7 +1345,7 @@ console.log(car,"----car");
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="col-lg-4 pe-lg-0">
@@ -1204,22 +1357,17 @@ console.log(car,"----car");
                 <span style={{ color: "var(--PrimaryColor)" }}>
                   <FaCircleCheck />
                 </span>
-                <span className="font-size11">
-                  {/* <div dangerouslySetInnerHTML={{ __html: car.cancel_policy }} /> */}
-                  Free Cancellation before
-                  {startdate}
-                  {/* 19 Feb 2024, 10:45 AM IST */}
+                <span className="font-size14">
+                   Cancellation
+                    {/* before
+                  {startdate} */}
                 </span>
                 <span style={{ color: "var(--PrimaryColor)" }}>
                   <Tooltip
                     title={
-                      <div className="">
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: car.cancel_policy,
-                          }}
-                        />
-                      </div>
+                        <div className="custom-list-style">
+                    {parse(car.cancel_policy)}
+                  </div>
                     }
                     trigger="hover"
                     arrowPointAtCenter
@@ -1247,7 +1395,8 @@ console.log(car,"----car");
 
                 </button>
                 <div className="d-flex flex-column gap-3">
-                  <div>
+                  {tripType === "Holiday Package" ? (<>
+                    <div>
                     <div className="d-flex align-items-center justify-content-between gap-3">
                       <div className="d-flex align-items-center gap-2">
                         <input
@@ -1269,7 +1418,8 @@ console.log(car,"----car");
                       </div>
                       <div style={{ fontFamily: "Inter !important" }}>
                         <b>
-                          <BsCurrencyRupee /> 1,450
+                          <BsCurrencyRupee /> 
+                          {(amount /2).toLocaleString()}
                         </b>
                       </div>
                     </div>
@@ -1297,6 +1447,9 @@ console.log(car,"----car");
                       </div>
                     </div>
                   </div>
+                  </>): null}
+                  
+                 
                 </div>
                 <hr />
                 <div className="d-flex justify-content-between align-items-center">
@@ -1312,10 +1465,10 @@ console.log(car,"----car");
                       {/* <p className="text-danger m-0 text-end">13% off</p> */}
                     </div>
                     <div className="d-flex align-items-center justify-content-end gap-2">
-                      <div className="strikeDiagonal font-size12 text-secondary d-flex justify-content-center align-items-center fontInter">
+                      {/* <div className="strikeDiagonal font-size12 text-secondary d-flex justify-content-center align-items-center fontInter">
                         <BsCurrencyRupee />
                         {car.total_price}
-                      </div>
+                      </div> */}
                       <div className="font-size25 fontWeight500 fontInter">
                         <BsCurrencyRupee />
                         {car.total_price}
@@ -1329,19 +1482,21 @@ console.log(car,"----car");
                         justifyContent: "center",
                       }}
                     >
-                      {/* <Tooltip
+                      <Tooltip
                         title={
                           <div className="">
                             <ul className="m-0 p-0">
                               <li>
                                 <span>Base Fare: </span>
                                 <span>
+                                   <BsCurrencyRupee />
                                   {car.basic_rate}
                                 </span>
                               </li>
                               <li>
                                 <span>Taxes & Fees: </span>
                                 <span>
+                                <BsCurrencyRupee />
                                   {car.tax_amount}
                                 </span>
                               </li>
@@ -1354,7 +1509,7 @@ console.log(car,"----car");
                         <span style={{ color: "var(--PrimaryColor)" }}>
                           Fare Breakup
                         </span>
-                      </Tooltip> */}
+                      </Tooltip>
                     </div>
                   </div>
                 </div>

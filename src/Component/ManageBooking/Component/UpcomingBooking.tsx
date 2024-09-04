@@ -13,6 +13,7 @@ import axios from "axios";
 const { RangePicker } = DatePicker;
 
 interface upcomingBooking {
+  id: string;
   drop_location : string;
 image : string;
 package_type : string;
@@ -89,29 +90,31 @@ const disabledDate = (current: dayjs.Dayjs) => {
 const UpcomingBooking: React.FC = () => {
   const {userData, authToken} = useAuth();
   const [upcomingBookingData, setupcomingBookingData] = useState<upcomingBooking[]>([]);
+  const [bookingid, setbookingid] = useState("");
+  const [cancelReason, setCancelReason] = useState("");
 
-  useEffect(() => {
-    const fetchupBooking = async () => {
+  const fetchupBooking = async () => {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/client/upComingBooking/${userData.id}`,
         {
           headers: {
-            Authorization: `Bearer ${authToken}`
+            Authorization: `Bearer ${authToken}`,
           },
         }
       );
-      if(response.data.status){
+      if (response.data.status) {
         setupcomingBookingData(response.data.data);
       }
     } catch (err) {
       console.log(err);
     }
-    
-  }
-  fetchupBooking();
+  };
 
-  },[]);
+  useEffect(() => {
+    fetchupBooking();
+  }, []);
+
   const [reasonModalBoxOpen, setReasonModalBoxOpen] =
     React.useState<boolean>(false);
 
@@ -148,9 +151,26 @@ const UpcomingBooking: React.FC = () => {
     navigate("/dashboard");
   };
 
-  const handleCancelBtn = () => {
-    setReasonModalBoxOpen(false);
-    notyf.success("Request sent successfully. We will update you soon.");
+  const handleCancelBtn = async() => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/client/cancel/${parseInt(bookingid)}`,
+        {cancel_reason: cancelReason},
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`
+          },
+        }
+      );
+      if(response.data.status){
+        notyf.success("Request sent successfully. We will update you soon.");
+        setReasonModalBoxOpen(false);
+        fetchupBooking();
+      }
+    } catch (err) {
+      notyf.error("Error occured in cancel booking")
+      console.log(err);
+    }
   };
 
   const selectedBooking =
@@ -250,8 +270,11 @@ const UpcomingBooking: React.FC = () => {
                         <p>{booking.drop_location}</p>
                       </div>
                     </div>
-                    <div className="upcomingBookingDetailsBtnDiv col-12 col-lg-3">
-                      <button onClick={() => handleCancelClick(index)}>
+                    {booking.status === 0 ? (<>
+                      <div className="upcomingBookingDetailsBtnDiv col-12 col-lg-3">
+                      <button onClick={() =>{ 
+                        handleCancelClick(index)
+                        setbookingid(booking.id)}}>
                         Cancel
                       </button>
                       <button
@@ -262,6 +285,18 @@ const UpcomingBooking: React.FC = () => {
                         Edit
                       </button>
                     </div>
+                    </>): null}
+
+                    {booking.status === 2 ? (<>
+                      <div className="upcomingBookingDetailsBtnDiv col-12 col-lg-3">
+                      
+                      <button
+                      >
+                        Waiting for Approve
+                      </button>
+                    </div>
+                    </>): null}
+                    
                   </div>
                 </div>
               </div>
@@ -287,6 +322,8 @@ const UpcomingBooking: React.FC = () => {
               </span>
             </label>
             <textarea
+            value={cancelReason}
+            onChange={(e)=>{setCancelReason(e.target.value)}}
               placeholder="Enter Your Reason"
               className="form-control border border-secondary rounded-3 p-3 w-100 upcomingBookingTextArea"
             />
