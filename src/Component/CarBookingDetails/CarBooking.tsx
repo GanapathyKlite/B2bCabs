@@ -37,6 +37,8 @@ import { BsCurrencyRupee, BsExclamationCircle } from "react-icons/bs";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const notyf = new Notyf({
   duration: 4000,
@@ -228,6 +230,10 @@ const CarBooking: React.FC = () => {
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const formRef = useRef<HTMLFormElement>(null);
   const [vehicleType, setVehicleType] = useState("");
+
+  const [selectedOption, setSelectedOption] = useState('paymentOption2');
+  const [totalamount, settotalamount] = useState("");
+
 
   
   const validateForm = () => {
@@ -455,8 +461,7 @@ if(car.vehicle_name == "Suv"){
 } else if( car.vehicle_name == "Tempo Traveller"){
   setVehicleType("7")
 }
-
-console.log(car,"----car");
+console.log(car,"---car");
 
   },[])
 
@@ -506,74 +511,74 @@ console.log(car,"----car");
 
   const handlePayment = async(paymentType : string)=>{
    if(paymentType === "Wallet"){
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/payment/wallet`,
-        {
-          amount: amount,
-          is_recharge: false,
-          agent_id: parseInt(userData.id ?? "0"),
-          holiday_package_id: packageId ? parseInt(packageId) : 0,
-          client_name: client_name,
-          contact_no: contactNumber,
-          contact_no_country_code : contactNoCountryCode,
-          al_contact_no: alternativeContactNumber,
-          al_contact_no_country_code: alternateNoCountryCode,
-          package_type: tripType,
-          arrival: car.start_city ? car.start_city.toString() : holidaystartcityid,
-          arrival_via: selectedArrival,
-          arrival_details: pickupAddress,
-          departure: car.end_city ? car.end_city.toString() : holidayendcityid,
-          departure_via: selectedDeparture,
-          departure_details: dropAddress,
-          vehicle_type: vehicleType,
-          is_gst: car.tax_amount !== "0" ? true : false, 
-          no_of_adult: adultCount,
-          no_of_kids: childCount,
-          infant: 0,
-          no_of_days: parseInt(car.no_of_days),
-          start_date: startdate ,
-          end_date: enddate ? enddate :  startdate,
-          trip_date:{"1":startdate,"2":enddate ? enddate :  startdate},
-          start_city:{"1": car.itinerary ? car.itinerary[0].from_name : startcity.city,
-                      "2": car.itinerary? car.itinerary[0].to_name : endcity?.city || ""},
-          end_city:{"1": car.itinerary? car.itinerary[0].to_name : endcity?.city || "",
-                    "2": car.itinerary? car.itinerary[0].from_name : startcity.city},
-          itinerary: car.itinerary ? car.itinerary : "",
-          payment_type: "Wallet",
-          pickup_location: pickupAddress,
-          drop_location: dropAddress,
-          pickup_time: formattedPickupTime,
-          hour_rental_type: hourTime? hourTime : "0"  
-          }
-          ,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      if (response.status === 200 && response.data.status) {
-        notyf.success("Payment Successful");
-        navigate("/dashboard");
-        let sessionDataString = sessionStorage.getItem("userData");
-                  if (sessionDataString !== null) {
-                    let sessionData = JSON.parse(sessionDataString);
-                    sessionData.currentBalance =
-                      response.data.message.current_balance;
-                    sessionStorage.setItem(
-                      "userData",
-                      JSON.stringify(sessionData)
-                    );
-                    setUserData(sessionData);
-                  }
-        console.log(response.data.message);
-      }
-   }catch(error){
-    notyf.error("Something went wrong")
-    console.log(error);
+  //   try {
+  //     const response = await axios.post(
+  //       `${import.meta.env.VITE_API_BASE_URL}/payment/wallet`,
+  //       {
+  //         amount: amount,
+  //         is_recharge: false,
+  //         agent_id: parseInt(userData.id ?? "0"),
+  //         holiday_package_id: packageId ? parseInt(packageId) : 0,
+  //         client_name: client_name,
+  //         contact_no: contactNumber,
+  //         contact_no_country_code : contactNoCountryCode,
+  //         al_contact_no: alternativeContactNumber,
+  //         al_contact_no_country_code: alternateNoCountryCode,
+  //         package_type: tripType,
+  //         arrival: car.start_city ? car.start_city.toString() : holidaystartcityid,
+  //         arrival_via: selectedArrival,
+  //         arrival_details: pickupAddress,
+  //         departure: car.end_city ? car.end_city.toString() : holidayendcityid,
+  //         departure_via: selectedDeparture,
+  //         departure_details: dropAddress,
+  //         vehicle_type: vehicleType,
+  //         is_gst: car.tax_amount !== "0" ? true : false, 
+  //         no_of_adult: adultCount,
+  //         no_of_kids: childCount,
+  //         infant: 0,
+  //         no_of_days: parseInt(car.no_of_days),
+  //         start_date: startdate ,
+  //         end_date: enddate ? enddate :  startdate,
+  //         trip_date:{"1":startdate,"2":enddate ? enddate :  startdate},
+  //         start_city:{"1": car.itinerary ? car.itinerary[0].from_name : startcity.city,
+  //                     "2": car.itinerary? car.itinerary[0].to_name : endcity?.city || ""},
+  //         end_city:{"1": car.itinerary? car.itinerary[0].to_name : endcity?.city || "",
+  //                   "2": car.itinerary? car.itinerary[0].from_name : startcity.city},
+  //         itinerary: car.itinerary ? car.itinerary : "",
+  //         payment_type: "Wallet",
+  //         pickup_location: pickupAddress,
+  //         drop_location: dropAddress,
+  //         pickup_time: formattedPickupTime,
+  //         hour_rental_type: hourTime? hourTime : "0"  
+  //         }
+  //         ,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${authToken}`,
+  //         },
+  //       }
+  //     );
+  //     if (response.status === 200 && response.data.status) {
+  //       notyf.success("Payment Successful");
+  //       navigate("/dashboard");
+  //       let sessionDataString = sessionStorage.getItem("userData");
+  //                 if (sessionDataString !== null) {
+  //                   let sessionData = JSON.parse(sessionDataString);
+  //                   sessionData.currentBalance =
+  //                     response.data.message.current_balance;
+  //                   sessionStorage.setItem(
+  //                     "userData",
+  //                     JSON.stringify(sessionData)
+  //                   );
+  //                   setUserData(sessionData);
+  //                 }
+  //       console.log(response.data.message);
+  //     }
+  //  }catch(error){
+  //   notyf.error("Something went wrong")
+  //   console.log(error);
     
-   }
+  //  }
   }
   else if(paymentType === "Razorpay"){
     try {
@@ -685,6 +690,8 @@ console.log(car,"----car");
         const rzp1 = new Razorpay(options);
 
         rzp1.on("payment.failed", function (response: any) {
+          console.log(response.error.reason);
+          
           // alert(response.error.code);
           // alert(response.error.description);
           // alert(response.error.source);
@@ -710,7 +717,7 @@ console.log(car,"----car");
   }
 
   const formattedPickupTime = pickupTime?.format('h:mm A');
-  const amount =  parseFloat(car.total_price.replace(/,/g, ''));
+  const amount = totalamount ?  parseFloat(totalamount.replace(/,/g, '')) : parseFloat(car.total_price.replace(/,/g, ''));
 
   return (
     <>
@@ -854,6 +861,57 @@ console.log(car,"----car");
                 departure.
               </div>
             </div> */}
+
+            {car.itinerary ? (<>
+              <div className="sideBars d-flex bg-light">
+              <div className="left_side d-flex gap-3 flex-column">
+                <div className="h5">Itinerary</div>
+                <div className="font-size14">Day Wise Details of your package</div>
+                <div>
+                {car.itinerary.map((item: any, index: number) => (<>
+
+                  <Accordion key={index}
+                  defaultExpanded={index === 0}
+                  disableGutters
+                  sx={{
+                    marginBottom: 0, // Remove margin
+                    padding: 0, // Remove padding
+                    boxShadow: 'none', 
+                  }}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${index}-content`}
+            id={`panel${index}-header`}
+            sx={{ backgroundColor: 'lightgrey' }}
+          >
+            <Typography variant="subtitle1" sx={{p: 1}}>
+              {item.from_name} - {item.to_name}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div style={{ display: 'flex' }}>
+              <div 
+              style={{
+                width: '40%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRight: '1px solid black', 
+              }}>
+                <Typography variant="body1"><strong>{item.day}</strong></Typography>
+                <Typography variant="body1"><strong>{item.duration}</strong></Typography>
+              </div>
+              <div style={{ width: '60%', padding: "10px" }}>
+                <Typography variant="body1">{item.itinerary}</Typography>
+              </div>
+            </div>
+          </AccordionDetails>
+        </Accordion>
+</>))}
+                </div>
+                  </div></div>
+            </>): null}
 
             <div className="sideBars d-flex bg-light">
               <div className="left_side d-flex gap-3 flex-column col-6">
@@ -1399,15 +1457,17 @@ console.log(car,"----car");
                     <div>
                     <div className="d-flex align-items-center justify-content-between gap-3">
                       <div className="d-flex align-items-center gap-2">
-                        <input
-                          // className="form-check-input"
-                          type="radio"
-                          name="exampleRadios"
-                          id="paymentOption1"
-                          value="paymentOption1"
-                          checked
-                        />
-                        <label htmlFor="paymentOption1">
+                      <input
+            type="radio"
+            name="paymentOptions"
+            id="paymentOption1"
+            value="paymentOption1"
+            checked={selectedOption === 'paymentOption1'}
+            onChange={(e)=>{
+              setSelectedOption(e.target.value)
+              settotalamount((amount /2).toLocaleString())}}
+          />
+          <label htmlFor="paymentOption1">
                           <div className="font-size14">
                             Make part payment now
                           </div>
@@ -1419,7 +1479,7 @@ console.log(car,"----car");
                       <div style={{ fontFamily: "Inter !important" }}>
                         <b>
                           <BsCurrencyRupee /> 
-                          {(amount /2).toLocaleString()}
+                          {(parseFloat(car.total_price.replace(/,/g, ''))/2).toLocaleString()}
                         </b>
                       </div>
                     </div>
@@ -1427,13 +1487,17 @@ console.log(car,"----car");
                   <div>
                     <div className="d-flex align-items-center justify-content-between gap-3">
                       <div className="d-flex align-items-center gap-2">
-                        <input
-                          type="radio"
-                          name="exampleRadios"
-                          id="paymentOption2"
-                          value="paymentOption2"
-                        />
-                        <label htmlFor="paymentOption2">
+                      <input
+              type="radio"
+              name="paymentOptions"
+              id="paymentOption2"
+              value="paymentOption2"
+              checked={selectedOption === 'paymentOption2'}
+              onChange={(e)=>{
+                setSelectedOption(e.target.value)
+                settotalamount(car.total_price)}}
+            />
+            <label htmlFor="paymentOption2">
                           <div className="font-size14">
                             Make full payment now
                           </div>
@@ -1531,7 +1595,7 @@ console.log(car,"----car");
           <div className="paymentDetails">
             <Accordion className="bg-transparent shadow-none w-100 flex-column">
               <AccordionSummary
-                expandIcon={<IoIosArrowDropdownCircle />}
+                // expandIcon={<IoIosArrowDropdownCircle />}
                 aria-controls="panel1-content"
                 id="panel1-header"
                 className="p-0 m-0 dashBoardNavBarTitle w-100"
@@ -1540,11 +1604,11 @@ console.log(car,"----car");
                   <div>Due Now</div>
                   <div className="dueAmount">
                     <BsCurrencyRupee />
-                    {car.total_price}
+                    {totalamount ? totalamount : car.total_price}
                   </div>
                 </div>
               </AccordionSummary>
-              <AccordionDetails className="dueAmountFareBarkUp">
+              {/* <AccordionDetails className="dueAmountFareBarkUp">
                 <ul className="m-0 px-2 pt-2">
                   <li>
                     <span>
@@ -1561,7 +1625,7 @@ console.log(car,"----car");
                     <span className="amount">{car.tax_amount}</span>
                   </li>
                 </ul>
-              </AccordionDetails>
+              </AccordionDetails> */}
             </Accordion>
           </div>
           <div className="travelTypeDiv">
@@ -1596,6 +1660,7 @@ console.log(car,"----car");
           <p>Pay Options</p>
           <div className="paymentOptionType">
             <ul>
+              
               {paymentOptions.map((paymentOption, index) => (
                 <li key={index}  onClick={()=>{handlePayment(paymentOption.paymentType)}}>
                   <button className="paymentOptionBtn"
