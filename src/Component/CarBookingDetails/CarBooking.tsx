@@ -480,7 +480,6 @@ if(car.vehicle_name == "Suv"){
 } else if( car.vehicle_name == "Tempo Traveller"){
   setVehicleType("7")
 }
-console.log(car,"---car");
 
   },[])
 
@@ -514,9 +513,6 @@ console.log(car,"---car");
   };
 
   const handlePayNow = () => {
-    showModalBox();
-      
-
     setTouched(prev => ({ ...prev, pickupTime: true }));
     if (formRef.current) {
       formRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -593,7 +589,6 @@ console.log(car,"---car");
                     );
                     setUserData(sessionData);
                   }
-        console.log(response.data.message);
       }
    }catch(error){
     notyf.error("Something went wrong")
@@ -866,7 +861,6 @@ console.log(car,"---car");
         console.log(error, "error");
       }
     } else if (selectedPaymentMethod === "ccavenue") {
-      console.log("it is cc avenue");
     }
     setLoading(false);
     setAddCashModalBox(false);

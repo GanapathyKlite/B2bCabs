@@ -489,18 +489,20 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
               className="col-5 col-lg-3 d-flex row-gap-2 flex-column position-absolute"
               style={{ right: "10px", top: "15px" }}
             >
-              <div>
+              {/* <div>
                 <p className="text-danger m-0 px-lg-4 pt-md-3 text-end">
-                  {/* <FaIndianRupeeSign /> */}
+                  <FaIndianRupeeSign />
                   {car.discount}
                 </p>
-              </div>
+              </div> */}
               <div className="d-flex align-items-center justify-content-between justify-content-lg-evenly">
                 {/* <span className="strikeDiagonal text-secondary d-flex justify-content-center align-items-center fontInter">
                   <FaIndianRupeeSign />
                   {car.price}
                 </span> */}
-                <span className="offerPrice">
+                <span></span>
+                <span
+                 className="offerPrice" >
                   <FaIndianRupeeSign />
                   {car.price}
                 </span>

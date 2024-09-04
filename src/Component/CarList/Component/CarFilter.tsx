@@ -3,7 +3,7 @@ import { Range, getTrackBackground } from "react-range";
 import { FaRegSnowflake, FaMusic, FaTv } from 'react-icons/fa';
 import { GiCharging } from 'react-icons/gi';
 import { BiSolidCarGarage } from 'react-icons/bi';
-
+import "./CarFilter.css"
 
 interface Car {
   name: string;
@@ -118,7 +118,7 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
 
        {/* Price Range Slider */}
        <div className="mt-4">
-          <p className="mb-2">Price Range</p>
+          <p className="mb-2 h6">Price Range</p>
           <Range
           values={priceRange}
           step={100}
@@ -163,7 +163,7 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
                 ...props.style,
                 height: '22px',
                 width: '22px',
-                borderRadius: '4px',
+                borderRadius: '50px',
                 backgroundColor: '#FFF',
                 display: 'flex',
                 justifyContent: 'center',
@@ -188,7 +188,7 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
       </div>
 <hr/>
 
-      <p className="mb-2">Cab Type</p>
+      <p className="mb-2 h6">Cab Type</p>
       <div className="d-flex flex-column gap-2">
         {uniqueVehicleNames.map((vehicleName, index) => (
           <div className="form-check d-flex justify-content-between" key={index}>
@@ -218,28 +218,31 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
           <hr/>
 
        {/* Amenities */}
-       <p className="mb-2 mt-4">Amenities</p>
-        <div className="d-flex flex-wrap gap-2">
-          {Object.entries(amenitiesMap).map(([key, { icon, name }]) => (
-            <div className="form-check d-flex align-items-center" key={key}>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value={key}
-                id={`amenityCheck${key}`}
-                onChange={() => handleAmenityChange(key)}
-                checked={selectedAmenities.includes(key)}
-              />
-              <label
-                className="form-check-label d-flex align-items-center ms-2"
-                htmlFor={`amenityCheck${key}`}
-              >
-                {icon}
-                <span className="ms-2">{name}</span>
-              </label>
-            </div>
-          ))}
-        </div>
+       <p className="mb-2 mt-4 h6">Amenities</p>
+       <ul className="amenities-list">
+  {Object.entries(amenitiesMap).map(([key, { icon, name }]) => (
+    <li className="amenity-item" key={key}>
+      <input
+        className="form-check-input"
+        type="checkbox"
+        value={key}
+        id={`amenityCheck${key}`}
+        onChange={() => handleAmenityChange(key)}
+        checked={selectedAmenities.includes(key)}
+      />
+      <label
+        className="form-check-label d-flex align-items-center ms-2"
+        htmlFor={`amenityCheck${key}`}
+      >
+        <span className="icon-container">{icon}</span>
+        <span className="amenity-name ms-2">{name}</span>
+      </label>
+    </li>
+  ))}
+</ul>
+
+
+
 
 
         

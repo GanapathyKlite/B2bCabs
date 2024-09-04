@@ -36,7 +36,7 @@ const DetailedStatement: React.FC = () => {
     dates: [Dayjs | null, Dayjs | null] | null,
     dateStrings: [string, string]
   ) => {
-    console.log("Selected Dates:", dates, "Formatted Strings:", dateStrings);
+    // console.log("Selected Dates:", dates, "Formatted Strings:", dateStrings);
     setCustomDates(dates);
   };
 

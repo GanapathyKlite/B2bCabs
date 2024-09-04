@@ -192,7 +192,6 @@ function DashboardNavbar() {
         console.log(error, "error");
       }
     } else if (selectedPaymentMethod === "ccavenue") {
-      console.log("it is cc avenue");
     }
     setLoading(false);
     setAddCashModalBox(false);
