@@ -50,6 +50,12 @@ const CarHero: React.FC<CarListProps> = ({ cars, duration, km, cancelDate, error
     (selectedVehicleNames: string[], selectedPriceRange: [number, number], selectedAmenities: string[]) => {
       let filtered = cars;
 
+      // If no vehicle names are selected, return an empty array
+    if (selectedVehicleNames.length === 0) {
+      setFilteredCars([]);
+      return;
+    }
+
       // Filter by vehicle names
       if (selectedVehicleNames.length > 0) {
         filtered = filtered.filter((car) => selectedVehicleNames.includes(car.vehicle_name));

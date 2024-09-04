@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import axios from "axios";
 import { useAuth } from "../../Auth/AuthContext";
+import resultNotFount from "../../../Assets/recordNotFound.png";
+import "./CarHero.css";
 
 interface Car {
   name: string;
@@ -409,7 +411,9 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
   return (
     <div>
       <div className="d-flex flex-column gap-4 px-3 pb-5">
-      {cars.map((car, index) => (
+      {
+        cars.length > 0 ? (
+      cars.map((car, index) => (
           <div
             className="sideBars d-flex flex-column row-gap-4 flex-md-rowsideBars d-flex flex-column flex-md-row position-relative"
             key={index}
@@ -508,7 +512,15 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
               </div>
             </div>
           </div>
-        ))}
+        )) ):
+        (<>
+          <div className="col-12 text-center my-5">
+<div className="col-12 text-center compact-container py-3 py-md-4 py-lg-5">
+  <img src={resultNotFount} alt="resultNotFount" className="compact-image" />
+  <div className="recordFound compact-text">No Record Found</div>
+</div>
+</div>
+        </>)}
         {/* {cars.map((car, index) => (
           <div
             className="sideBars d-flex flex-column row-gap-4 flex-md-rowsideBars d-flex flex-column flex-md-row position-relative"
