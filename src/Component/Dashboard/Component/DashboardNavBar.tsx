@@ -1,5 +1,5 @@
 import { useAuth } from "../../Auth/AuthContext";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
@@ -65,6 +65,9 @@ function DashboardNavbar() {
     logout();
     navigate("/");
   };
+  useEffect(() => {
+    setwalletcash(userData.currentBalance);
+  }, [userData]);
   const handleLinkClick = (path: string) => {
     setShowOffcanvas(false);
     navigate(path);

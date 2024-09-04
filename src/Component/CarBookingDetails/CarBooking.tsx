@@ -22,6 +22,7 @@ import {
   IoIosArrowDropdownCircle,
 } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
+import { IoAddCircle } from "react-icons/io5";
 import { SiRazorpay } from "react-icons/si";
 import { BsCcCircleFill } from "react-icons/bs";
 import { GiWallet } from "react-icons/gi";
@@ -77,10 +78,14 @@ const CarBooking: React.FC = () => {
   const { authToken, userData, setUserData } = useAuth();
   const [paymentModalBoxOpen, setPaymentModalBoxOpen] =
     React.useState<boolean>(false);
+    const [walletModalBoxOpen, setwalletModalBoxOpen] =
+    React.useState<boolean>(false);
   const [modalBoxLoading, setModalBoxLoading] = React.useState<boolean>(true);
   const [holidaystartcityid, setholidaystartcityid] = useState("");
   const [holidayendcityid, setholidayendcityid] = useState("");
   const [Razorpay] = useRazorpay();
+  const modalBoxInputRef = useRef<HTMLInputElement>(null);
+  const [walletcash, setwalletcash] = useState(userData.currentBalance);
 
   const showModalBox = () => {
     setPaymentModalBoxOpen(true);
@@ -233,8 +238,20 @@ const CarBooking: React.FC = () => {
 
   const [selectedOption, setSelectedOption] = useState('paymentOption2');
   const [totalamount, settotalamount] = useState("");
+  const [addCashModalBox, setAddCashModalBox] = useState(false);
+  const [addamount, setaddAmount] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState("razorpay");
+    const [confirmLoading, setConfirmLoading] = useState(false);
 
-
+    const addCashModalBoxOk = () => {
+      setConfirmLoading(true);
+      setTimeout(() => {
+        setAddCashModalBox(false);
+        setConfirmLoading(false);
+      }, 2000);
+    };
   
   const validateForm = () => {
     const newError: { [key: string]: string } = {};
@@ -380,7 +397,9 @@ const CarBooking: React.FC = () => {
     setError(newError); // Update the error state
   };
   
-  
+  const handleCancel = () => {
+    setAddCashModalBox(false);
+  };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsAgreed(e.target.checked);
@@ -495,6 +514,8 @@ console.log(car,"---car");
   };
 
   const handlePayNow = () => {
+    showModalBox();
+      
 
     setTouched(prev => ({ ...prev, pickupTime: true }));
     if (formRef.current) {
@@ -511,74 +532,74 @@ console.log(car,"---car");
 
   const handlePayment = async(paymentType : string)=>{
    if(paymentType === "Wallet"){
-  //   try {
-  //     const response = await axios.post(
-  //       `${import.meta.env.VITE_API_BASE_URL}/payment/wallet`,
-  //       {
-  //         amount: amount,
-  //         is_recharge: false,
-  //         agent_id: parseInt(userData.id ?? "0"),
-  //         holiday_package_id: packageId ? parseInt(packageId) : 0,
-  //         client_name: client_name,
-  //         contact_no: contactNumber,
-  //         contact_no_country_code : contactNoCountryCode,
-  //         al_contact_no: alternativeContactNumber,
-  //         al_contact_no_country_code: alternateNoCountryCode,
-  //         package_type: tripType,
-  //         arrival: car.start_city ? car.start_city.toString() : holidaystartcityid,
-  //         arrival_via: selectedArrival,
-  //         arrival_details: pickupAddress,
-  //         departure: car.end_city ? car.end_city.toString() : holidayendcityid,
-  //         departure_via: selectedDeparture,
-  //         departure_details: dropAddress,
-  //         vehicle_type: vehicleType,
-  //         is_gst: car.tax_amount !== "0" ? true : false, 
-  //         no_of_adult: adultCount,
-  //         no_of_kids: childCount,
-  //         infant: 0,
-  //         no_of_days: parseInt(car.no_of_days),
-  //         start_date: startdate ,
-  //         end_date: enddate ? enddate :  startdate,
-  //         trip_date:{"1":startdate,"2":enddate ? enddate :  startdate},
-  //         start_city:{"1": car.itinerary ? car.itinerary[0].from_name : startcity.city,
-  //                     "2": car.itinerary? car.itinerary[0].to_name : endcity?.city || ""},
-  //         end_city:{"1": car.itinerary? car.itinerary[0].to_name : endcity?.city || "",
-  //                   "2": car.itinerary? car.itinerary[0].from_name : startcity.city},
-  //         itinerary: car.itinerary ? car.itinerary : "",
-  //         payment_type: "Wallet",
-  //         pickup_location: pickupAddress,
-  //         drop_location: dropAddress,
-  //         pickup_time: formattedPickupTime,
-  //         hour_rental_type: hourTime? hourTime : "0"  
-  //         }
-  //         ,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${authToken}`,
-  //         },
-  //       }
-  //     );
-  //     if (response.status === 200 && response.data.status) {
-  //       notyf.success("Payment Successful");
-  //       navigate("/dashboard");
-  //       let sessionDataString = sessionStorage.getItem("userData");
-  //                 if (sessionDataString !== null) {
-  //                   let sessionData = JSON.parse(sessionDataString);
-  //                   sessionData.currentBalance =
-  //                     response.data.message.current_balance;
-  //                   sessionStorage.setItem(
-  //                     "userData",
-  //                     JSON.stringify(sessionData)
-  //                   );
-  //                   setUserData(sessionData);
-  //                 }
-  //       console.log(response.data.message);
-  //     }
-  //  }catch(error){
-  //   notyf.error("Something went wrong")
-  //   console.log(error);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/payment/wallet`,
+        {
+          amount: amount,
+          is_recharge: false,
+          agent_id: parseInt(userData.id ?? "0"),
+          holiday_package_id: packageId ? parseInt(packageId) : 0,
+          client_name: client_name,
+          contact_no: contactNumber,
+          contact_no_country_code : contactNoCountryCode,
+          al_contact_no: alternativeContactNumber,
+          al_contact_no_country_code: alternateNoCountryCode,
+          package_type: tripType,
+          arrival: car.start_city ? car.start_city.toString() : holidaystartcityid,
+          arrival_via: selectedArrival,
+          arrival_details: pickupAddress,
+          departure: car.end_city ? car.end_city.toString() : holidayendcityid,
+          departure_via: selectedDeparture,
+          departure_details: dropAddress,
+          vehicle_type: vehicleType,
+          is_gst: car.tax_amount !== "0" ? true : false, 
+          no_of_adult: adultCount,
+          no_of_kids: childCount,
+          infant: 0,
+          no_of_days: parseInt(car.no_of_days),
+          start_date: startdate ,
+          end_date: enddate ? enddate :  startdate,
+          trip_date:{"1":startdate,"2":enddate ? enddate :  startdate},
+          start_city:{"1": car.itinerary ? car.itinerary[0].from_name : startcity.city,
+                      "2": car.itinerary? car.itinerary[0].to_name : endcity?.city || ""},
+          end_city:{"1": car.itinerary? car.itinerary[0].to_name : endcity?.city || "",
+                    "2": car.itinerary? car.itinerary[0].from_name : startcity.city},
+          itinerary: car.itinerary ? car.itinerary : "",
+          payment_type: "Wallet",
+          pickup_location: pickupAddress,
+          drop_location: dropAddress,
+          pickup_time: formattedPickupTime,
+          hour_rental_type: hourTime? hourTime : "0"  
+          }
+          ,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      if (response.status === 200 && response.data.status) {
+        notyf.success("Payment Successful");
+        navigate("/dashboard");
+        let sessionDataString = sessionStorage.getItem("userData");
+                  if (sessionDataString !== null) {
+                    let sessionData = JSON.parse(sessionDataString);
+                    sessionData.currentBalance =
+                      response.data.message.current_balance;
+                    sessionStorage.setItem(
+                      "userData",
+                      JSON.stringify(sessionData)
+                    );
+                    setUserData(sessionData);
+                  }
+        console.log(response.data.message);
+      }
+   }catch(error){
+    notyf.error("Something went wrong")
+    console.log(error);
     
-  //  }
+   }
   }
   else if(paymentType === "Razorpay"){
     try {
@@ -719,6 +740,137 @@ console.log(car,"---car");
   const formattedPickupTime = pickupTime?.format('h:mm A');
   const amount = totalamount ?  parseFloat(totalamount.replace(/,/g, '')) : parseFloat(car.total_price.replace(/,/g, ''));
 
+
+  const handleWalletclick = () => {
+    setwalletModalBoxOpen(true)
+    setPaymentModalBoxOpen(false)
+  }
+
+  const handleAddCash = () => {
+    // setShowOffcanvas(false);
+    setAddCashModalBox(true);
+  };
+
+  const handleaddPayment = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    if (selectedPaymentMethod === "razorpay") {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/razorpay/create/orderId`,
+          {
+            amount: addamount,
+            is_recharge: true,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+        if (response.status === 200 && response.data.status) {
+          const { orderId, receipt } = response.data.data;
+
+          const options = {
+            key: "rzp_test_FIbXKAkHk9VvXS",
+            amount: addamount,
+            currency: "INR",
+            name: "Klite cabs",
+            description: "Credits towards consultation",
+            image: profileImage,
+            order_id: orderId,
+            handler: async function (response: any) {
+              let razorpay_order_id = response.razorpay_order_id;
+              let razorpay_signature = response.razorpay_signature;
+              let razorpay_payment_id = response.razorpay_payment_id;
+
+              try {
+                setLoading(false);
+                setAddCashModalBox(false);
+
+                const response = await axios.post(
+                  `${
+                    import.meta.env.VITE_API_BASE_URL
+                  }/razorpay/capture-payment`,
+                  {
+                    receipt: receipt,
+                    amount: addamount,
+                    is_recharge: true,
+                    razorpay_order_id: razorpay_order_id,
+                    razorpay_payment_id: razorpay_payment_id,
+                    razorpay_signature: razorpay_signature,
+                    agent_id: userData.id,
+                    payment_type: "Razorpay",
+                  },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${authToken}`,
+                    },
+                  }
+                );
+                if (response.status === 200 && response.data.status) {
+                  notyf.success("Amount added to Wallet successfully");
+                  setwalletcash(response.data.message.CurrentBalance);
+                  let sessionDataString = sessionStorage.getItem("userData");
+                  if (sessionDataString !== null) {
+                    let sessionData = JSON.parse(sessionDataString);
+                    sessionData.currentBalance =
+                      response.data.message.CurrentBalance;
+                    sessionStorage.setItem(
+                      "userData",
+                      JSON.stringify(sessionData)
+                    );
+                    setUserData(sessionData);
+                  }
+                  
+                }
+              } catch (error) {
+                setLoading(false);
+                setAddCashModalBox(false);
+                console.log(error, "error");
+              }
+            },
+            prefill: {
+              name: userData.name || "",
+              email: userData.email || "",
+              contact: userData.mobile || "",
+            },
+            notes: {
+              address: "Razorpay Corporate Office",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+
+          const rzp1 = new Razorpay(options);
+
+          rzp1.on("payment.failed", function (response: any) {
+            // alert(response.error.code);
+            // alert(response.error.description);
+            // alert(response.error.source);
+            // alert(response.error.step);
+            // alert(response.error.reason);
+            // alert(response.error.metadata.order_id);
+            // alert(response.error.metadata.payment_id);
+          });
+
+          rzp1.open();
+        }
+      } catch (error) {
+        setLoading(false);
+        setAddCashModalBox(false);
+        if (error instanceof AxiosError) {
+          notyf.error("Network error");
+        }
+        console.log(error, "error");
+      }
+    } else if (selectedPaymentMethod === "ccavenue") {
+      console.log("it is cc avenue");
+    }
+    setLoading(false);
+    setAddCashModalBox(false);
+  };
   return (
     <>
       <div className="w-100 ReviewBookingBar">
@@ -884,7 +1036,8 @@ console.log(car,"---car");
             id={`panel${index}-header`}
             sx={{ backgroundColor: 'lightgrey' }}
           >
-            <Typography variant="subtitle1" sx={{p: 1}}>
+            <Typography variant="subtitle1" 
+            >
               {item.from_name} - {item.to_name}
             </Typography>
           </AccordionSummary>
@@ -1660,8 +1813,8 @@ console.log(car,"---car");
           <p>Pay Options</p>
           <div className="paymentOptionType">
             <ul>
-              
-              {paymentOptions.map((paymentOption, index) => (
+
+              {/* {paymentOptions.map((paymentOption, index) => (
                 <li key={index}  onClick={()=>{handlePayment(paymentOption.paymentType)}}>
                   <button className="paymentOptionBtn"
                   
@@ -1674,8 +1827,127 @@ console.log(car,"---car");
 
                   <IoIosArrowForward />
                 </li>
-              ))}
+              ))} */}
+              
+              <li onClick={handleWalletclick}> <button className="paymentOptionBtn" >
+                    <span><GiWallet /> Wallet</span></button>  <IoIosArrowForward /></li>
+                    <li onClick={()=>{handlePayment("Razorpay")}}> <button className="paymentOptionBtn" >
+                    <span><SiRazorpay /> Razorpay</span></button>  <IoIosArrowForward /></li>
+                    <li onClick={()=>{handlePayment("CCAvenue")}}> <button className="paymentOptionBtn" >
+                    <span><BsCcCircleFill /> CCAvenue</span></button>  <IoIosArrowForward /></li>
             </ul>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        title={<p className="m-0">Wallet</p>}
+        footer={null}
+        loading={modalBoxLoading}
+        className="selectPaymentMode col-12 col-md-6"
+        // style={{ minWidth: "350", maxWidth: "550px" }}
+        open={walletModalBoxOpen}
+        onCancel={() => {
+          setwalletModalBoxOpen(false)
+          setPaymentModalBoxOpen(true)}}
+      >
+        <div className="paymentDetailsDiv">    
+        <div className="walletDetails">
+        <div className="mb-3">Current Balance  <span style={{float: "right" }}><BsCurrencyRupee /> <strong>{Number(walletcash).toLocaleString()}</strong> </span> </div>
+        <div className="mb-3">Due amount <span style={{float: "right" }}><BsCurrencyRupee /> <strong>{totalamount ? totalamount : car.total_price} </strong></span></div>
+        {(Number(walletcash) - Number((totalamount || car.total_price).replace(/,/g, ''))) < 0 ? (
+    <div style={{color:"red"}}>Insufficient funds</div>
+  ) : (
+    <div>
+      Remaining Balance 
+      <span style={{ float: "right" }}>
+      <BsCurrencyRupee /> <strong>{(Number(walletcash) - Number((totalamount || car.total_price).replace(/,/g, ''))).toLocaleString()} </strong>
+      </span>
+    </div>
+  )}
+        <div className="d-flex align-items-center justify-content-between mt-3">
+  <button className="primaryBtn" onClick={handleAddCash}>
+    <IoAddCircle />
+    &nbsp; Add
+  </button>
+  {(Number(walletcash) - Number((totalamount || car.total_price).replace(/,/g, ''))) > 0 ? ( <button className="primaryBtn" onClick={() => handlePayment("Wallet")}>
+    Pay
+  </button>) : null}
+ 
+</div>
+
+        </div>
+        </div>
+         </Modal>
+
+         <Modal
+        title="Add Cash"
+        footer={null}
+        centered
+        open={addCashModalBox}
+        onOk={addCashModalBoxOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+        width={400}
+      >
+        <div className="row align-items-center justify-content-center row-gap-3">
+          <div className="col-12 addCashModalBoxDiv">
+            <input
+              type="text"
+              value={addamount}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  setaddAmount(value);
+                }
+              }}
+              className="w-100"
+              ref={modalBoxInputRef}
+            />
+          </div>
+
+          <div className="col-6 d-flex align-items-center column-gap-2">
+            <input
+              type="radio"
+              checked={selectedPaymentMethod === "razorpay"}
+              name="paymentType"
+              id="razorPayRadioBtn"
+              value="razorpay"
+              onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+            />
+            <label htmlFor="razorPayRadioBtn">Razor Pay</label>
+          </div>
+          <div className="col-6 d-flex align-items-center column-gap-2">
+            <input
+              type="radio"
+              name="paymentType"
+              id="ccAvenueRadioBtn"
+              value="ccavenue"
+              checked={selectedPaymentMethod === "ccavenue"}
+              onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+            />
+            <label htmlFor="ccAvenueRadioBtn">C C Avenue</label>
+          </div>
+          <div className="col-6">
+            <button
+              className="primaryBtn w-100"
+              disabled={!addamount || loading}
+              onClick={handleaddPayment}
+              style={{
+                backgroundColor: !addamount ? "grey" : "#089848",
+                width: "100px",
+              }}
+            >
+              {loading ? (
+                <span
+                  className="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              ) : (
+                "SUBMIT"
+              )}
+            </button>
           </div>
         </div>
       </Modal>
