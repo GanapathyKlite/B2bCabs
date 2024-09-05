@@ -4,11 +4,12 @@ import { LuArrowLeftRight } from "react-icons/lu";
 import { DatePicker } from "antd";
 const { RangePicker } = DatePicker;
 import { useAuth } from "../../Auth/AuthContext";
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import AutocompleteInput from "../../AutoComplete/AutocompleInput";
 import axios from "axios";
 import { AxiosError } from "axios";
 import CarHero from "./CarHero";
+import './CarListNavBar.css';
 
 interface Option {
   icon: JSX.Element;
@@ -549,6 +550,37 @@ const handlePackageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
   setPackageId(e.target.value); 
   sessionStorage.setItem("packageId",e.target.value)
 };
+
+const disabledDate = (current: Dayjs | null): boolean => {
+  if (!current) return false;
+
+  return current.isBefore(dayjs().startOf('day')) || current.isAfter(dayjs().add(30, 'day').endOf('day'));
+};
+
+// const disabledTime = () => {
+//   if (selectedDate && selectedDate.isSame(dayjs(), 'day')) {
+//     const currentHour = dayjs().hour();
+//     const currentMinute = dayjs().minute();
+    
+//     return {
+//       disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
+//       disabledMinutes: (hour: number) => {
+//         if (hour === currentHour + 1) {
+//           // Disable minutes before the current time + 1 hour
+//           return Array.from({ length: currentMinute }, (_, i) => i);
+//         }
+//         return [];
+//       }
+//     };
+//   }
+//   return {};
+// };
+
+
+
+
+
+
   return (
     <>
       <div className="edit_search position-sticky d-none d-md-block top0">
@@ -730,8 +762,17 @@ const handlePackageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
                 <div className="d-flex justify-content-between align-items-center w-100 datePickerDiv">
                 
       {
-        tripType === "Daily Rental" || tripType === "Holidays Package" ? ( <RangePicker value={selectedDateRange} required  onChange={handleRangeChange}/>) : 
-        ( <DatePicker value={selectedDate} required onChange={handleDateChange} showTime={{ use12Hours: true, format: 'h:mm A' }}/>)
+        tripType === "Daily Rental" || tripType === "Holidays Package" ?
+         ( <RangePicker value={selectedDateRange} required  onChange={handleRangeChange}/>) : 
+        (<>
+          {tripType === "Hourly Rental" ?  <DatePicker value={selectedDate} required onChange={handleDateChange} className="custom-date-picker"/>: 
+          <DatePicker value={selectedDate} required onChange={handleDateChange}
+           showTime={{ use12Hours: true, format: 'h:mm A' }}
+           disabledDate={disabledDate}
+      // disabledTime={disabledTime}
+      />
+           }
+           </>)
       }
 
                 </div>

@@ -1,0 +1,12 @@
+.ant-picker-clear {
+    display: none;
+  }
+
+  .ant-picker-suffix .ant-picker-clear {
+    display: none !important;
+  }
+  
+  .ant-picker-header-super-prev,
+.ant-picker-header-super-next {
+  display: none !important;
+}

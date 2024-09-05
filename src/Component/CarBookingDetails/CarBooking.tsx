@@ -138,6 +138,7 @@ const CarBooking: React.FC = () => {
       newWindow.document.write(`<html>
         <head>
           <title>Terms and Conditions</title>
+           <link rel="icon" type="image/svg+xml" href="/favicon.png" />
           <style>
             body {
               margin: 20px;
@@ -169,6 +170,7 @@ const CarBooking: React.FC = () => {
               white-space: pre-wrap; /* Allows text to wrap */
               max-width: 100vw;
               box-sizing: border-box;
+              font-family: "Poppins", sans-serif !important;
             }
           </style>
         </head>
@@ -856,7 +858,7 @@ if(car.vehicle_name == "Suv"){
         setLoading(false);
         setAddCashModalBox(false);
         if (error instanceof AxiosError) {
-          notyf.error("Network error");
+          notyf.error(error.response?.data?.message?.error?.description || "Network error");
         }
         console.log(error, "error");
       }
@@ -884,7 +886,7 @@ if(car.vehicle_name == "Suv"){
             {endcity ? endcity.city : null}
 
             <span>
-              Pickup : 
+            |  Pickup : 
              {" "} {startdate}
             </span>
             {enddate ? (
@@ -1698,7 +1700,7 @@ if(car.vehicle_name == "Suv"){
                           <div className="">
                             <ul className="m-0 p-0">
                               <li>
-                                <span>Base Fare: </span>
+                                <span>Basic Fare: </span>
                                 <span>
                                    <BsCurrencyRupee />
                                   {car.basic_rate}
@@ -1925,10 +1927,10 @@ if(car.vehicle_name == "Suv"){
           <div className="col-6">
             <button
               className="primaryBtn w-100"
-              disabled={!addamount || loading}
+              disabled={!addamount || loading || addamount === "0"}
               onClick={handleaddPayment}
               style={{
-                backgroundColor: !addamount ? "grey" : "#089848",
+                backgroundColor: !addamount || addamount === "0" ? "grey" : "#089848",
                 width: "100px",
               }}
             >

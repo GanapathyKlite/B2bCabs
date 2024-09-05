@@ -187,7 +187,7 @@ function DashboardNavbar() {
         setLoading(false);
         setAddCashModalBox(false);
         if (error instanceof AxiosError) {
-          notyf.error("Network error");
+          notyf.error(error.response?.data?.message?.error?.description || "Network error");
         }
         console.log(error, "error");
       }
