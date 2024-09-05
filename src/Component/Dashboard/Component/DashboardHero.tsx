@@ -604,6 +604,20 @@ const DashboardHero: React.FC = () => {
     setPackageId(e.target.value);
     sessionStorage.setItem("packageId", e.target.value);
   };
+
+  const disabledrangeDate = (current: Dayjs | null): boolean => {
+    if (!current) return false;
+    const today = dayjs().startOf('day');
+    const sixMonthsLater = dayjs().add(6, 'month').endOf('day');
+    return current.isBefore(today) || current.isAfter(sixMonthsLater);
+  };
+  const disabledDate = (current: Dayjs | null): boolean => {
+    if (!current) return false;
+  
+    return current.isBefore(dayjs().startOf('day')) || current.isAfter(dayjs().add(30, 'day').endOf('day'));
+  };
+
+  
   return (
     <>
       <div className="hero-banner">
@@ -927,12 +941,14 @@ const DashboardHero: React.FC = () => {
                             <div className="inputdiv px-3 py-0  m-0 d-flex align-items-center justify-content-between">
                               <LuCalendarDays />
 
-                              {tab.id === 2 && selectedOption === "option2" ? (<DatePicker
+                              {tab.id === 2 && selectedOption === "option2" ? (
+                                <DatePicker
                                 required
                                 format="ddd, MMM D"
                                 suffixIcon={null}
                                 className="border-0 w-75 p-0"
                                 allowClear={false}
+                                disabledDate={disabledDate}
                                 onChange={handleDateChange}
                                 value={selectedDate}
                               />):(<DatePicker
@@ -941,6 +957,7 @@ const DashboardHero: React.FC = () => {
                                 suffixIcon={null}
                                 className="border-0 w-75 p-0"
                                 allowClear={false}
+                                disabledDate={disabledDate}
                                 showTime={{
                                   use12Hours: true,
                                   format: "h:mm A",
@@ -966,6 +983,7 @@ const DashboardHero: React.FC = () => {
                                 className="border-0 w-75 p-0"
                                 allowClear={false}
                                 onChange={handleRangeChange}
+                                disabledDate={disabledrangeDate}
                                 value={selectedDateRange}
                               />
                               <LuCalendarDays className="invisible" />

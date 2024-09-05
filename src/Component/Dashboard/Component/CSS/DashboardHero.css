@@ -234,6 +234,14 @@ input[type=radio]:checked {
   transition: 0.3s;
 }
 
+.ant-picker-header-super-next-btn,
+.ant-picker-header-super-prev-btn {
+  display: none !important; 
+}
+
+
+
+
 @media screen and (max-width: 340px) {
   .tab_box .tab_btn {
     font-size: 12px;

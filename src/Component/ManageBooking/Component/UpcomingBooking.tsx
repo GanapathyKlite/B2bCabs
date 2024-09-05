@@ -307,7 +307,7 @@ const UpcomingBooking: React.FC = () => {
 
       <Modal
         footer={null}
-        title={<p>Canceled Booking</p>}
+        title={<p>Cancel Booking</p>}
         open={reasonModalBoxOpen} // This should control the visibility of the modal
         onCancel={() => setReasonModalBoxOpen(false)} // This should close the modal
       >
@@ -324,17 +324,17 @@ const UpcomingBooking: React.FC = () => {
             <textarea
             value={cancelReason}
             onChange={(e)=>{setCancelReason(e.target.value)}}
-              placeholder="Enter Your Reason"
+              placeholder="Enter Your Reason*"
               className="form-control border border-secondary rounded-3 p-3 w-100 upcomingBookingTextArea"
             />
           </div>
-          <button
+          {/* <button
             className="changeStayDate rounded-3 p-3"
             onClick={changeStayDate}
           >
             CHANGE STAY DATES
-          </button>
-          <button className="px-3 pt-3 cancelBooking" onClick={handleCancelBtn}>
+          </button> */}
+          <button disabled={!cancelReason} className="px-3 pt-3 cancelBooking" onClick={handleCancelBtn}>
             I want to Cancel the Booking
           </button>
         </div>

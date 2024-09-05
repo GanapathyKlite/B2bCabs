@@ -578,7 +578,12 @@ const disabledDate = (current: Dayjs | null): boolean => {
 
 
 
-
+const disabledrangeDate = (current: Dayjs | null): boolean => {
+  if (!current) return false;
+  const today = dayjs().startOf('day');
+  const sixMonthsLater = dayjs().add(6, 'month').endOf('day');
+  return current.isBefore(today) || current.isAfter(sixMonthsLater);
+};
 
 
   return (
@@ -763,9 +768,9 @@ const disabledDate = (current: Dayjs | null): boolean => {
                 
       {
         tripType === "Daily Rental" || tripType === "Holidays Package" ?
-         ( <RangePicker value={selectedDateRange} required  onChange={handleRangeChange}/>) : 
+         ( <RangePicker value={selectedDateRange} required disabledDate={disabledrangeDate} onChange={handleRangeChange}/>) : 
         (<>
-          {tripType === "Hourly Rental" ?  <DatePicker value={selectedDate} required onChange={handleDateChange} className="custom-date-picker"/>: 
+          {tripType === "Hourly Rental" ?  <DatePicker value={selectedDate} required  disabledDate={disabledDate} onChange={handleDateChange} className="custom-date-picker"/>: 
           <DatePicker value={selectedDate} required onChange={handleDateChange}
            showTime={{ use12Hours: true, format: 'h:mm A' }}
            disabledDate={disabledDate}
