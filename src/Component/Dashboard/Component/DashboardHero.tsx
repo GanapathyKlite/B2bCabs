@@ -927,7 +927,15 @@ const DashboardHero: React.FC = () => {
                             <div className="inputdiv px-3 py-0  m-0 d-flex align-items-center justify-content-between">
                               <LuCalendarDays />
 
-                              <DatePicker
+                              {tab.id === 2 && selectedOption === "option2" ? (<DatePicker
+                                required
+                                format="ddd, MMM D"
+                                suffixIcon={null}
+                                className="border-0 w-75 p-0"
+                                allowClear={false}
+                                onChange={handleDateChange}
+                                value={selectedDate}
+                              />):(<DatePicker
                                 required
                                 format="ddd, MMM D"
                                 suffixIcon={null}
@@ -939,7 +947,8 @@ const DashboardHero: React.FC = () => {
                                 }}
                                 onChange={handleDateChange}
                                 value={selectedDate}
-                              />
+                              />)}
+                             
                               <LuCalendarDays className="invisible" />
                             </div>
                           </div>
