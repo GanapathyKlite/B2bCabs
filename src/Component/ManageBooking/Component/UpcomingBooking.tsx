@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import SUVCab from "../../../Assets/SUV.svg";
+// import SUVCab from "../../../Assets/SUV.svg";
 import { Modal } from "antd";
 import { Notyf } from "notyf";
 import { useNavigate } from "react-router-dom";
 import resultNotFount from "../../../Assets/recordNotFound.png";
 import { CiSearch } from "react-icons/ci";
 import { DatePicker } from "antd";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useAuth } from "../../Auth/AuthContext";
 import axios from "axios";
 
@@ -90,8 +90,10 @@ const disabledDate = (current: dayjs.Dayjs) => {
 const UpcomingBooking: React.FC = () => {
   const {userData, authToken} = useAuth();
   const [upcomingBookingData, setupcomingBookingData] = useState<upcomingBooking[]>([]);
+  const [originalUpcomingBookingData, setOriginalUpcomingBookingData] = useState<upcomingBooking[]>([]);
   const [bookingid, setbookingid] = useState("");
   const [cancelReason, setCancelReason] = useState("");
+  const [selectedDates, setSelectedDates] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null]>([null, null]);
 
   const fetchupBooking = async () => {
     try {
@@ -105,6 +107,7 @@ const UpcomingBooking: React.FC = () => {
       );
       if (response.data.status) {
         setupcomingBookingData(response.data.data);
+        setOriginalUpcomingBookingData(response.data.data);
       }
     } catch (err) {
       console.log(err);
@@ -181,49 +184,96 @@ const UpcomingBooking: React.FC = () => {
   const [searchUpcomingBooking, setSetsearchUpcomingBooking] =
     React.useState<string>("");
 
-  const filterUpcomingBooking = upcomingBookingData.filter(
-    (UpcomingData) =>
-      UpcomingData.vehicle_name
-        .toLowerCase()
-        .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.ref_no
-        .toLowerCase()
-        .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.package_type
-        .toLowerCase()
-        .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.start_date
-        .toLowerCase()
-        .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.pickup_location
-        .toLowerCase()
-        .includes(searchUpcomingBooking.toLowerCase()) ||
-      UpcomingData.drop_location
-        .toLowerCase()
-        .includes(searchUpcomingBooking.toLowerCase())
-  );
+    const handleFilter = () => {
+      const [startDate, endDate] = selectedDates.map(date => date ? dayjs(date, "DD/MM/YYYY") : null);
+      let filteredData = originalUpcomingBookingData;
+      const filteredByDate = filteredData.filter((booking) => {
+        const bookingDate = dayjs(booking.start_date, "DD-MM-YYYY");
+        return (startDate && endDate)
+          ? (bookingDate.isSame(startDate, 'day') || bookingDate.isAfter(startDate, 'day')) &&
+            (bookingDate.isSame(endDate, 'day') || bookingDate.isBefore(endDate, 'day'))
+          : true;
+      });
+  
+      setupcomingBookingData(filteredByDate);
+    };
+    
+    
+    
+    
+    
 
+  // const filterUpcomingBooking = upcomingBookingData.filter(
+  //   (UpcomingData) =>
+  //     UpcomingData.vehicle_name
+  //       .toLowerCase()
+  //       .includes(searchUpcomingBooking.toLowerCase()) ||
+  //     UpcomingData.ref_no
+  //       .toLowerCase()
+  //       .includes(searchUpcomingBooking.toLowerCase()) ||
+  //     UpcomingData.package_type
+  //       .toLowerCase()
+  //       .includes(searchUpcomingBooking.toLowerCase()) ||
+  //     UpcomingData.start_date
+  //       .toLowerCase()
+  //       .includes(searchUpcomingBooking.toLowerCase()) ||
+  //     UpcomingData.pickup_location
+  //       .toLowerCase()
+  //       .includes(searchUpcomingBooking.toLowerCase()) ||
+  //     UpcomingData.drop_location
+  //       .toLowerCase()
+  //       .includes(searchUpcomingBooking.toLowerCase())
+  // );
+
+  const imageURL = `${import.meta.env.VITE_API_IMG_URL}`; 
+  const handleDateChange = (
+    dates: [Dayjs | null, Dayjs | null] | null,
+    dateStrings: [string, string]
+  ) => {
+    if (dates) {
+      setSelectedDates(dates);
+    } else {
+      setSelectedDates([null, null]);
+    }
+  };
+
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase();
+    setSetsearchUpcomingBooking(query);
+
+    const filteredByText = originalUpcomingBookingData.filter((booking) =>
+      booking.vehicle_name.toLowerCase().includes(query.toLowerCase()) ||
+      booking.ref_no.toLowerCase().includes(query.toLowerCase()) ||
+      booking.package_type.toLowerCase().includes(query.toLowerCase()) ||
+      booking.start_date.toLowerCase().includes(query.toLowerCase()) ||
+      booking.pickup_location.toLowerCase().includes(query.toLowerCase()) ||
+      booking.drop_location.toLowerCase().includes(query.toLowerCase())
+    );
+
+    setupcomingBookingData(filteredByText);
+  };
   return (
     <>
       <div className="px-1 pt-3">
         <div className="d-flex gap-4 pb-2">
-          <RangePicker format="DD/MM/YYYY" disabledDate={disabledDate} />
+          <RangePicker format="DD/MM/YYYY" onChange={handleDateChange} disabledDate={disabledDate} />
 
-          <button className="primaryBtn px-5">SEARCH</button>
+          <button onClick={handleFilter} className="primaryBtn px-5">SEARCH</button>
         </div>
         <div className="searchBarDiv" style={{ height: "58px" }}>
           <input
             type="text"
             style={{ height: "100%" }}
             value={searchUpcomingBooking}
-            onChange={(e) => setSetsearchUpcomingBooking(e.target.value)}
+            // onChange={(e) => setSetsearchUpcomingBooking(e.target.value)}
+            onChange={handleTextInputChange}
             placeholder="Quick Search"
           />
           <CiSearch />
         </div>
       </div>
       <div className="d-flex flex-column gap-4 pt-2 pb-3">
-        {filterUpcomingBooking.length === 0 ? (
+        {upcomingBookingData.length === 0 ? (
           <div className="transactionList bg-secondary-subtle d-flex align-items-center justify-content-center py-4 rounded-4">
             <div className="resultNotFount w-50 d-flex align-items-center justify-content-center row-gap-2 flex-column">
               <img src={resultNotFount} alt="resultNotFount" />
@@ -232,7 +282,7 @@ const UpcomingBooking: React.FC = () => {
           </div>
         ) : (
           <>
-            {filterUpcomingBooking.map((booking, index) => (
+            {upcomingBookingData.map((booking, index) => (
               <div
                 key={index}
                 className="upcomingBookingList border p-2 p-md-4"
@@ -243,7 +293,10 @@ const UpcomingBooking: React.FC = () => {
                   <div className="d-flex justify-content-between">
                     <div className="d-flex column-gap-3">
                       <div className="border upcomingBookingCabImg">
-                        <img src={SUVCab} alt="" className="w-100" />
+                        <img
+                        //  src={SUVCab}
+                         src={`${imageURL}${booking.image}`}
+                          alt="" className="w-100" />
                       </div>
 
                       <div className="upcomingBookingCabType">
