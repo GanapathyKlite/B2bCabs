@@ -5,7 +5,7 @@ import { DatePicker } from "antd";
 import resultNotFount from "../../../Assets/recordNotFound.png";
 import axios from "axios";
 import { useAuth } from "../../Auth/AuthContext";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 const { RangePicker } = DatePicker;
 
@@ -41,9 +41,15 @@ start_date : string;
 vehicle_name : string;
 }
 
+const disabledDate = (current: dayjs.Dayjs) => {
+  return current && current > dayjs().startOf("day");
+};
+
 const PastBooking: React.FC = () => {
   const [searchPastBooking, setSearchPastBooking] = React.useState<string>("");
   const [pastBookingDatas, setPastBookingData] = useState<PastBooking[]>([]);
+  const [originalPastBookingData, setOriginalPastBookingData] = useState<PastBooking[]>([]);
+  const [selectedDates, setSelectedDates] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null]>([null, null]);
   const {userData, authToken} = useAuth();
 
   useEffect(() => {
@@ -59,6 +65,8 @@ const PastBooking: React.FC = () => {
       );
       if(response.data.status){
         setPastBookingData(response.data.data)
+        setOriginalPastBookingData(response.data.data);
+
       }
     } catch (err) {
       console.log(err);
@@ -69,50 +77,92 @@ const PastBooking: React.FC = () => {
 
   },[]);
 
-  const filterPastBooking = pastBookingDatas.filter(
-    (pastBookingData) =>
-      pastBookingData.vehicle_name
-        .toLowerCase()
-        .includes(searchPastBooking.toLowerCase()) ||
-      pastBookingData.ref_no
-        .toLowerCase()
-        .includes(searchPastBooking.toLowerCase()) ||
-      pastBookingData.package_type
-        .toLowerCase()
-        .includes(searchPastBooking.toLowerCase()) ||
-      pastBookingData.start_date
-        .toLowerCase()
-        .includes(searchPastBooking.toLowerCase()) ||
-      pastBookingData.pickup_location
-        .toLowerCase()
-        .includes(searchPastBooking.toLowerCase()) ||
-      pastBookingData.drop_location
-        .toLowerCase()
-        .includes(searchPastBooking.toLowerCase())
-  );
+  const handleFilter = () => {
+    const [startDate, endDate] = selectedDates.map(date => date ? dayjs(date, "DD/MM/YYYY") : null);
+    let filteredData = originalPastBookingData;
+    const filteredByDate = filteredData.filter((booking) => {
+      const bookingDate = dayjs(booking.start_date, "DD-MM-YYYY");
+      return (startDate && endDate)
+        ? (bookingDate.isSame(startDate, 'day') || bookingDate.isAfter(startDate, 'day')) &&
+          (bookingDate.isSame(endDate, 'day') || bookingDate.isBefore(endDate, 'day'))
+        : true;
+    });
+
+    setPastBookingData(filteredByDate);
+  };
+
+  // const filterPastBooking = pastBookingDatas.filter(
+  //   (pastBookingData) =>
+  //     pastBookingData.vehicle_name
+  //       .toLowerCase()
+  //       .includes(searchPastBooking.toLowerCase()) ||
+  //     pastBookingData.ref_no
+  //       .toLowerCase()
+  //       .includes(searchPastBooking.toLowerCase()) ||
+  //     pastBookingData.package_type
+  //       .toLowerCase()
+  //       .includes(searchPastBooking.toLowerCase()) ||
+  //     pastBookingData.start_date
+  //       .toLowerCase()
+  //       .includes(searchPastBooking.toLowerCase()) ||
+  //     pastBookingData.pickup_location
+  //       .toLowerCase()
+  //       .includes(searchPastBooking.toLowerCase()) ||
+  //     pastBookingData.drop_location
+  //       .toLowerCase()
+  //       .includes(searchPastBooking.toLowerCase())
+  // );
+
+  const handleDateChange = (
+    dates: [Dayjs | null, Dayjs | null] | null,
+    dateStrings: [string, string]
+  ) => {
+    if (dates) {
+      setSelectedDates(dates);
+    } else {
+      setSelectedDates([null, null]);
+    }
+  };
+
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase();
+    setSearchPastBooking(query);
+
+    const filteredByText = originalPastBookingData.filter((booking) =>
+      booking.vehicle_name.toLowerCase().includes(query.toLowerCase()) ||
+      booking.ref_no.toLowerCase().includes(query.toLowerCase()) ||
+      booking.package_type.toLowerCase().includes(query.toLowerCase()) ||
+      booking.start_date.toLowerCase().includes(query.toLowerCase()) ||
+      booking.pickup_location.toLowerCase().includes(query.toLowerCase()) ||
+      booking.drop_location.toLowerCase().includes(query.toLowerCase())
+    );
+
+    setPastBookingData(filteredByText);
+  };
 
   const imageURL = `${import.meta.env.VITE_API_IMG_URL}`;
   return (
     <>
       <div className="px-1 pt-3">
         <div className="d-flex gap-4 pb-2">
-          <RangePicker format="DD/MM/YYYY" />
+          <RangePicker format="DD/MM/YYYY" onChange={handleDateChange} disabledDate={disabledDate}/>
 
-          <button className="primaryBtn px-5">SEARCH</button>
+          <button onClick={handleFilter} className="primaryBtn px-5">SEARCH</button>
         </div>
         <div className="searchBarDiv" style={{ height: "58px" }}>
           <input
             type="text"
             style={{ height: "100%" }}
             value={searchPastBooking}
-            onChange={(e) => setSearchPastBooking(e.target.value)}
+            // onChange={(e) => setSearchPastBooking(e.target.value)}
+            onChange={handleTextInputChange}
             placeholder="Quick Search"
           />
           <CiSearch />
         </div>
       </div>
       <div className="d-flex flex-column gap-4 pt-2 pb-3">
-        {filterPastBooking.length === 0 ? (
+        {pastBookingDatas.length === 0 ? (
           <div className="transactionList bg-secondary-subtle d-flex align-items-center justify-content-center py-4 rounded-4">
             <div className="resultNotFount w-50 d-flex align-items-center justify-content-center row-gap-2 flex-column">
               <img src={resultNotFount} alt="resultNotFount" />
@@ -121,7 +171,7 @@ const PastBooking: React.FC = () => {
           </div>
         ) : (
           <>
-            {filterPastBooking.map((booking, index) => (
+            {pastBookingDatas.map((booking, index) => (
               <div
                 key={index}
                 className="upcomingBookingList border p-2 p-md-4"
