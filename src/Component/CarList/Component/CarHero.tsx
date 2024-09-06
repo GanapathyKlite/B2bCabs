@@ -99,16 +99,16 @@ const CarHero: React.FC<CarListProps> = ({ cars, duration, km, cancelDate, error
               </div>
             </div> */}
               {duration.length !== 0 ?(
-                <div className="pt-2 px-2 pb-4 z-n1">
-                <div className="card pt-2 px-2 pb-2 z-n1">
-    <p className="mb-0">Distance for selected route is {km} km |<span>  Approx : {duration}</span></p>
+                <div className="pt-3 px-3 pb-3 z-n1">
+                <div className=" pt-2 px-2 pb-2 z-n1 ">
+    <p className="mb-0">Distance for selected route is <span style={{ fontWeight: 600 }}>{km} km </span>|  Approx : <span style={{ fontWeight: 600 }}> {duration}</span></p>
 </div>
 </div>
               ):null} 
               {period.noOfDays !== 0 && period.noOfNights !== 0?(
-                <div className="pt-2 px-2 pb-4 z-n1">
-                <div className="card pt-2 px-2 pb-2 z-n1">
-    <p className="mb-0"> {period.noOfNights} Night ,<span> {period.noOfDays} Days</span></p>
+                <div className="pt-3 px-3 pb-3 z-n1">
+                <div className=" pt-2 px-2 pb-2 z-n1">
+    <p className="mb-0 fontWeight500"> {period.noOfNights} Night | <span> {period.noOfDays} Days</span></p>
 </div>
 </div>
               ):null} 
