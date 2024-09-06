@@ -108,7 +108,7 @@ const CarHero: React.FC<CarListProps> = ({ cars, duration, km, cancelDate, error
               {period.noOfDays !== 0 && period.noOfNights !== 0?(
                 <div className="pt-3 px-3 pb-3 z-n1">
                 <div className=" pt-2 px-2 pb-2 z-n1">
-    <p className="mb-0 fontWeight500"> {period.noOfNights} Night | <span> {period.noOfDays} Days</span></p>
+    <p className="mb-0 fontWeight500"> {period.noOfNights} Nights | <span> {period.noOfDays} Days</span></p>
 </div>
 </div>
               ):null} 
