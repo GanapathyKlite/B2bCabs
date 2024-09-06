@@ -617,6 +617,33 @@ const DashboardHero: React.FC = () => {
     return current.isBefore(dayjs().startOf('day')) || current.isAfter(dayjs().add(30, 'day').endOf('day'));
   };
 
+  const getDisabledTime = (date: any) => {
+    if (!date) return {};
+  
+    const now = dayjs();
+    const currentHour = now.hour();
+    const currentMinute = now.minute();
+    const isToday = date.isSame(now, 'day');
+  
+    if (isToday) {
+      return {
+        disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
+        disabledMinutes: (hour: number) => {
+          if (hour === currentHour + 1) {
+            return Array.from({ length: currentMinute + 1 }, (_, i) => i);
+          }
+          return [];
+        },
+        disabledSeconds: () => [],
+      };
+    }
+    return {
+      disabledHours: () => [],
+      disabledMinutes: () => [],
+      disabledSeconds: () => [],
+    };
+  };
+
   
   return (
     <>
@@ -949,20 +976,23 @@ const DashboardHero: React.FC = () => {
                                 className="border-0 w-75 p-0"
                                 allowClear={false}
                                 disabledDate={disabledDate}
+                                showNow={false}
                                 onChange={handleDateChange}
                                 value={selectedDate}
                               />):(<DatePicker
                                 required
-                                format="ddd, MMM D"
+                                format="ddd, MMM D, h:mm A"
                                 suffixIcon={null}
                                 className="border-0 w-75 p-0"
                                 allowClear={false}
                                 disabledDate={disabledDate}
+                                disabledTime={(date) => getDisabledTime(date)}
                                 showTime={{
                                   use12Hours: true,
                                   format: "h:mm A",
                                 }}
                                 onChange={handleDateChange}
+                                showNow={false}
                                 value={selectedDate}
                               />)}
                              

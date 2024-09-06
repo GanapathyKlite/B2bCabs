@@ -557,25 +557,33 @@ const disabledDate = (current: Dayjs | null): boolean => {
   return current.isBefore(dayjs().startOf('day')) || current.isAfter(dayjs().add(30, 'day').endOf('day'));
 };
 
-// const disabledTime = () => {
-//   if (selectedDate && selectedDate.isSame(dayjs(), 'day')) {
-//     const currentHour = dayjs().hour();
-//     const currentMinute = dayjs().minute();
-    
-//     return {
-//       disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
-//       disabledMinutes: (hour: number) => {
-//         if (hour === currentHour + 1) {
-//           // Disable minutes before the current time + 1 hour
-//           return Array.from({ length: currentMinute }, (_, i) => i);
-//         }
-//         return [];
-//       }
-//     };
-//   }
-//   return {};
-// };
 
+const getDisabledTime = (date: any) => {
+  if (!date) return {};
+
+  const now = dayjs();
+  const currentHour = now.hour();
+  const currentMinute = now.minute();
+  const isToday = date.isSame(now, 'day');
+
+  if (isToday) {
+    return {
+      disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
+      disabledMinutes: (hour: number) => {
+        if (hour === currentHour + 1) {
+          return Array.from({ length: currentMinute + 1 }, (_, i) => i);
+        }
+        return [];
+      },
+      disabledSeconds: () => [],
+    };
+  }
+  return {
+    disabledHours: () => [],
+    disabledMinutes: () => [],
+    disabledSeconds: () => [],
+  };
+};
 
 
 const disabledrangeDate = (current: Dayjs | null): boolean => {
@@ -770,11 +778,15 @@ const disabledrangeDate = (current: Dayjs | null): boolean => {
         tripType === "Daily Rental" || tripType === "Holidays Package" ?
          ( <RangePicker value={selectedDateRange} required disabledDate={disabledrangeDate} onChange={handleRangeChange}/>) : 
         (<>
-          {tripType === "Hourly Rental" ?  <DatePicker value={selectedDate} required  disabledDate={disabledDate} onChange={handleDateChange} className="custom-date-picker"/>: 
+          {tripType === "Hourly Rental" ?  
+          <DatePicker value={selectedDate} required allowClear={false} 
+          showNow={false} disabledDate={disabledDate} onChange={handleDateChange} className="custom-date-picker"/>: 
           <DatePicker value={selectedDate} required onChange={handleDateChange}
            showTime={{ use12Hours: true, format: 'h:mm A' }}
+           allowClear={false}
+           showNow={false}
            disabledDate={disabledDate}
-      // disabledTime={disabledTime}
+           disabledTime={(date) => getDisabledTime(date)}
       />
            }
            </>)
