@@ -806,7 +806,7 @@ const DashboardHero: React.FC = () => {
                             )}
                           </div>
 
-                          <button
+                          {/* <button
                             className={`currentlocationbtn ${
                               selectedOption === "option1" && tab.id === 1
                                 ? "invisible"
@@ -819,7 +819,7 @@ const DashboardHero: React.FC = () => {
                             ) : (
                               <MdLocationSearching className="notclicked" />
                             )}
-                          </button>
+                          </button> */}
                         </div>
                       </div>
                       {/* <hr
@@ -1005,7 +1005,18 @@ const DashboardHero: React.FC = () => {
                           <div className="col-lg-3 col-md-3 z-1">
                             <div className="inputdiv px-3 py-0  m-0 d-flex align-items-center justify-content-between">
                               <LuCalendarDays />
-
+                              {tab.id === 2 && selectedOption === "option1" ? (
+                                <RangePicker
+                                required
+                                format="ddd, MMM D"
+                                suffixIcon={null}
+                                className="border-0 w-75 p-0"
+                                allowClear={false}
+                                onChange={handleRangeChange}
+                                disabledDate={disabledDate}
+                                value={selectedDateRange}
+                              />
+                              ):
                               <RangePicker
                                 required
                                 format="ddd, MMM D"
@@ -1015,7 +1026,7 @@ const DashboardHero: React.FC = () => {
                                 onChange={handleRangeChange}
                                 disabledDate={disabledrangeDate}
                                 value={selectedDateRange}
-                              />
+                              />}
                               <LuCalendarDays className="invisible" />
                             </div>
                           </div>

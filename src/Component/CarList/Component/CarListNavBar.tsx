@@ -775,8 +775,9 @@ const disabledrangeDate = (current: Dayjs | null): boolean => {
                 <div className="d-flex justify-content-between align-items-center w-100 datePickerDiv">
                 
       {
-        tripType === "Daily Rental" || tripType === "Holidays Package" ?
-         ( <RangePicker value={selectedDateRange} required disabledDate={disabledrangeDate} onChange={handleRangeChange}/>) : 
+         tripType === "Holidays Package" ?
+         ( <RangePicker value={selectedDateRange} allowClear={false} required disabledDate={disabledrangeDate} onChange={handleRangeChange}/>) : 
+         tripType === "Daily Rental" ? (<RangePicker allowClear={false} value={selectedDateRange} required disabledDate={disabledDate} onChange={handleRangeChange}/>) :
         (<>
           {tripType === "Hourly Rental" ?  
           <DatePicker value={selectedDate} required allowClear={false} 
