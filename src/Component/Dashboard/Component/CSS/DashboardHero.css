@@ -52,6 +52,11 @@
   opacity: 0.8;
 }
 
+.ant-picker-header-super-next-btn,
+.ant-picker-header-super-prev-btn {
+  display: none !important;
+}
+
 .hrLine {
   width: 20%;
   border: 1px solid black !important;
@@ -233,14 +238,6 @@ input[type=radio]:checked {
   font-size: 13px;
   transition: 0.3s;
 }
-
-.ant-picker-header-super-next-btn,
-.ant-picker-header-super-prev-btn {
-  display: none !important; 
-}
-
-
-
 
 @media screen and (max-width: 340px) {
   .tab_box .tab_btn {

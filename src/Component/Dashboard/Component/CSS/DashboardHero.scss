@@ -58,6 +58,12 @@
   }
 }
 
+.ant-picker-header-super-next-btn,
+.ant-picker-header-super-prev-btn {
+  display: none !important;
+}
+
+
 .hrLine {
   width: 20%;
   border: 1px solid black !important;
