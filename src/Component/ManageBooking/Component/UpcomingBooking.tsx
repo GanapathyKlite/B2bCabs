@@ -94,6 +94,7 @@ const UpcomingBooking: React.FC = () => {
   const [bookingid, setbookingid] = useState("");
   const [cancelReason, setCancelReason] = useState("");
   const [selectedDates, setSelectedDates] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null]>([null, null]);
+  const [filteredByDateData, setFilteredByDateData] = useState<upcomingBooking[]>([]);
 
   const fetchupBooking = async () => {
     try {
@@ -108,6 +109,7 @@ const UpcomingBooking: React.FC = () => {
       if (response.data.status) {
         setupcomingBookingData(response.data.data);
         setOriginalUpcomingBookingData(response.data.data);
+        setFilteredByDateData(response.data.data);
       }
     } catch (err) {
       console.log(err);
@@ -196,6 +198,7 @@ const UpcomingBooking: React.FC = () => {
       });
   
       setupcomingBookingData(filteredByDate);
+      setFilteredByDateData(filteredByDate);
     };
     
     
@@ -234,6 +237,8 @@ const UpcomingBooking: React.FC = () => {
       setSelectedDates(dates);
     } else {
       setSelectedDates([null, null]);
+      setupcomingBookingData(originalUpcomingBookingData);
+        setFilteredByDateData(originalUpcomingBookingData);
     }
   };
 
@@ -241,16 +246,21 @@ const UpcomingBooking: React.FC = () => {
     const query = e.target.value.toLowerCase();
     setSetsearchUpcomingBooking(query);
 
-    const filteredByText = originalUpcomingBookingData.filter((booking) =>
-      booking.vehicle_name.toLowerCase().includes(query.toLowerCase()) ||
-      booking.ref_no.toLowerCase().includes(query.toLowerCase()) ||
-      booking.package_type.toLowerCase().includes(query.toLowerCase()) ||
-      booking.start_date.toLowerCase().includes(query.toLowerCase()) ||
-      booking.pickup_location.toLowerCase().includes(query.toLowerCase()) ||
-      booking.drop_location.toLowerCase().includes(query.toLowerCase())
+    const dataToFilter = selectedDates[0] || selectedDates[1] ? filteredByDateData : originalUpcomingBookingData;
+
+    const filteredByText = dataToFilter.filter((booking) =>
+      booking.vehicle_name.toLowerCase().includes(query) ||
+      booking.ref_no.toLowerCase().includes(query) ||
+      booking.package_type.toLowerCase().includes(query) ||
+      booking.start_date.toLowerCase().includes(query) ||
+      booking.pickup_location.toLowerCase().includes(query) ||
+      booking.drop_location.toLowerCase().includes(query)
     );
 
     setupcomingBookingData(filteredByText);
+    if (query === "") {
+      setupcomingBookingData(selectedDates[0] && selectedDates[1] ? filteredByDateData : originalUpcomingBookingData);
+    }
   };
   return (
     <>

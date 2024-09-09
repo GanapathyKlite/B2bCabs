@@ -44,12 +44,12 @@ vehicle_name : string;
 }
 
 const CanceledBooking: React.FC = () => {
-  const [searchCanceledBooking, setSearchCanceledBooking] =
-    React.useState<string>("");
+  const [searchCanceledBooking, setSearchCanceledBooking] = useState<string>("");
     const {userData, authToken} = useAuth();
     const [selectedDates, setSelectedDates] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null]>([null, null]);
     const [cancelBookingDatas, setcancelBookingData] = useState<CanceledBooking[]>([]);
   const [originalcancelBookingData, setOriginalcancelBookingData] = useState<CanceledBooking[]>([]);
+  const [filteredByDateData, setFilteredByDateData] = useState<CanceledBooking[]>([]);
 
     useEffect(() => {
       const fetchcancelBooking = async () => {
@@ -65,7 +65,7 @@ const CanceledBooking: React.FC = () => {
         if(response.data.status){
           setcancelBookingData(response.data.data)
           setOriginalcancelBookingData(response.data.data);
-  
+          setFilteredByDateData(response.data.data);
         }
       } catch (err) {
         console.log(err);
@@ -83,6 +83,8 @@ const CanceledBooking: React.FC = () => {
         setSelectedDates(dates);
       } else {
         setSelectedDates([null, null]);
+        setcancelBookingData(originalcancelBookingData);
+        setFilteredByDateData(originalcancelBookingData);
       }
     };
 
@@ -92,16 +94,21 @@ const CanceledBooking: React.FC = () => {
     const query = e.target.value.toLowerCase();
     setSearchCanceledBooking(query);
 
-    const filteredByText = originalcancelBookingData.filter((booking) =>
-      booking.vehicle_name.toLowerCase().includes(query.toLowerCase()) ||
-      booking.ref_no.toLowerCase().includes(query.toLowerCase()) ||
-      booking.package_type.toLowerCase().includes(query.toLowerCase()) ||
-      booking.start_date.toLowerCase().includes(query.toLowerCase()) ||
-      booking.pickup_location.toLowerCase().includes(query.toLowerCase()) ||
-      booking.drop_location.toLowerCase().includes(query.toLowerCase())
+    const dataToFilter = selectedDates[0] || selectedDates[1] ? filteredByDateData : originalcancelBookingData;
+
+    const filteredByText = dataToFilter.filter((booking) =>
+      booking.vehicle_name.toLowerCase().includes(query) ||
+      booking.ref_no.toLowerCase().includes(query) ||
+      booking.package_type.toLowerCase().includes(query) ||
+      booking.start_date.toLowerCase().includes(query) ||
+      booking.pickup_location.toLowerCase().includes(query) ||
+      booking.drop_location.toLowerCase().includes(query)
     );
 
     setcancelBookingData(filteredByText);
+    if (query === "") {
+      setcancelBookingData(selectedDates[0] && selectedDates[1] ? filteredByDateData : originalcancelBookingData);
+    }
   };
 
   const handleFilter = () => {
@@ -116,6 +123,8 @@ const CanceledBooking: React.FC = () => {
     });
 
     setcancelBookingData(filteredByDate);
+    setFilteredByDateData(filteredByDate);
+   
   };
 
   return (

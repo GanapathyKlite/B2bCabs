@@ -9,36 +9,15 @@ import dayjs, { Dayjs } from "dayjs";
 
 const { RangePicker } = DatePicker;
 
-// const pastBookingDatas = [
-//   {
-//     cabType: "Dzire, Etios",
-//     similar: "or similar",
-//     bookingId: "BTU01CT0000087",
-//     bookingType: "Airport Transfer",
-//     bookingDate: "Tue 05, Mar 2023 7:00 PM",
-//     startAddress:
-//       "No: 19, new street, rangavilas thottam, Muthiyalpet, Puducherry-605003",
-//     endAddress: "Elnet Software City, Tharamani, Chennai, Tamil Nadu 600113",
-//   },
-//   {
-//     cabType: "Innova, Ertiga",
-//     similar: "or similar",
-//     bookingId: "BTU01CT0000098",
-//     bookingType: "Daily Rental",
-//     bookingDate: "Wed 06, Mar 2023 9:00 AM",
-//     startAddress: "123, Anna Nagar, Chennai, Tamil Nadu 600040",
-//     endAddress: "Koyambedu Bus Stand, Chennai, Tamil Nadu 600107",
-//   },
-// ];
 interface PastBooking {
-  drop_location : string;
-image : string;
-package_type : string;
-pickup_location : string;
-pickup_time : string;
-ref_no : string;
-start_date : string;
-vehicle_name : string;
+  drop_location: string;
+  image: string;
+  package_type: string;
+  pickup_location: string;
+  pickup_time: string;
+  ref_no: string;
+  start_date: string;
+  vehicle_name: string;
 }
 
 const disabledDate = (current: dayjs.Dayjs) => {
@@ -49,37 +28,37 @@ const PastBooking: React.FC = () => {
   const [searchPastBooking, setSearchPastBooking] = React.useState<string>("");
   const [pastBookingDatas, setPastBookingData] = useState<PastBooking[]>([]);
   const [originalPastBookingData, setOriginalPastBookingData] = useState<PastBooking[]>([]);
+  const [dateFilteredData, setDateFilteredData] = useState<PastBooking[]>([]);
   const [selectedDates, setSelectedDates] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null]>([null, null]);
-  const {userData, authToken} = useAuth();
+  const { userData, authToken } = useAuth();
 
   useEffect(() => {
     const fetchPastBooking = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/client/pastBooking/${userData.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`
-          },
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/client/pastBooking/${userData.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`
+            },
+          }
+        );
+        if (response.data.status) {
+          setPastBookingData(response.data.data);
+          setOriginalPastBookingData(response.data.data);
+          setDateFilteredData(response.data.data); 
         }
-      );
-      if(response.data.status){
-        setPastBookingData(response.data.data)
-        setOriginalPastBookingData(response.data.data);
-
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
-    }
-    
-  }
-  fetchPastBooking();
-
-  },[]);
+    };
+    fetchPastBooking();
+  }, []);
 
   const handleFilter = () => {
     const [startDate, endDate] = selectedDates.map(date => date ? dayjs(date, "DD/MM/YYYY") : null);
     let filteredData = originalPastBookingData;
+
     const filteredByDate = filteredData.filter((booking) => {
       const bookingDate = dayjs(booking.start_date, "DD-MM-YYYY");
       return (startDate && endDate)
@@ -88,30 +67,9 @@ const PastBooking: React.FC = () => {
         : true;
     });
 
-    setPastBookingData(filteredByDate);
+    setDateFilteredData(filteredByDate); 
+    setPastBookingData(filteredByDate); 
   };
-
-  // const filterPastBooking = pastBookingDatas.filter(
-  //   (pastBookingData) =>
-  //     pastBookingData.vehicle_name
-  //       .toLowerCase()
-  //       .includes(searchPastBooking.toLowerCase()) ||
-  //     pastBookingData.ref_no
-  //       .toLowerCase()
-  //       .includes(searchPastBooking.toLowerCase()) ||
-  //     pastBookingData.package_type
-  //       .toLowerCase()
-  //       .includes(searchPastBooking.toLowerCase()) ||
-  //     pastBookingData.start_date
-  //       .toLowerCase()
-  //       .includes(searchPastBooking.toLowerCase()) ||
-  //     pastBookingData.pickup_location
-  //       .toLowerCase()
-  //       .includes(searchPastBooking.toLowerCase()) ||
-  //     pastBookingData.drop_location
-  //       .toLowerCase()
-  //       .includes(searchPastBooking.toLowerCase())
-  // );
 
   const handleDateChange = (
     dates: [Dayjs | null, Dayjs | null] | null,
@@ -121,6 +79,8 @@ const PastBooking: React.FC = () => {
       setSelectedDates(dates);
     } else {
       setSelectedDates([null, null]);
+      setDateFilteredData(originalPastBookingData); 
+      setPastBookingData(originalPastBookingData);
     }
   };
 
@@ -128,16 +88,22 @@ const PastBooking: React.FC = () => {
     const query = e.target.value.toLowerCase();
     setSearchPastBooking(query);
 
-    const filteredByText = originalPastBookingData.filter((booking) =>
-      booking.vehicle_name.toLowerCase().includes(query.toLowerCase()) ||
-      booking.ref_no.toLowerCase().includes(query.toLowerCase()) ||
-      booking.package_type.toLowerCase().includes(query.toLowerCase()) ||
-      booking.start_date.toLowerCase().includes(query.toLowerCase()) ||
-      booking.pickup_location.toLowerCase().includes(query.toLowerCase()) ||
-      booking.drop_location.toLowerCase().includes(query.toLowerCase())
+    const baseData = selectedDates[0] && selectedDates[1] ? dateFilteredData : originalPastBookingData;
+    
+    const filteredByText = baseData.filter((booking) =>
+      booking.vehicle_name.toLowerCase().includes(query) ||
+      booking.ref_no.toLowerCase().includes(query) ||
+      booking.package_type.toLowerCase().includes(query) ||
+      booking.start_date.toLowerCase().includes(query) ||
+      booking.pickup_location.toLowerCase().includes(query) ||
+      booking.drop_location.toLowerCase().includes(query)
     );
 
     setPastBookingData(filteredByText);
+
+    if (query === "") {
+      setPastBookingData(selectedDates[0] && selectedDates[1] ? dateFilteredData : originalPastBookingData);
+    }
   };
 
   const imageURL = `${import.meta.env.VITE_API_IMG_URL}`;
@@ -145,7 +111,7 @@ const PastBooking: React.FC = () => {
     <>
       <div className="px-1 pt-3">
         <div className="d-flex gap-4 pb-2">
-          <RangePicker format="DD/MM/YYYY" onChange={handleDateChange} disabledDate={disabledDate}/>
+          <RangePicker format="DD/MM/YYYY" onChange={handleDateChange} disabledDate={disabledDate} />
 
           <button onClick={handleFilter} className="primaryBtn px-5">SEARCH</button>
         </div>
@@ -154,7 +120,6 @@ const PastBooking: React.FC = () => {
             type="text"
             style={{ height: "100%" }}
             value={searchPastBooking}
-            // onChange={(e) => setSearchPastBooking(e.target.value)}
             onChange={handleTextInputChange}
             placeholder="Quick Search"
           />
@@ -182,10 +147,10 @@ const PastBooking: React.FC = () => {
                   <div className="d-flex justify-content-between">
                     <div className="d-flex column-gap-3">
                       <div className="border upcomingBookingCabImg">
-                        <img 
-                        // src={SUVCab} 
-                        src={`${imageURL}${booking.image}`}
-                        alt="" className="w-100" />
+                        <img
+                          // src={SUVCab}
+                          src={`${imageURL}${booking.image}`}
+                          alt="" className="w-100" />
                       </div>
 
                       <div className="upcomingBookingCabType">
@@ -197,7 +162,7 @@ const PastBooking: React.FC = () => {
                     <div className="upcomingBookingCabDetails">
                       <span>{booking.ref_no}</span>
                       <span>{booking.package_type}</span>
-                      <span>{ dayjs(booking.start_date, "DD-MM-YYYY").format("ddd D, MMM YYYY")} {booking.pickup_time}</span>
+                      <span>{dayjs(booking.start_date, "DD-MM-YYYY").format("ddd D, MMM YYYY")} {booking.pickup_time}</span>
                     </div>
                   </div>
                   <div className="d-flex justify-content-between align-items-center flex-column flex-lg-row row-gap-3">
