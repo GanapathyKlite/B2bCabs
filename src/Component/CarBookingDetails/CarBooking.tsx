@@ -420,6 +420,16 @@ const CarBooking: React.FC = () => {
     }));
 };
 
+const handledropAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const value = event.target.value;
+  setDropAddress(value);
+
+  setError((prevErrors) => ({
+      ...prevErrors,
+      dropAddress: value.trim() ? "" : prevErrors.dropAddress,
+  }));
+};
+
   const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>,fieldName: string) => (event: React.ChangeEvent<HTMLInputElement>)  => {
     const value = event.target.value;
     const filteredValue = value.replace(/[^0-9]/g, "");
@@ -867,6 +877,25 @@ if(car.vehicle_name == "Suv"){
     setLoading(false);
     setAddCashModalBox(false);
   };
+
+
+  const disabledTime = () => {
+
+    const now = dayjs();
+  const currentHour = now.hour();
+  const currentMinute = now.minute();
+    
+    return {
+      disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
+      disabledMinutes: (hour: number) => {
+        if (hour === currentHour + 1) {
+          return Array.from({ length: currentMinute + 1 }, (_, i) => i);
+        }
+        return [];
+      },
+      disabledSeconds: () => [],
+    };
+  };
   return (
     <>
       <div className="w-100 ReviewBookingBar">
@@ -1185,7 +1214,7 @@ if(car.vehicle_name == "Suv"){
                     </div>
 
                   
-                    <div className="mb-2">
+                    <div className="mb-2 mt-2">
           <label htmlFor="adultCount" className="font-size14">
             <span style={{ fontWeight: "600" }}>Adult</span>
           </label>
@@ -1209,104 +1238,7 @@ if(car.vehicle_name == "Suv"){
           {error.adultCount && <div className="text-danger mt-2">{error.adultCount}</div>}
         </div>
 
-        <div className="mb-2">
-                      <label
-                        htmlFor="alternativeContactNumber"
-                        className="font-size14"
-                      >
-                        <span style={{ fontWeight: "600" }}>
-                          Alternative Contact Number (optional)
-                        </span>
-                      </label>
-                      <div className="row">
-    <div className="col-3">
-      <select
-        className="form-control px-3 py-2"
-        value={alternateNoCountryCode}
-        onChange={(e) => setAlternateNoCountryCode(e.target.value)}
-      >
-        <option value="+91">+91</option>
-          <option value="+1">+1</option>
-          <option value="+44">+44</option>
-          <option value="+90">+90</option>
-          <option value="+92">+92</option>
-          <option value="+94">+94</option>
-          <option value="+60">+60</option>
-          <option value="+61">+61</option>
-          <option value="+33">+33</option>
-      </select>
-    </div>
-
-    <div className="col-9">
-                      <input
-                        type="text"
-                        className="form-control px-3 py-2"
-                        id="alternativeContactNumber"
-                        placeholder="Enter Alternate Number"
-                        value={alternativeContactNumber}
-                        onBlur={() => validateField("AlternateNumber")}
-                        onChange={handleInputChange(setAlternativeContactNumber,"alternativeContactNumber")}
-                        maxLength={10} 
-                      />
-                      </div>
-                      </div>
-        {error.alternativeContactNumber && <div className="text-danger mt-2">{error.alternativeContactNumber}</div>}
-
-                    </div>
-        
-        <div className="mb-2">
-                    <label className="font-size14">
-                      <span style={{ fontWeight: "600" }}>Arrival Via</span>
-                    </label>
-                    <div className="select-wrapper">
-                    <select
-          className="form-control px-3 py-2"
-          id="arrivalvia"
-          value={selectedArrival}
-          onChange={(e) => handleChange("arrival", e)}
-          onBlur={()=>validateField("arrivalVia")}
-          required
-        >
-          <option value="" disabled>Select Arrival Via</option>
-          <option value="Flight">Flight</option>
-          <option value="Bus">Bus</option>
-          <option value="Train">Train</option>
-          <option value="Residency">Residency</option>
-        </select>
-        <IoIosArrowDown className="dropdown-arrow" />
-</div>
-        {error.arrivalVia && <div className="text-danger mt-2">{error.arrivalVia}</div>}
-                  </div>
-
-                  <div className="mb-2">
-                    <label className="font-size14">
-                      <span style={{ fontWeight: "600" }}>Departure Via</span>
-                    </label>
-                    <div className="select-wrapper">
-                    <select
-          className="form-control px-3 py-2"
-          id="departurevia"
-          value={selectedDeparture}
-          onChange={(e) => handleChange("departure", e)}
-          onBlur={()=>validateField("departureVia")}
-          required
-        >
-          <option value="" disabled>Select Departure Via</option>
-          <option value="Flight">Flight</option>
-          <option value="Bus">Bus</option>
-          <option value="Train">Train</option>
-          <option value="Residency">Residency</option>
-        </select>
-        <IoIosArrowDown className="dropdown-arrow" />
-</div>
-        {error.departureVia && <div className="text-danger mt-2">{error.departureVia}</div>}
-
-                  </div>
-
-
-                  </div>
-                  <div className="col-lg-6 d-flex flex-column justify-content-between">
-                    <div className="mb-2">
+        <div className="mb-2 mt-2">
                       <label
                         htmlFor="contactNumber"
                         className="font-size14"
@@ -1352,8 +1284,91 @@ if(car.vehicle_name == "Suv"){
 
                       {error.contactNumber && <div className="text-danger mt-2">{error.contactNumber}</div>}
                     </div>
+
+       
+        
+        <div className="mb-2 mt-2">
+                    <label className="font-size14">
+                      <span style={{ fontWeight: "600" }}>Arrival Via</span>
+                    </label>
+                    <div className="select-wrapper">
+                    <select
+          className="form-control px-3 py-2"
+          id="arrivalvia"
+          value={selectedArrival}
+          onChange={(e) => handleChange("arrival", e)}
+          onBlur={()=>validateField("arrivalVia")}
+          required
+        >
+          <option value="" disabled>Select Arrival Via</option>
+          <option value="Flight">Flight</option>
+          <option value="Bus">Bus</option>
+          <option value="Train">Train</option>
+          <option value="Residency">Residency</option>
+        </select>
+        <IoIosArrowDown className="dropdown-arrow" />
+</div>
+        {error.arrivalVia && <div className="text-danger mt-2">{error.arrivalVia}</div>}
+                  </div>
+
+                  <div className="mb-2 mt-2">
+                    <label className="font-size14">
+                      <span style={{ fontWeight: "600" }}>Departure Via</span>
+                    </label>
+                    <div className="select-wrapper">
+                    <select
+          className="form-control px-3 py-2"
+          id="departurevia"
+          value={selectedDeparture}
+          onChange={(e) => handleChange("departure", e)}
+          onBlur={()=>validateField("departureVia")}
+          required
+        >
+          <option value="" disabled>Select Departure Via</option>
+          <option value="Flight">Flight</option>
+          <option value="Bus">Bus</option>
+          <option value="Train">Train</option>
+          <option value="Residency">Residency</option>
+        </select>
+        <IoIosArrowDown className="dropdown-arrow" />
+</div>
+        {error.departureVia && <div className="text-danger mt-2">{error.departureVia}</div>}
+
+                  </div>
+
+
+                  </div>
+                  <div className="col-lg-6 d-flex flex-column justify-content-between">
+                    
                    
-                    <div className="mb-2">
+                    
+
+        <div className="mb-2">
+  <label htmlFor="pickup_time" className="font-size14">
+    <span style={{ fontWeight: "600" }}>Pick-up Time</span>
+  </label>
+  <TimePicker
+    className="form-control px-3 py-2"
+    id="pickup_time"
+    placeholder="Enter pick-up time"
+    showNow={false}
+    allowClear={false}
+    value={pickupTime}
+    style={{height: "38px"}}
+    onChange={handleTimeChange}
+    onFocus={handleFocus}
+    disabledTime={disabledTime}
+    // onBlur={()=>validateField("pickupTime")}
+    format="h:mm A"
+    use12Hours
+    required
+  />
+   {touched.pickupTime && error.pickupTime && (
+        <div className="text-danger mt-2">{error.pickupTime}</div>
+      )}
+</div>
+                    
+<div className="mb-2 mt-2">
           <label htmlFor="childCount" className="font-size14">
             <span style={{ fontWeight: "600" }}>Child</span>
           </label>
@@ -1380,30 +1395,52 @@ if(car.vehicle_name == "Suv"){
 </div>
         </div>
 
-        <div className="mb-2">
-  <label htmlFor="pickup_time" className="font-size14">
-    <span style={{ fontWeight: "600" }}>Pick-up Time</span>
-  </label>
-  <TimePicker
-    className="form-control px-3 py-2"
-    id="pickup_time"
-    placeholder="Enter pick-up time"
-    value={pickupTime}
-    onChange={handleTimeChange}
-    onFocus={handleFocus}
-    // onBlur={()=>validateField("pickupTime")}
-    format="h:mm A"
-    use12Hours
-    required
-  />
-   {touched.pickupTime && error.pickupTime && (
-        <div className="text-danger mt-2">{error.pickupTime}</div>
-      )}
-</div>
-                    
+        <div className="mb-2 mt-2">
+                      <label
+                        htmlFor="alternativeContactNumber"
+                        className="font-size14"
+                      >
+                        <span style={{ fontWeight: "600" }}>
+                          Alternative Contact Number (optional)
+                        </span>
+                      </label>
+                      <div className="row">
+    <div className="col-3">
+      <select
+        className="form-control px-3 py-2"
+        value={alternateNoCountryCode}
+        onChange={(e) => setAlternateNoCountryCode(e.target.value)}
+      >
+        <option value="+91">+91</option>
+          <option value="+1">+1</option>
+          <option value="+44">+44</option>
+          <option value="+90">+90</option>
+          <option value="+92">+92</option>
+          <option value="+94">+94</option>
+          <option value="+60">+60</option>
+          <option value="+61">+61</option>
+          <option value="+33">+33</option>
+      </select>
+    </div>
 
+    <div className="col-9">
+                      <input
+                        type="text"
+                        className="form-control px-3 py-2"
+                        id="alternativeContactNumber"
+                        placeholder="Enter Alternate Number"
+                        value={alternativeContactNumber}
+                        onBlur={() => validateField("AlternateNumber")}
+                        onChange={handleInputChange(setAlternativeContactNumber,"alternativeContactNumber")}
+                        maxLength={10} 
+                      />
+                      </div>
+                      </div>
+        {error.alternativeContactNumber && alternativeContactNumber.length > 1 && <div className="text-danger mt-2">{error.alternativeContactNumber}</div>}
+
+                    </div>
                    
-                   <div className="mb-2 mt-3">
+                   <div className="mb-2 mt-2">
           <label className="font-size14">
             <span style={{ fontWeight: "600" }}>{arrivalDetails.label}</span>
           </label>
@@ -1420,7 +1457,7 @@ if(car.vehicle_name == "Suv"){
           {error.pickupAddress && <div className="text-danger mt-2">{error.pickupAddress}</div>}
         </div>
 
-        <div className="mb-2 mt-3">
+        <div className="mb-2 mt-2">
           <label className="font-size14">
             <span style={{ fontWeight: "600" }}>{departureDetails.label}</span>
           </label>
@@ -1429,7 +1466,7 @@ if(car.vehicle_name == "Suv"){
             className="form-control px-3 py-2"
             placeholder={departureDetails.placeholder}
             value={dropAddress}
-            onChange={(e) => setDropAddress(e.target.value)}
+            onChange={handledropAddressChange}
             onBlur={()=>validateField("dropAddress")}
             readOnly={!selectedDeparture}
             required
