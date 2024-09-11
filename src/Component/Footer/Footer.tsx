@@ -57,7 +57,7 @@ const Footer = () => {
                       </a>
                     </li>
                     <li>
-                      <a href="/">
+                      <a href="/dashboard/paymenthistory">
                         <IoIosArrowForward className="me-1" />
                         Payment
                       </a>

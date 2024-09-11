@@ -367,10 +367,13 @@ function DashboardNavbar() {
                         className="py-2 dashBoardNavBarSubTitle"
                         href="#action1"
                       >
-                        <span>
+                        <div><span>
                           <BsChatDotsFill />
                         </span>
-                        &nbsp; Chat Support
+                       <span> Chat Support</span> </div>
+                        
+                        <div style={{paddingLeft: "20px"}}>987654321</div>
+
                       </Nav.Link>
                     </AccordionDetails>
                   </Accordion>
