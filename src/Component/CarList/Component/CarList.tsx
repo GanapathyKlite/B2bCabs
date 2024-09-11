@@ -516,10 +516,8 @@ const itinerary = [
 </div>
   
                     </div>
-                    {tripType === "Holidays Package" ? (<div className="itinerary">
-   <span onClick={handleOpenModal
-    // ()=>{handleOpenModal(car.itinerary)}
-    }>itinerary</span>  </div>):null}
+                    {/* {tripType === "Holidays Package" ? (<div className="itinerary">
+   <span onClick={handleOpenModal }>itinerary</span>  </div>):null} */}
                   </div>
                 </div>
               </div>
