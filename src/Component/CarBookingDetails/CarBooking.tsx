@@ -468,19 +468,6 @@ const CarBooking: React.FC = () => {
 
       setError((prevErrors) => ({
         ...prevErrors,
-        pickupAddress: value.trim() ? "" : prevErrors.pickupAddress,
-      }));
-    };
-
-  const handleInputChange =
-    (setter: React.Dispatch<React.SetStateAction<string>>, fieldName: string) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      const filteredValue = value.replace(/[^0-9]/g, "");
-      setter(filteredValue);
-
-      setError((prevErrors) => ({
-        ...prevErrors,
         [fieldName]: "",
       }));
     };
