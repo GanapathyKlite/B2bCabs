@@ -59,7 +59,7 @@
 
 .video {
   position: absolute;
-  height: 80vh;
+  height: 512px;
   width: 100%;
   top: 0;
   bottom: 0;
@@ -202,20 +202,213 @@
 }
 
 .inputdiv {
-  border: 1px solid rgba(0, 0, 0, 0.2) !important;
-  background-color: #fff !important;
+  position: relative;
+  cursor: pointer;
 
-  &:hover,
-  &:focus,
-  &:active {
-    border: 1px solid var(--SecondaryColor) !important;
-    transition: all 0.4s ease-in-out !important;
+  .mainInputBox {
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+    padding-left: 40px;
+    text-transform: capitalize;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    min-height: 50px;
+    background-color: #fff !important;
+    user-select: none;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+
+    &.open ~ .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+  }
+
+  .custom-select {
+    -webkit-appearance: none; /* Chrome, Safari, Opera */
+    -moz-appearance: none; /* Firefox */
+    appearance: none; /* Standard */
+    background: none; /* Removes any background image */
+    position: relative;
+  }
+
+  .dashboardIcon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    color: var(--iconColor);
+    transform: translateY(-50%);
+    z-index: 5;
+  }
+
+  .citySearchHiddenBox {
+    width: 135%;
+    z-index: 5;
+    max-height: 0;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+    box-shadow: 0 0 10px #00000036;
+    background-color: var(--whiteColor);
+    top: 125%;
+    left: 65%;
+    transform: translateX(-50%);
+    position: absolute;
+    border-radius: 5px;
+    overflow: hidden;
+    &.citySearchHiddenBoxShow {
+      max-height: 500px;
+      opacity: 1;
+      visibility: visible;
+    }
+    .searchInputBoxClass {
+      position: relative;
+      input {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2117647059) !important;
+        outline: none;
+        width: 100%;
+        font-size: 14px;
+        border: none;
+        text-transform: capitalize;
+        padding: 10px 5px 10px 35px;
+      }
+      svg {
+        position: absolute;
+        z-index: 3;
+        top: 50%;
+        font-size: 18px;
+        left: 4%;
+        transform: translateY(-50%);
+      }
+    }
+    .popularCityListDiv {
+      padding: 5px 0;
+      overflow-y: scroll;
+      scrollbar-width: thin;
+      span:first-child {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 5px;
+      }
+      ul {
+        display: flex;
+        flex-direction: column;
+        li {
+          padding: 5px;
+          display: flex;
+          gap: 10px;
+          cursor: pointer;
+          color: #2f2f2f;
+          align-items: center;
+          p,
+          span {
+            margin: 0;
+            overflow: hidden;
+            color: var(--txtGrayColor);
+            font-size: 12px;
+            width: 100%;
+            font-weight: 400;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
+            display: flex;
+            padding: 0 !important;
+            align-items: center;
+          }
+          .citySearchText {
+            font-weight: 600;
+            font-size: 12px;
+            width: fit-content !important;
+          }
+          svg {
+            width: fit-content;
+          }
+          &:hover {
+            background-color: #f1f0f0;
+
+            p {
+              color: var(--SecondaryColor);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .holidayIcon {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    position: absolute;
+    left: 15px;
+    svg {
+      fill: var(--iconColor);
+    }
+  }
+}
+.locationChangerArrowIcon {
+  position: absolute;
+  font-size: 20px;
+  background-color: var(--whiteColor);
+  padding: 1px 5px;
+  z-index: 5;
+  color: var(--PrimaryColor);
+  right: -11%; // Default for larger screens
+  top: 50%;
+  transform: translateY(-50%);
+  svg {
+    display: inline-block;
+    cursor: pointer;
+    transition: transform 0.2s ease-out;
+
+    &.rotate {
+      transform: rotate(180deg); // Rotate by 180 degrees
+    }
+  }
+
+  @media (max-width: 991.98px) {
+    // xs to md (small screens)
+    top: 80%;
+    right: 20px;
+    background-color: var(--whiteColor);
+    rotate: 90deg;
+    color: var(--PrimaryColor);
+    padding: 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
-.currentlocationbtn {
-  border: none;
-  background-color: transparent;
+.datePickerSingle {
+  position: relative;
+  cursor: pointer;
+
+  .datePickerIcon {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 15px;
+    color: var(--iconColor);
+    transform: translateY(-50%);
+  }
+
+  .ant-picker {
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+    text-transform: capitalize;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    height: 50px !important;
+    background-color: #fff !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    padding: 0 0 0 40px;
+
+    // input:first-child {
+    // }
+  }
+  .singleDatePicker {
+    padding-left: 40px;
+  }
 }
 
 .notclicked {
