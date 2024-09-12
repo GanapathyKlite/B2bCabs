@@ -1,8 +1,8 @@
 import { ErrorMessage, Field, useFormikContext } from "formik";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import "./CSS/Form.css";
 import { IoIosArrowDown } from "react-icons/io";
-import axios from 'axios';
+import axios from "axios";
 
 interface FormValues {
   company_name: string;
@@ -18,43 +18,57 @@ const Form2: React.FC = () => {
   const { errors, touched } = useFormikContext<FormValues>();
   const [isCompanyTypeOpen, setIsCompanyTypeOpen] = useState(false);
   const [isCityOpen, setIsCityOpen] = useState(false);
-  const [companyTypes, setCompanyTypes] = useState<Array<{ id: string; name: string }>>([]);
-  const [cities, setCities] = useState<Array<{ id_city: number; city_name: string; state_name: string; country_name: string; id_country: number; id_state: number }>>([]);
+  const [companyTypes, setCompanyTypes] = useState<
+    Array<{ id: string; name: string }>
+  >([]);
+  const [cities, setCities] = useState<
+    Array<{
+      id_city: number;
+      city_name: string;
+      state_name: string;
+      country_name: string;
+      id_country: number;
+      id_state: number;
+    }>
+  >([]);
   const { setFieldValue } = useFormikContext();
 
   useEffect(() => {
-    const key = sessionStorage.getItem("authkey")
+    const key = sessionStorage.getItem("authkey");
     const fetchCompanyTypes = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/registration-type`,{
-          headers: {
-            Authorization: `Bearer ${key}`
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/registration-type`,
+          {
+            headers: {
+              Authorization: `Bearer ${key}`,
+            },
           }
-        });
+        );
         setCompanyTypes(response.data);
-        
       } catch (error) {
-        console.error('Error fetching company types:', error);
+        console.error("Error fetching company types:", error);
       }
     };
 
     fetchCompanyTypes();
     const fetchCities = async () => {
       try {
-        
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/city/city-state-country`,{
-          headers: {
-            Authorization: `Bearer ${key}`
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/city/city-state-country`,
+          {
+            headers: {
+              Authorization: `Bearer ${key}`,
+            },
           }
-        });
+        );
         if (response.data.status) {
           setCities(response.data.cities);
-          
         } else {
-          console.error('Failed to fetch cities');
+          console.error("Failed to fetch cities");
         }
       } catch (error) {
-        console.error('Error fetching cities:', error);
+        console.error("Error fetching cities:", error);
       }
     };
 
@@ -62,11 +76,13 @@ const Form2: React.FC = () => {
   }, []);
 
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedCity = cities.find(city => city.city_name === event.target.value);
+    const selectedCity = cities.find(
+      (city) => city.city_name === event.target.value
+    );
 
     if (selectedCity) {
-      setFieldValue('state', selectedCity.state_name);
-      setFieldValue('country', selectedCity.country_name);
+      setFieldValue("state", selectedCity.state_name);
+      setFieldValue("country", selectedCity.country_name);
       setFieldValue("id_state", selectedCity.id_state);
       setFieldValue("id_country", selectedCity.id_country);
       setFieldValue("id_city", selectedCity.id_city);
@@ -74,15 +90,23 @@ const Form2: React.FC = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const invalidKeys = ['e', 'E', '+', '-'];
+    const invalidKeys = ["e", "E", "+", "-"];
     const isNavigationKey = [
-      'Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Delete', 'Home', 'End'
+      "Backspace",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowUp",
+      "ArrowDown",
+      "Tab",
+      "Delete",
+      "Home",
+      "End",
     ].includes(e.key);
-  
-    if (isNavigationKey || e.key === 'Enter') {
+
+    if (isNavigationKey || e.key === "Enter") {
       return;
     }
-  
+
     if (invalidKeys.includes(e.key) || !/\d/.test(e.key)) {
       e.preventDefault();
     }
@@ -132,7 +156,9 @@ const Form2: React.FC = () => {
               id="type_of_company"
               name="type_of_company"
               className={`form-control border border-secondary rounded-3 p-3 w-100 ${
-                errors.type_of_company && touched.type_of_company ? "border-danger" : ""
+                errors.type_of_company && touched.type_of_company
+                  ? "border-danger"
+                  : ""
               }`}
               onClick={() => setIsCompanyTypeOpen(!isCompanyTypeOpen)}
               onBlur={() => setIsCompanyTypeOpen(false)}
@@ -151,8 +177,8 @@ const Form2: React.FC = () => {
                 label="One Person Company (OPC)"
               /> */}
               {companyTypes.map((type) => (
-          <option key={type.id} value={type.id} label={type.name} />
-        ))}
+                <option key={type.id} value={type.id} label={type.name} />
+              ))}
             </Field>
             <IoIosArrowDown
               className={`dropdown-arrow ${isCompanyTypeOpen ? "rotate" : ""}`}
@@ -208,14 +234,18 @@ const Form2: React.FC = () => {
               onBlur={() => setIsCityOpen(false)}
               onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
                 handleCityChange(event);
-                setFieldValue('city', event.target.value);
+                setFieldValue("city", event.target.value);
               }}
             >
               <option disabled label="Select City" />
-              
-               {cities.map((city) => (
-          <option key={city.id_city} value={city.city_name} label={city.city_name} />
-        ))}
+
+              {cities.map((city) => (
+                <option
+                  key={city.id_city}
+                  value={city.city_name}
+                  label={city.city_name}
+                />
+              ))}
             </Field>
             <IoIosArrowDown
               className={`dropdown-arrow ${isCityOpen ? "rotate" : ""}`}
@@ -233,13 +263,13 @@ const Form2: React.FC = () => {
             State
           </label>
           <div className="select-wrapper">
-          <Field
-            as="input"
-            id="state"
-            name="state"
-            className={`form-control border border-secondary rounded-3 p-3 w-100 `}
-            readOnly
-          />
+            <Field
+              as="input"
+              id="state"
+              name="state"
+              className={`form-control border border-secondary rounded-3 p-3 w-100 `}
+              readOnly
+            />
           </div>
           <div className="text-danger fs-small pt-2 errorMessage">
             <ErrorMessage name="state" />
@@ -256,14 +286,13 @@ const Form2: React.FC = () => {
             Country
           </label>
           <div className="select-wrapper">
-          <Field
-            as="input"
-            id="country"
-            name="country"
-            className={`form-control border border-secondary rounded-3 p-3 w-100 `}
-            readOnly
-          />
-           
+            <Field
+              as="input"
+              id="country"
+              name="country"
+              className={`form-control border border-secondary rounded-3 p-3 w-100 `}
+              readOnly
+            />
           </div>
           <div className="text-danger fs-small pt-2 errorMessage">
             <ErrorMessage name="country" />
