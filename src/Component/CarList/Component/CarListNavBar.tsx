@@ -4,11 +4,12 @@ import { LuArrowLeftRight } from "react-icons/lu";
 import { DatePicker } from "antd";
 const { RangePicker } = DatePicker;
 import { useAuth } from "../../Auth/AuthContext";
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import AutocompleteInput from "../../AutoComplete/AutocompleInput";
 import axios from "axios";
 import { AxiosError } from "axios";
 import CarHero from "./CarHero";
+import './CarListNavBar.css';
 
 interface Option {
   icon: JSX.Element;
@@ -549,6 +550,50 @@ const handlePackageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
   setPackageId(e.target.value); 
   sessionStorage.setItem("packageId",e.target.value)
 };
+
+const disabledDate = (current: Dayjs | null): boolean => {
+  if (!current) return false;
+
+  return current.isBefore(dayjs().startOf('day')) || current.isAfter(dayjs().add(30, 'day').endOf('day'));
+};
+
+
+const getDisabledTime = (date: any) => {
+  if (!date) return {};
+
+  const now = dayjs();
+  const currentHour = now.hour();
+  const currentMinute = now.minute();
+  const isToday = date.isSame(now, 'day');
+
+  if (isToday) {
+    return {
+      disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
+      disabledMinutes: (hour: number) => {
+        if (hour === currentHour + 1) {
+          return Array.from({ length: currentMinute + 1 }, (_, i) => i);
+        }
+        return [];
+      },
+      disabledSeconds: () => [],
+    };
+  }
+  return {
+    disabledHours: () => [],
+    disabledMinutes: () => [],
+    disabledSeconds: () => [],
+  };
+};
+
+
+const disabledrangeDate = (current: Dayjs | null): boolean => {
+  if (!current) return false;
+  const today = dayjs().startOf('day');
+  const sixMonthsLater = dayjs().add(6, 'month').endOf('day');
+  return current.isBefore(today) || current.isAfter(sixMonthsLater);
+};
+
+
   return (
     <>
       <div className="edit_search position-sticky d-none d-md-block top0">
@@ -730,8 +775,22 @@ const handlePackageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
                 <div className="d-flex justify-content-between align-items-center w-100 datePickerDiv">
                 
       {
-        tripType === "Daily Rental" || tripType === "Holidays Package" ? ( <RangePicker value={selectedDateRange} required  onChange={handleRangeChange}/>) : 
-        ( <DatePicker value={selectedDate} required onChange={handleDateChange} showTime={{ use12Hours: true, format: 'h:mm A' }}/>)
+         tripType === "Holidays Package" ?
+         ( <RangePicker value={selectedDateRange} allowClear={false} required disabledDate={disabledrangeDate} onChange={handleRangeChange}/>) : 
+         tripType === "Daily Rental" ? (<RangePicker allowClear={false} value={selectedDateRange} required disabledDate={disabledDate} onChange={handleRangeChange}/>) :
+        (<>
+          {tripType === "Hourly Rental" ?  
+          <DatePicker value={selectedDate} required allowClear={false} 
+          showNow={false} disabledDate={disabledDate} onChange={handleDateChange} className="custom-date-picker"/>: 
+          <DatePicker value={selectedDate} required onChange={handleDateChange}
+           showTime={{ use12Hours: true, format: 'h:mm A' }}
+           allowClear={false}
+           showNow={false}
+           disabledDate={disabledDate}
+           disabledTime={(date) => getDisabledTime(date)}
+      />
+           }
+           </>)
       }
 
                 </div>

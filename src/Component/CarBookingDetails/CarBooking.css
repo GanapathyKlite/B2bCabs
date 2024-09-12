@@ -11,6 +11,28 @@
   background: linear-gradient(to right, rgb(239, 232, 247), rgb(239, 232, 247));
 }
 
+.custom-list-style ol {
+  list-style-type: decimal !important;
+  padding-left: 20px;
+}
+.custom-list-style li {
+  list-style-type: decimal !important;
+  list-style: decimal !important;
+}
+
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.select-wrapper .dropdown-arrow {
+  position: absolute;
+  right: 0.75rem;
+  font-size: 22px;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
 .checkTick {
   border: 2.5px solid var(--PrimaryColor);
   border-radius: 50%;
