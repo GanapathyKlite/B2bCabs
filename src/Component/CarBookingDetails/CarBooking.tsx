@@ -116,7 +116,19 @@ const CarBooking: React.FC = () => {
   }, []); 
 
   const location = useLocation();
-  const car = location.state.car;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!location.state || !location.state.car) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [location, navigate]);
+
+  const car = location.state?.car;
+
+  if (!car) {
+    return null;
+  }
   const startcity = location.state.startcity;
   const endcity = location.state.endcity;
   const startdate = location.state.startdate;
@@ -500,7 +512,6 @@ if(car.vehicle_name == "Suv"){
     
   };
 
-  const navigate = useNavigate();
 
   const handleFocus = () => {
     setTouched(prev => ({ ...prev, pickupTime: true }));

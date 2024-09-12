@@ -386,7 +386,7 @@ const DashboardHero: React.FC = () => {
 
           const canceldate = formattedDate?.start_date;
           sessionStorage.setItem("canceldate", canceldate || "");
-          navigate("/dashboard/cablist");
+          navigate("/dashboard/cablist",{state: {car: true}});
         }
       } catch (error) {
         console.log(error);
@@ -424,7 +424,7 @@ const DashboardHero: React.FC = () => {
           sessionStorage.setItem("km", response.data.km);
           const canceldate = formattedDates?.start_date;
           sessionStorage.setItem("canceldate", canceldate || "");
-          navigate("/dashboard/cablist");
+          navigate("/dashboard/cablist",{state: {car: true}});
         }
       } catch (error) {
         console.log(error);
@@ -473,7 +473,7 @@ const DashboardHero: React.FC = () => {
             sessionStorage.setItem("duration", "10 hr");
             sessionStorage.setItem("km", "100");
           }
-          navigate("/dashboard/cablist");
+          navigate("/dashboard/cablist",{state: {car: true}});
         }
       } catch (error) {
         console.log(error);
@@ -507,7 +507,7 @@ const DashboardHero: React.FC = () => {
           sessionStorage.setItem("carData", JSON.stringify(cardata));
           const canceldate = formattedDates?.start_date;
           sessionStorage.setItem("canceldate", canceldate || "");
-          navigate("/dashboard/cablist");
+          navigate("/dashboard/cablist",{state: {car: true}});
         }
       } catch (error) {
         console.log(error);
