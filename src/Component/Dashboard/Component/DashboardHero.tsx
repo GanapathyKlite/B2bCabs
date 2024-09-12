@@ -748,7 +748,7 @@ const DashboardHero: React.FC = () => {
                         >
                           <div className="radio-input-wrapper d-flex col-md-4">
                             <label
-                              className={`label px-0 px-sm-2 px-md-3 py-1 py-sm-2`}
+                              className={`label px-2 px-md-3 py-1 py-sm-2`}
                             >
                               <input
                                 type="radio"
@@ -763,7 +763,7 @@ const DashboardHero: React.FC = () => {
                               </div>
                             </label>
                             <label
-                              className={`label px-0 px-sm-2 px-md-3 py-1 py-sm-2`}
+                              className={`label px-2 px-md-3 py-1 py-sm-2`}
                             >
                               <input
                                 type="radio"
