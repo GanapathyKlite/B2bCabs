@@ -1,12 +1,11 @@
-import React,{useState, useRef, useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./CarBooking.css";
 import Footer from "../Footer/Footer";
 
-import {  Tooltip, TimePicker } from "antd";
+import { Tooltip, TimePicker } from "antd";
 import { useLocation } from "react-router-dom";
 import parse from "html-react-parser";
 import { Modal } from "antd";
-
 
 // Icons Start
 import { FaArrowRightArrowLeft, FaCheck, FaCircleCheck } from "react-icons/fa6";
@@ -52,16 +51,6 @@ const CarBooking: React.FC = () => {
     React.useState<boolean>(false);
   const [modalBoxLoading, setModalBoxLoading] = React.useState<boolean>(true);
 
-  const showModalBox = () => {
-    setPaymentModalBoxOpen(true);
-    setModalBoxLoading(true);
-
-    // Simple loading mock. You should add cleanup logic in real world.
-    setTimeout(() => {
-      setModalBoxLoading(false);
-    }, 20);
-  };
-
   React.useEffect(() => {
     document.documentElement.scrollTop = document.documentElement.clientHeight;
     document.documentElement.scrollLeft = document.documentElement.clientWidth;
@@ -75,7 +64,6 @@ const CarBooking: React.FC = () => {
   const enddate = location.state.enddate;
   const imageURL = `${import.meta.env.VITE_API_IMG_URL}`;
   const carImage = `${imageURL}${car.image}`;
-
 
   const handleOpenTerms = (): void => {
     const newWindow: Window | null = window.open("", "_blank");
@@ -135,21 +123,21 @@ const CarBooking: React.FC = () => {
   const [adultCount, setAdultCount] = useState<number>(0);
   const [childCount, setChildCount] = useState<number>(0);
 
-  const totalSeats = parseInt(car.seats.split('+')[0]);
+  const totalSeats = parseInt(car.seats.split("+")[0]);
 
-  const maxAdults = parseInt(car.seats.split('+')[0]);
+  const maxAdults = parseInt(car.seats.split("+")[0]);
 
   const handleAdultChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedAdults = parseInt(event.target.value);
     setAdultCount(selectedAdults);
 
     const maxChildren = totalSeats - selectedAdults;
-    setChildCount(Math.min(childCount, maxChildren)); 
+    setChildCount(Math.min(childCount, maxChildren));
 
     setError((prevErrors) => ({
       ...prevErrors,
       adultCount: selectedAdults > 0 ? "" : prevErrors.adultCount,
-  }));
+    }));
   };
 
   const handleChildChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -162,16 +150,23 @@ const CarBooking: React.FC = () => {
   const isChildDropdownEnabled = adultCount > 0;
 
   const [selectedArrival, setSelectedArrival] = useState<string>("");
-  const [arrivalDetails, setArrivalDetails] = useState({ placeholder: "Choose arrival via", label: "Arrival Details" });
+  const [arrivalDetails, setArrivalDetails] = useState({
+    placeholder: "Choose arrival via",
+    label: "Arrival Details",
+  });
 
   const [selectedDeparture, setSelectedDeparture] = useState<string>("");
-  const [departureDetails, setDepartureDetails] = useState({ placeholder: "Choose departure via", label: "Departure Details" });
+  const [departureDetails, setDepartureDetails] = useState({
+    placeholder: "Choose departure via",
+    label: "Departure Details",
+  });
 
   const [pickupAddress, setPickupAddress] = useState("");
   const [dropAddress, setDropAddress] = useState("");
   const [client_name, setClientName] = useState<string>("");
   const [contactNumber, setContactNumber] = useState<string>("");
-  const [alternativeContactNumber, setAlternativeContactNumber] = useState<string>("");
+  const [alternativeContactNumber, setAlternativeContactNumber] =
+    useState<string>("");
   const [isFormValid, setIsFormValid] = useState(false);
   const [isAgreed, setIsAgreed] = useState<boolean>(false);
   const [pickupTime, setPickupTime] = useState<Dayjs | null>(null);
@@ -179,10 +174,9 @@ const CarBooking: React.FC = () => {
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const formRef = useRef<HTMLFormElement>(null);
 
-  
   const validateForm = () => {
     const newError: { [key: string]: string } = {};
-  
+
     const isNameValid = client_name.trim() !== "";
     const isContactValid = contactNumber.length > 9;
     // const isAlternateValid = AlternateNumber.length >9;
@@ -190,40 +184,40 @@ const CarBooking: React.FC = () => {
     const isArrivalViaValid = selectedArrival.trim() !== "";
     const isPickupTimeValid = pickupTime !== null;
     const isPickupAddressValid = pickupAddress !== "";
-  
+
     if (!isNameValid) {
-      newError.clientName = 'Name is required';
+      newError.clientName = "Name is required";
     }
     if (!isContactValid) {
-      newError.contactNumber = 'Contact Number must be 10 digits';
+      newError.contactNumber = "Contact Number must be 10 digits";
     }
     // if (!isAlternateValid) {
     //   newError.contactNumber = 'Alternate Number must be 10 digits';
     // }
     if (!isAdultCountValid) {
-      newError.adultCount = 'Adult count is required';
+      newError.adultCount = "Adult count is required";
     }
     if (!isArrivalViaValid) {
-      newError.arrivalVia = 'Arrival Via is required';
+      newError.arrivalVia = "Arrival Via is required";
     }
     if (!isPickupTimeValid) {
-      newError.pickupTime = 'Pick-up time is required';
+      newError.pickupTime = "Pick-up time is required";
     }
     if (!isPickupAddressValid) {
-      newError.pickupAddress = 'Pick-up address is required';
+      newError.pickupAddress = "Pick-up address is required";
     }
     if (!isAgreed) {
-      newError.isAgreed = 'You must agree to the terms to proceed';
+      newError.isAgreed = "You must agree to the terms to proceed";
     }
-  
+
     setError(newError);
     setIsFormValid(Object.keys(newError).length === 0);
     return Object.keys(newError).length === 0;
   };
 
   const validateField = (field: string) => {
-    const newError = { ...error }; 
-  
+    const newError = { ...error };
+
     switch (field) {
       case "client_name":
         if (client_name.trim() === "") {
@@ -232,7 +226,7 @@ const CarBooking: React.FC = () => {
           delete newError.clientName;
         }
         break;
-  
+
       case "contactNumber":
         if (contactNumber.length !== 10) {
           console.log(contactNumber.length, "----length");
@@ -242,15 +236,18 @@ const CarBooking: React.FC = () => {
         }
         break;
 
-        case "AlternateNumber":
-        if (alternativeContactNumber.length > 0 && alternativeContactNumber.length < 10) {
-          
-          newError.alternativeContactNumber = "Alternate Number must be 10 digits";
+      case "AlternateNumber":
+        if (
+          alternativeContactNumber.length > 0 &&
+          alternativeContactNumber.length < 10
+        ) {
+          newError.alternativeContactNumber =
+            "Alternate Number must be 10 digits";
         } else {
           delete newError.alternativeContactNumber;
         }
         break;
-  
+
       case "adultCount":
         if (adultCount <= 0) {
           newError.adultCount = "Adult count is required";
@@ -258,75 +255,77 @@ const CarBooking: React.FC = () => {
           delete newError.adultCount;
         }
         break;
-  
-        case "arrivalVia":
-          if (selectedArrival.trim() === "") {
-            newError.arrivalVia = "Arrival Via is required";
-          } else {
-            delete newError.arrivalVia;
-          }
-          break;
-    
-          case 'pickupTime':
-      if (pickupTime === null) {
-        newError.pickupTime = 'Pick-up time is required';
-      } else {
-        delete newError.pickupTime;
-      }
-      break;
-    
-        case "pickupAddress":
-          if (pickupAddress.trim() === "") {
-            newError.pickupAddress = "Pick-up address is required";
-          } else {
-            delete newError.pickupAddress;
-          }
-          break;
-    
-        case "isAgreed":
-          if (!isAgreed) {
-            newError.isAgreed = "You must agree to the terms to proceed";
-          } else {
-            delete newError.isAgreed;
-          }
-          break;
-  
+
+      case "arrivalVia":
+        if (selectedArrival.trim() === "") {
+          newError.arrivalVia = "Arrival Via is required";
+        } else {
+          delete newError.arrivalVia;
+        }
+        break;
+
+      case "pickupTime":
+        if (pickupTime === null) {
+          newError.pickupTime = "Pick-up time is required";
+        } else {
+          delete newError.pickupTime;
+        }
+        break;
+
+      case "pickupAddress":
+        if (pickupAddress.trim() === "") {
+          newError.pickupAddress = "Pick-up address is required";
+        } else {
+          delete newError.pickupAddress;
+        }
+        break;
+
+      case "isAgreed":
+        if (!isAgreed) {
+          newError.isAgreed = "You must agree to the terms to proceed";
+        } else {
+          delete newError.isAgreed;
+        }
+        break;
+
       default:
         break;
     }
-    
+
     setError(newError); // Update the error state
   };
-  
-  
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsAgreed(e.target.checked);
     if (error.isAgreed) {
-      setError((prev) => ({ ...prev, isAgreed: '' })); 
+      setError((prev) => ({ ...prev, isAgreed: "" }));
     }
   };
 
-  const handlePickupAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePickupAddressChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const value = event.target.value;
     setPickupAddress(value);
 
     setError((prevErrors) => ({
-        ...prevErrors,
-        pickupAddress: value.trim() ? "" : prevErrors.pickupAddress,
-    }));
-};
-
-  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>,fieldName: string) => (event: React.ChangeEvent<HTMLInputElement>)  => {
-    const value = event.target.value;
-    const filteredValue = value.replace(/[^0-9]/g, "");
-    setter(filteredValue);
-
-    setError((prevErrors) => ({
       ...prevErrors,
-      [fieldName]: "",
-  }));
+      pickupAddress: value.trim() ? "" : prevErrors.pickupAddress,
+    }));
   };
+
+  const handleInputChange =
+    (setter: React.Dispatch<React.SetStateAction<string>>, fieldName: string) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      const filteredValue = value.replace(/[^0-9]/g, "");
+      setter(filteredValue);
+
+      setError((prevErrors) => ({
+        ...prevErrors,
+        [fieldName]: "",
+      }));
+    };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -337,7 +336,6 @@ const CarBooking: React.FC = () => {
     }
   };
 
-  
   const getDetailsForSelection = (selection: string) => {
     switch (selection) {
       case "Flight":
@@ -347,7 +345,10 @@ const CarBooking: React.FC = () => {
       case "Train":
         return { placeholder: "Enter train details", label: "Train Details" };
       case "Residency":
-        return { placeholder: "Enter residency details", label: "Residency Details" };
+        return {
+          placeholder: "Enter residency details",
+          label: "Residency Details",
+        };
       default:
         return { placeholder: "Choose via", label: "" };
     }
@@ -355,9 +356,12 @@ const CarBooking: React.FC = () => {
   useEffect(() => {
     if (touched.pickupTime) {
       if (pickupTime === null) {
-        setError(prev => ({ ...prev, pickupTime: 'Pick-up time is required' }));
+        setError((prev) => ({
+          ...prev,
+          pickupTime: "Pick-up time is required",
+        }));
       } else {
-        setError(prev => {
+        setError((prev) => {
           const { pickupTime, ...rest } = prev;
           return rest;
         });
@@ -370,10 +374,13 @@ const CarBooking: React.FC = () => {
   };
 
   const handleFocus = () => {
-    setTouched(prev => ({ ...prev, pickupTime: true }));
+    setTouched((prev) => ({ ...prev, pickupTime: true }));
   };
 
-  const handleChange = (type: "arrival" | "departure", event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = (
+    type: "arrival" | "departure",
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const value = event.target.value;
     const details = getDetailsForSelection(value);
 
@@ -382,9 +389,9 @@ const CarBooking: React.FC = () => {
       setArrivalDetails(details);
 
       setError((prevErrors) => ({
-            ...prevErrors,
-            arrivalVia: value ? "" : prevErrors.arrivalVia,
-        }));
+        ...prevErrors,
+        arrivalVia: value ? "" : prevErrors.arrivalVia,
+      }));
     } else if (type === "departure") {
       setSelectedDeparture(value);
       setDepartureDetails(details);
@@ -392,16 +399,21 @@ const CarBooking: React.FC = () => {
   };
 
   const handlePayNow = () => {
-    setTouched(prev => ({ ...prev, pickupTime: true }));
+    setPaymentModalBoxOpen(true);
+    setModalBoxLoading(true);
+    setTouched((prev) => ({ ...prev, pickupTime: true }));
     if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: 'smooth' });
+      formRef.current.scrollIntoView({ behavior: "smooth" });
     }
     const isValid = validateForm();
     if (isValid) {
       console.log("form is valid");
-      
     }
+    setTimeout(() => {
+      setModalBoxLoading(false);
+    }, 2000);
   };
+
   return (
     <>
       <div className="w-100 ReviewBookingBar">
@@ -476,25 +488,24 @@ const CarBooking: React.FC = () => {
                     <p className="m-0">
                       <b>Spacious Car</b>
                     </p>
-                    <div className="d-flex">
-                      <div className="text-primary pe-3">
+                    <div className="d-flex align-items-center">
+                      <div className="text-primary pe-2">
                         <GrMapLocation />
                       </div>
                       <div className="d-flex font-size14 w-100">
                         <div className="col-lg-4">Extra km fare </div>
                         <div className="col-lg-8 fontInter">
-                          {/* ₹10.8/km after 755 kms */}₹ {car.extra_km_fare}{" "}
-                          /km after{" "}
+                          ₹ {car.extra_km_fare} /km after
                           {car.extra_duration_fare
                             ? car.extra_duration_fare
-                            : car.km}{" "}
+                            : car.km}
                           km
                         </div>
                       </div>
                     </div>
 
-                    <div className="d-flex font-size14">
-                      <div className="text-primary pe-3">
+                    <div className="d-flex align-items-center font-size14">
+                      <div className="text-primary pe-2">
                         <TbClockX />
                       </div>
                       <div className="d-flex w-100">
@@ -507,25 +518,15 @@ const CarBooking: React.FC = () => {
                     </div>
 
                     <div className="d-flex align-items-center w-100">
-                      <div className="text-primary pe-3">
+                      <div className="text-primary pe-2">
                         <FaGasPump />
                       </div>
                       <div className="d-flex w-100">
                         <div className="col-lg-4 font-size14">Amenities</div>
                         <div className="d-flex col-lg-8 text-primary gap-3 align-items-center">
-
-                          {/* <FaRegSnowflake />
-                          <GiCharging />
-                          <FaTv /> */}
-
-                          <b>
-                          {descriptionItems.map((item: string) => (
-          iconMap[item] 
-        ))}
-      </b>
-
-                     {/* {car.description} */}
-
+                          {descriptionItems.map(
+                            (item: string) => iconMap[item]
+                          )}
                         </div>
                       </div>
                     </div>
@@ -637,19 +638,17 @@ const CarBooking: React.FC = () => {
 
             <div className="sideBars bg-light p-3">
               <div className="h5 mb-3">Trip details</div>
-              
-       
-                <hr />
-                <form  ref={formRef}>
+
+              <hr />
+              <form ref={formRef}>
                 <div className="row">
                   <div className="h5 mb-3">Confirm Traveller's information</div>
                   <div className="col-lg-6 d-flex flex-column justify-content-between">
                     <div className="mb-2">
-                      <label
-                        htmlFor="client_name"
-                        className="font-size14"
-                      >
-                        <span style={{ fontWeight: "600" }}>Primary Traveller Name</span>
+                      <label htmlFor="client_name" className="font-size14">
+                        <span style={{ fontWeight: "600" }}>
+                          Primary Traveller Name
+                        </span>
                       </label>
                       <input
                         type="text"
@@ -661,32 +660,39 @@ const CarBooking: React.FC = () => {
                         onBlur={() => validateField("client_name")}
                         required
                       />
-                      {error.clientName && <div className="text-danger mt-2">{error.clientName}</div>}
+                      {error.clientName && (
+                        <div className="text-danger mt-2">
+                          {error.clientName}
+                        </div>
+                      )}
                     </div>
 
-                  
                     <div className="mb-2">
-          <label htmlFor="adultCount" className="font-size14">
-            <span style={{ fontWeight: "600" }}>Adult</span>
-          </label>
-          <select
-            className="form-control px-3 py-2"
-            id="adultCount"
-            value={adultCount}
-            onChange={handleAdultChange}
-            onBlur={() => validateField("adultCount")}
-            required
-          >
-            {adultOptions.map((num) => (
-              <option key={num} value={num}>
-                {num}
-              </option>
-            ))}
-          </select>
-          {error.adultCount && <div className="text-danger mt-2">{error.adultCount}</div>}
-        </div>
+                      <label htmlFor="adultCount" className="font-size14">
+                        <span style={{ fontWeight: "600" }}>Adult</span>
+                      </label>
+                      <select
+                        className="form-control px-3 py-2"
+                        id="adultCount"
+                        value={adultCount}
+                        onChange={handleAdultChange}
+                        onBlur={() => validateField("adultCount")}
+                        required
+                      >
+                        {adultOptions.map((num) => (
+                          <option key={num} value={num}>
+                            {num}
+                          </option>
+                        ))}
+                      </select>
+                      {error.adultCount && (
+                        <div className="text-danger mt-2">
+                          {error.adultCount}
+                        </div>
+                      )}
+                    </div>
 
-        <div className="mb-2">
+                    <div className="mb-2">
                       <label
                         htmlFor="alternativeContactNumber"
                         className="font-size14"
@@ -702,178 +708,205 @@ const CarBooking: React.FC = () => {
                         placeholder="Enter 10 digit Mobile Number"
                         value={alternativeContactNumber}
                         onBlur={() => validateField("AlternateNumber")}
-                        onChange={handleInputChange(setAlternativeContactNumber,"alternativeContactNumber")}
-                        maxLength={10} 
+                        onChange={handleInputChange(
+                          setAlternativeContactNumber,
+                          "alternativeContactNumber"
+                        )}
+                        maxLength={10}
                       />
-        {error.alternativeContactNumber && <div className="text-danger mt-2">{error.alternativeContactNumber}</div>}
-
+                      {error.alternativeContactNumber && (
+                        <div className="text-danger mt-2">
+                          {error.alternativeContactNumber}
+                        </div>
+                      )}
                     </div>
-        
-        <div className="mb-2">
-                    <label className="font-size14">
-                      <span style={{ fontWeight: "600" }}>Arrival Via</span>
-                    </label>
-                    <select
-          className="form-control px-3 py-2"
-          id="arrivalvia"
-          value={selectedArrival}
-          onChange={(e) => handleChange("arrival", e)}
-          onBlur={()=>validateField("arrivalVia")}
-          required
-        >
-          <option value="" disabled>Select Arrival Via</option>
-          <option value="Flight">Flight</option>
-          <option value="Bus">Bus</option>
-          <option value="Train">Train</option>
-          <option value="Residency">Residency</option>
-        </select>
-        {error.arrivalVia && <div className="text-danger mt-2">{error.arrivalVia}</div>}
-                  </div>
 
-                  <div className="mb-2">
-                    <label className="font-size14">
-                      <span style={{ fontWeight: "600" }}>Departure Via</span>
-                    </label>
-                    <select
-          className="form-control px-3 py-2"
-          id="departurevia"
-          value={selectedDeparture}
-          onChange={(e) => handleChange("departure", e)}
-        >
-          <option value="" disabled>Select Departure Via</option>
-          <option value="Flight">Flight</option>
-          <option value="Bus">Bus</option>
-          <option value="Train">Train</option>
-          <option value="Residency">Residency</option>
-        </select>
-                  </div>
+                    <div className="mb-2">
+                      <label className="font-size14">
+                        <span style={{ fontWeight: "600" }}>Arrival Via</span>
+                      </label>
+                      <select
+                        className="form-control px-3 py-2"
+                        id="arrivalvia"
+                        value={selectedArrival}
+                        onChange={(e) => handleChange("arrival", e)}
+                        onBlur={() => validateField("arrivalVia")}
+                        required
+                      >
+                        <option value="" disabled>
+                          Select Arrival Via
+                        </option>
+                        <option value="Flight">Flight</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Train">Train</option>
+                        <option value="Residency">Residency</option>
+                      </select>
+                      {error.arrivalVia && (
+                        <div className="text-danger mt-2">
+                          {error.arrivalVia}
+                        </div>
+                      )}
+                    </div>
 
-
+                    <div className="mb-2">
+                      <label className="font-size14">
+                        <span style={{ fontWeight: "600" }}>Departure Via</span>
+                      </label>
+                      <select
+                        className="form-control px-3 py-2"
+                        id="departurevia"
+                        value={selectedDeparture}
+                        onChange={(e) => handleChange("departure", e)}
+                      >
+                        <option value="" disabled>
+                          Select Departure Via
+                        </option>
+                        <option value="Flight">Flight</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Train">Train</option>
+                        <option value="Residency">Residency</option>
+                      </select>
+                    </div>
                   </div>
                   <div className="col-lg-6 d-flex flex-column justify-content-between">
                     <div className="mb-2">
-                      <label
-                        htmlFor="contactNumber"
-                        className="font-size14"
-                      >
+                      <label htmlFor="contactNumber" className="font-size14">
                         <span style={{ fontWeight: "600" }}>
                           Contact Number
                         </span>
                       </label>
-                      <input 
-                       type="text"
-                       className="form-control px-3 py-2"
-                       id="contactNumber"
-                       placeholder="Enter 10 digit Mobile Number"
-                       value={contactNumber}
-                       onChange={handleInputChange(setContactNumber, "contactNumber")}
-                       onBlur={() => validateField("contactNumber")}
-                       maxLength={10} 
-                       required
+                      <input
+                        type="text"
+                        className="form-control px-3 py-2"
+                        id="contactNumber"
+                        placeholder="Enter 10 digit Mobile Number"
+                        value={contactNumber}
+                        onChange={handleInputChange(
+                          setContactNumber,
+                          "contactNumber"
+                        )}
+                        onBlur={() => validateField("contactNumber")}
+                        maxLength={10}
+                        required
                       />
-                      {error.contactNumber && <div className="text-danger mt-2">{error.contactNumber}</div>}
+                      {error.contactNumber && (
+                        <div className="text-danger mt-2">
+                          {error.contactNumber}
+                        </div>
+                      )}
                     </div>
-                   
+
                     <div className="mb-2">
-          <label htmlFor="childCount" className="font-size14">
-            <span style={{ fontWeight: "600" }}>Child</span>
-          </label>
-          <select
-            className="form-control px-3 py-2"
-            id="childCount"
-            value={childCount}
-            onChange={handleChildChange}
-            disabled={!isChildDropdownEnabled}
-            required
-          >
-            {isChildDropdownEnabled ? (
-              childOptions.map((num) => (
-                <option key={num} value={num}>
-                  {num}
-                </option>
-              ))
-            ) : (
-              <option value="">Select Adult First</option>
-            )}
-          </select>
-        </div>
+                      <label htmlFor="childCount" className="font-size14">
+                        <span style={{ fontWeight: "600" }}>Child</span>
+                      </label>
+                      <select
+                        className="form-control px-3 py-2"
+                        id="childCount"
+                        value={childCount}
+                        onChange={handleChildChange}
+                        disabled={!isChildDropdownEnabled}
+                        required
+                      >
+                        {isChildDropdownEnabled ? (
+                          childOptions.map((num) => (
+                            <option key={num} value={num}>
+                              {num}
+                            </option>
+                          ))
+                        ) : (
+                          <option value="">Select Adult First</option>
+                        )}
+                      </select>
+                    </div>
 
-        <div className="mb-2">
-  <label htmlFor="pickup_time" className="font-size14">
-    <span style={{ fontWeight: "600" }}>Pick-up Time</span>
-  </label>
-  <TimePicker
-    className="form-control px-3 py-2"
-    id="pickup_time"
-    placeholder="Enter pick-up time"
-    value={pickupTime}
-    onChange={handleTimeChange}
-    onFocus={handleFocus}
-    // onBlur={()=>validateField("pickupTime")}
-    format="h:mm A"
-    use12Hours
-    required
-  />
-   {touched.pickupTime && error.pickupTime && (
-        <div className="text-danger mt-2">{error.pickupTime}</div>
-      )}
-</div>
-                    
+                    <div className="mb-2">
+                      <label htmlFor="pickup_time" className="font-size14">
+                        <span style={{ fontWeight: "600" }}>Pick-up Time</span>
+                      </label>
+                      <TimePicker
+                        className="form-control px-3 py-2"
+                        id="pickup_time"
+                        placeholder="Enter pick-up time"
+                        value={pickupTime}
+                        onChange={handleTimeChange}
+                        onFocus={handleFocus}
+                        // onBlur={()=>validateField("pickupTime")}
+                        format="h:mm A"
+                        use12Hours
+                        required
+                      />
+                      {touched.pickupTime && error.pickupTime && (
+                        <div className="text-danger mt-2">
+                          {error.pickupTime}
+                        </div>
+                      )}
+                    </div>
 
-                   
-                   <div className="mb-2 mt-3">
-          <label className="font-size14">
-            <span style={{ fontWeight: "600" }}>{arrivalDetails.label}</span>
-          </label>
-          <input
-            type="text"
-            className="form-control px-3 py-2"
-            placeholder={arrivalDetails.placeholder}
-            value={pickupAddress}
-            onChange={handlePickupAddressChange}
-            onBlur={()=>validateField("pickupAddress")}
-            readOnly={!selectedArrival}
-            required
-          />
-          {error.pickupAddress && <div className="text-danger mt-2">{error.pickupAddress}</div>}
-        </div>
+                    <div className="mb-2 mt-3">
+                      <label className="font-size14">
+                        <span style={{ fontWeight: "600" }}>
+                          {arrivalDetails.label}
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control px-3 py-2"
+                        placeholder={arrivalDetails.placeholder}
+                        value={pickupAddress}
+                        onChange={handlePickupAddressChange}
+                        onBlur={() => validateField("pickupAddress")}
+                        readOnly={!selectedArrival}
+                        required
+                      />
+                      {error.pickupAddress && (
+                        <div className="text-danger mt-2">
+                          {error.pickupAddress}
+                        </div>
+                      )}
+                    </div>
 
-        <div className="mb-2 mt-3">
-          <label className="font-size14">
-            <span style={{ fontWeight: "600" }}>{departureDetails.label}</span>
-          </label>
-          <input
-            type="text"
-            className="form-control px-3 py-2"
-            placeholder={departureDetails.placeholder}
-            value={dropAddress}
-            onChange={(e) => setDropAddress(e.target.value)}
-            readOnly={!selectedDeparture}
-          />
-        </div>
-
+                    <div className="mb-2 mt-3">
+                      <label className="font-size14">
+                        <span style={{ fontWeight: "600" }}>
+                          {departureDetails.label}
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control px-3 py-2"
+                        placeholder={departureDetails.placeholder}
+                        value={dropAddress}
+                        onChange={(e) => setDropAddress(e.target.value)}
+                        readOnly={!selectedDeparture}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="d-flex align-items-center mt-4">
-        <input
-          type="checkbox"
-          id="agreeCheckbox"
-          checked={isAgreed}
-          onChange={handleCheckboxChange}
-          onBlur={()=>validateField("isAgreed")}
-          style={{ marginRight: '8px' }} 
-        />
-        <label htmlFor="agreeCheckbox" className="font-size12 ml-2" onClick={handleOpenTerms}
-         style={{ color: "var(--PrimaryColor)", cursor: "pointer" }}>
-       I Agree all the Terms and Conditions
-        
-         
-    </label>
-    
-    
+                  <input
+                    type="checkbox"
+                    id="agreeCheckbox"
+                    checked={isAgreed}
+                    onChange={handleCheckboxChange}
+                    onBlur={() => validateField("isAgreed")}
+                    style={{ marginRight: "8px" }}
+                  />
+                  <label
+                    htmlFor="agreeCheckbox"
+                    className="font-size12 ml-2"
+                    onClick={handleOpenTerms}
+                    style={{ color: "var(--PrimaryColor)", cursor: "pointer" }}
+                  >
+                    I Agree all the Terms and Conditions
+                  </label>
                 </div>
-                {error.isAgreed && <div className="text-danger mt-2">{error.isAgreed}</div>}
-                <div className="font-size12 ml-2"> By proceeding to book, I Agree to B2b Cab's
+                {error.isAgreed && (
+                  <div className="text-danger mt-2">{error.isAgreed}</div>
+                )}
+                <div className="font-size12 ml-2">
+                  {" "}
+                  By proceeding to book, I Agree to B2b Cab's
                   <span style={{ color: "var(--PrimaryColor)" }}>
                     Privacy Policy
                   </span>
@@ -882,14 +915,10 @@ const CarBooking: React.FC = () => {
                     User Agreement
                   </span>
                   and
-                  <span
-
-      style={{ color: "var(--PrimaryColor)"}}
-      
-    >
-      Terms of Service
-    </span></div>
-
+                  <span style={{ color: "var(--PrimaryColor)" }}>
+                    Terms of Service
+                  </span>
+                </div>
               </form>
             </div>
             <div className="sideBars bg-light">
@@ -1007,19 +1036,35 @@ const CarBooking: React.FC = () => {
               </div>
 
               <div className="payment sideBars">
-
-                <button className="primaryBtn mb-3 w-100" onClick={handlePayNow} 
-                 style={{
-                  opacity: client_name && selectedArrival && isAgreed && pickupAddress 
-                  && pickupTime && adultCount && contactNumber  ? 1 : 0.5,
-                  cursor: client_name && selectedArrival && isAgreed && pickupAddress 
-                  && pickupTime && adultCount && contactNumber ?'pointer' :  'not-allowed'
-                }}>
+                <button
+                  className="primaryBtn mb-3 w-100"
+                  onClick={handlePayNow}
+                  style={{
+                    opacity:
+                      client_name &&
+                      selectedArrival &&
+                      isAgreed &&
+                      pickupAddress &&
+                      pickupTime &&
+                      adultCount &&
+                      contactNumber
+                        ? 1
+                        : 0.5,
+                    cursor:
+                      client_name &&
+                      selectedArrival &&
+                      isAgreed &&
+                      pickupAddress &&
+                      pickupTime &&
+                      adultCount &&
+                      contactNumber
+                        ? "pointer"
+                        : "not-allowed",
+                  }}
+                >
                   Pay Now
                   {/* <span style={{ fontFamily: "Inter !important" }}>₹</span>
                   <span>1,469</span> */}
-                   
-
                 </button>
                 <div className="d-flex flex-column gap-3">
                   <div>
@@ -1095,41 +1140,6 @@ const CarBooking: React.FC = () => {
                         <BsCurrencyRupee />
                         {car.total_price}
                       </div>
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {/* <Tooltip
-                        title={
-                          <div className="">
-                            <ul className="m-0 p-0">
-                              <li>
-                                <span>Base Fare: </span>
-                                <span>
-                                  {car.basic_rate}
-                                </span>
-                              </li>
-                              <li>
-                                <span>Taxes & Fees: </span>
-                                <span>
-                                  {car.tax_amount}
-                                </span>
-                              </li>
-                            </ul>
-                          </div>
-                        }
-                        trigger="hover"
-                        arrowPointAtCenter
-                      >
-                        <span style={{ color: "var(--PrimaryColor)" }}>
-                          Fare Breakup
-                        </span>
-                      </Tooltip> */}
                     </div>
                   </div>
                 </div>
@@ -1220,7 +1230,7 @@ const CarBooking: React.FC = () => {
                 </li>
               ))}
             </ul>
-          </div>
+            </div>
         </div>
       </Modal>
 

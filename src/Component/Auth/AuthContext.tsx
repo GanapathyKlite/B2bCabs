@@ -109,8 +109,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setAuthToken(token);
       }
       return response;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || "Network Error");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || "Network Error");
+      } else {
+        throw new Error("An unexpected error occurred");
+      }
     }
   };
 

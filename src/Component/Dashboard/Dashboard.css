@@ -41,7 +41,7 @@
 
 .video {
   position: absolute;
-  height: 80vh;
+  height: 512px;
   width: 100%;
   top: 0;
   bottom: 0;
@@ -173,17 +173,205 @@
 }
 
 .inputdiv {
-  border: 1px solid rgba(0, 0, 0, 0.2) !important;
-  background-color: #fff !important;
+  position: relative;
+  cursor: pointer;
 }
-.inputdiv:hover, .inputdiv:focus, .inputdiv:active {
-  border: 1px solid var(--SecondaryColor) !important;
-  transition: all 0.4s ease-in-out !important;
+.inputdiv .mainInputBox {
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+  padding-left: 40px;
+  text-transform: capitalize;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  min-height: 50px;
+  background-color: #fff !important;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+}
+.inputdiv .mainInputBox.open ~ .dropdown-arrow {
+  transform: rotate(180deg);
+}
+.inputdiv .custom-select {
+  -webkit-appearance: none; /* Chrome, Safari, Opera */
+  -moz-appearance: none; /* Firefox */
+  appearance: none; /* Standard */
+  background: none; /* Removes any background image */
+  position: relative;
+}
+.inputdiv .dashboardIcon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  color: var(--iconColor);
+  transform: translateY(-50%);
+  z-index: 5;
+}
+.inputdiv .citySearchHiddenBox {
+  width: 100%;
+  z-index: 5;
+  max-height: 0;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2117647059);
+  background-color: var(--whiteColor);
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.inputdiv .citySearchHiddenBox.citySearchHiddenBoxShow {
+  max-height: 500px; /* Set a value that would comfortably fit the content */
+  opacity: 1;
+  visibility: visible;
+}
+.inputdiv .citySearchHiddenBox .searchInputBoxClass {
+  position: relative;
+}
+.inputdiv .citySearchHiddenBox .searchInputBoxClass input {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2117647059) !important;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  border: none;
+  text-transform: capitalize;
+  padding: 10px 5px 10px 35px;
+}
+.inputdiv .citySearchHiddenBox .searchInputBoxClass svg {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  font-size: 18px;
+  left: 4%;
+  transform: translateY(-50%);
+}
+.inputdiv .citySearchHiddenBox .popularCityListDiv {
+  padding: 5px 0;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+}
+.inputdiv .citySearchHiddenBox .popularCityListDiv span:first-child {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px;
+}
+.inputdiv .citySearchHiddenBox .popularCityListDiv ul {
+  display: flex;
+  flex-direction: column;
+}
+.inputdiv .citySearchHiddenBox .popularCityListDiv ul li {
+  padding: 5px;
+  display: flex;
+  gap: 5px;
+  cursor: pointer;
+  color: #2f2f2f;
+  align-items: center;
+}
+.inputdiv .citySearchHiddenBox .popularCityListDiv ul li p,
+.inputdiv .citySearchHiddenBox .popularCityListDiv ul li span {
+  margin: 0;
+  overflow: hidden;
+  color: var(--txtGrayColor);
+  font-size: 14px;
+  width: 100%;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  display: flex;
+  padding: 0 !important;
+  align-items: center;
+}
+.inputdiv .citySearchHiddenBox .popularCityListDiv ul li .citySearchText {
+  font-weight: 600;
+  font-size: 14px;
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+}
+.inputdiv .citySearchHiddenBox .popularCityListDiv ul li svg {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.inputdiv .citySearchHiddenBox .popularCityListDiv ul li:hover {
+  background-color: #f1f0f0;
+}
+.inputdiv .citySearchHiddenBox .popularCityListDiv ul li:hover p {
+  color: var(--SecondaryColor);
+}
+.inputdiv .holidayIcon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  position: absolute;
+  left: 15px;
+}
+.inputdiv .holidayIcon svg {
+  fill: var(--iconColor);
 }
 
-.currentlocationbtn {
-  border: none;
-  background-color: transparent;
+.locationChangerArrowIcon {
+  position: absolute;
+  font-size: 20px;
+  background-color: var(--whiteColor);
+  padding: 1px 5px;
+  z-index: 5;
+  color: var(--PrimaryColor);
+  right: -11%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.locationChangerArrowIcon svg {
+  display: inline-block;
+  cursor: pointer;
+  transition: transform 0.2s ease-out;
+}
+.locationChangerArrowIcon svg.rotate {
+  transform: rotate(180deg);
+}
+@media (max-width: 991.98px) {
+  .locationChangerArrowIcon {
+    top: 80%;
+    right: 20px;
+    background-color: var(--whiteColor);
+    rotate: 90deg;
+    color: var(--PrimaryColor);
+    padding: 5px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.datePickerSingle {
+  position: relative;
+  cursor: pointer;
+}
+.datePickerSingle .datePickerIcon {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 15px;
+  color: var(--iconColor);
+  transform: translateY(-50%);
+}
+.datePickerSingle .ant-picker {
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+  text-transform: capitalize;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  height: 50px !important;
+  background-color: #fff !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  padding: 0 0 0 40px;
+}
+.datePickerSingle .singleDatePicker {
+  padding-left: 40px;
 }
 
 .notclicked {
