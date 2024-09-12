@@ -149,47 +149,6 @@ const DashboardHero: React.FC = () => {
     setActiveTab(tabId);
   };
 
-  // const handleCurrentLocation = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   setToggled(!isToggled);
-  // };
-  // const handleCurrentLocation = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(async (position) => {
-  //       const { latitude, longitude } = position.coords;
-  //       setToggled(!isToggled);
-
-  //       try {
-  //         const response = await axios.post(
-  //           `${import.meta.env.VITE_API_BASE_URL}/place/geocode`,
-  //           { lat: latitude.toString(), lng: longitude.toString() },
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${authToken}`,
-  //               "Content-Type": "application/json",
-  //             },
-  //           }
-  //         );
-
-  //         if (response.data.status) {
-  //           setLocationData(response.data.data[0]);
-  //           setInputValueOne(response.data.data[0].address);
-  //           setStartCitySuggestion(response.data.data[0]);
-  //         } else {
-  //           console.error("Geocode request failed.");
-  //         }
-  //       } catch (error) {
-  //         console.error("Error fetching geocode data", error);
-  //       } finally {
-  //         setToggled(false);
-  //       }
-  //     });
-  //   } else {
-  //     console.error("Geolocation is not supported by this browser.");
-  //   }
-  // };
-
   useEffect(() => {
     const storedstartCitySuggestion = sessionStorage.getItem(
       "startCitySuggestion"
@@ -399,7 +358,7 @@ const DashboardHero: React.FC = () => {
 
           const canceldate = formattedDate?.start_date;
           sessionStorage.setItem("canceldate", canceldate || "");
-          navigate("/dashboard/cablist");
+          navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
         console.log(error);
@@ -437,7 +396,7 @@ const DashboardHero: React.FC = () => {
           sessionStorage.setItem("km", response.data.km);
           const canceldate = formattedDates?.start_date;
           sessionStorage.setItem("canceldate", canceldate || "");
-          navigate("/dashboard/cablist");
+          navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
         console.log(error);
@@ -486,7 +445,7 @@ const DashboardHero: React.FC = () => {
             sessionStorage.setItem("duration", "10 hr");
             sessionStorage.setItem("km", "100");
           }
-          navigate("/dashboard/cablist");
+          navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
         console.log(error);
@@ -520,7 +479,7 @@ const DashboardHero: React.FC = () => {
           sessionStorage.setItem("carData", JSON.stringify(cardata));
           const canceldate = formattedDates?.start_date;
           sessionStorage.setItem("canceldate", canceldate || "");
-          navigate("/dashboard/cablist");
+          navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
         console.log(error);
@@ -540,11 +499,18 @@ const DashboardHero: React.FC = () => {
 
   const handleStartCitySuggestionSelect = (suggestion: Suggestion) => {
     setStartCitySuggestion(suggestion);
+    setInputValueOne(suggestion.address);
     sessionStorage.setItem("startCitySuggestion", JSON.stringify(suggestion));
+    setSearchStartInputBox(false);
+    // Move focus to the end location input
+    if (endSearchInputRef.current) {
+      endSearchInputRef.current.focus();
+    }
   };
 
   const handleEndCitySuggestionSelect = (suggestion: Suggestion) => {
     setEndCitySuggestion(suggestion);
+    setInputValueTwo(suggestion.address);
     sessionStorage.setItem("endCitySuggestion", JSON.stringify(suggestion));
   };
 
@@ -705,7 +671,51 @@ const DashboardHero: React.FC = () => {
       setEndSearchQuery(startSearchQuery);
     }
   };
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const fetchSuggestions = async (query: string) => {
+    if (query.length > 2) {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/place/autocomplete`,
+          { address: query },
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
+        if (response.data.status) {
+          setSuggestions(response.data.data);
+        } else {
+          setSuggestions([]);
+        }
+      } catch (error) {
+        console.error("Error fetching autocomplete data", error);
+      } finally {
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValueOne(value);
+    fetchSuggestions(value);
+  };
+  const handleChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValueTwo(value);
+    fetchSuggestions(value);
+  };
+  // const handleSuggestionClick = (suggestion: Suggestion) => {
+  //   onChange({ target: { value: suggestion.address } } as React.ChangeEvent<HTMLInputElement>);
+  //   setSuggestions([]);
+  //   if (onSuggestionSelect) {
+  //       onSuggestionSelect(suggestion);
+  //     }
+  // };
   return (
     <>
       <div className="hero-banner">
@@ -788,21 +798,45 @@ const DashboardHero: React.FC = () => {
                           className="inputdiv"
                           ref={startInputDivRef}
                         >
-                          <input
-                            type="text"
-                            ref={startSearchInputRef}
-                            value={startSearchQuery}
-                            autoComplete="off"
-                            readOnly={isStartReadOnly}
-                            placeholder={`${
-                              tab.id === 1 && selectedOption === "option1"
-                                ? "Pickup Airport Location"
-                                : "Pickup Location"
-                            }`}
-                            className="mainInputBox"
-                            onChange={handleStartSearchChange}
-                            onClick={handleOpenSearchInputBox}
-                          />
+                          {tripType === "Holidays Package" ? (
+                            <>
+                              <input
+                                type="text"
+                                ref={startSearchInputRef}
+                                value={startSearchQuery}
+                                autoComplete="off"
+                                readOnly={isStartReadOnly}
+                                placeholder={`${
+                                  tab.id === 1 && selectedOption === "option1"
+                                    ? "Pickup Airport Location"
+                                    : "Pickup Location"
+                                }`}
+                                className="mainInputBox"
+                                onChange={handleStartSearchChange}
+                                onClick={handleOpenSearchInputBox}
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <input
+                                onChange={handleChange}
+                                type="text"
+                                required
+                                className="mainInputBox"
+                                ref={startSearchInputRef}
+                                value={inputValueOne}
+                                autoComplete="off"
+                                placeholder={`${
+                                  tab.id === 1 && selectedOption === "option1"
+                                    ? "Pickup Airport Location"
+                                    : "Pickup Location"
+                                }`}
+                                // onChange={handleStartSearchChange}
+                                onClick={handleOpenSearchInputBox}
+                              />
+                            </>
+                          )}
+
                           <div
                             className={`${
                               tab.id === 1 ? "d-block" : "d-none"
@@ -862,25 +896,67 @@ const DashboardHero: React.FC = () => {
                                 </ul>
                               ) : (
                                 <>
-                                  <span>POPULAR CITY</span>
-                                  <ul className="p-0 m-0">
-                                    {popularCities.map(
-                                      (popularCitie, index) => (
-                                        <li
-                                          key={index}
-                                          onClick={() =>
-                                            handleStartCitySelect(
-                                              popularCitie,
-                                              endSearchInputRef
-                                            )
-                                          }
-                                        >
-                                          <GoLocation />
-                                          <p>{popularCitie.city_name}</p>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
+                                  {tripType === "Cab From Airport" ? (
+                                    <>
+                                      {suggestions.length > 0 ? (
+                                        <ul className="p-0 m-0 d-flex flex-column">
+                                          {suggestions.length > 0 ? (
+                                            <ul className="p-0 m-0 d-flex flex-column">
+                                              {suggestions.map(
+                                                (suggestion, index) => (
+                                                  <li
+                                                    key={index}
+                                                    onClick={() =>
+                                                      handleStartCitySuggestionSelect(
+                                                        suggestion
+                                                      )
+                                                    }
+                                                  >
+                                                    <GoLocation />
+
+                                                    {/* <p>{suggestion.address}</p> */}
+                                                    <p
+                                                      dangerouslySetInnerHTML={{
+                                                        __html:
+                                                          startCityHighlightText(
+                                                            suggestion.address,
+                                                            inputValueOne
+                                                          ),
+                                                      }}
+                                                    ></p>
+                                                  </li>
+                                                )
+                                              )}
+                                            </ul>
+                                          ) : null}
+                                        </ul>
+                                      ) : null}{" "}
+                                    </>
+                                  ) : null}
+                                  {tripType !== "Holidays Package" &&
+                                  tripType !== "Cab From Airport" ? (
+                                    <>
+                                      <span>POPULAR CITY</span>
+                                      <ul className="p-0 m-0">
+                                        {popularCities.map(
+                                          (popularCitie, index) => (
+                                            <li
+                                              key={index}
+                                              onClick={() =>
+                                                handleStartCitySelect(
+                                                  popularCitie,
+                                                  endSearchInputRef
+                                                )
+                                              }
+                                            >
+                                              <GoLocation />
+                                              <p>{popularCitie.city_name}</p>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>{" "}
+                                    </>
+                                  ) : null}
                                 </>
                               )}
                             </div>
@@ -949,7 +1025,6 @@ const DashboardHero: React.FC = () => {
                                 onBlur={() => setIsSelectOpen(false)}
                                 onChange={(e) => {
                                   setHourTime(e.target.value);
-                                  // setIsSelectOpen(false); // Close the icon after selection
                                   sessionStorage.setItem(
                                     "hourTime",
                                     e.target.value
@@ -978,21 +1053,40 @@ const DashboardHero: React.FC = () => {
                             </div>
                           ) : (
                             <>
-                              <input
-                                type="text"
-                                autoComplete="off"
-                                ref={endSearchInputRef}
-                                readOnly={isEndReadOnly}
-                                placeholder={`${
-                                  tab.id === 1 && selectedOption === "option1"
-                                    ? "Drop Location"
-                                    : "Drop Airport Location"
-                                }`}
-                                className="mainInputBox"
-                                onChange={handleEndSearchChange}
-                                onClick={handleOpenEndInputBox}
-                                value={endSearchQuery}
-                              />
+                              {tripType === "Holidays Package" ? (
+                                <input
+                                  type="text"
+                                  autoComplete="off"
+                                  ref={endSearchInputRef}
+                                  readOnly={isEndReadOnly}
+                                  placeholder={`${
+                                    tab.id === 1 && selectedOption === "option1"
+                                      ? "Drop Location"
+                                      : "Drop Airport Location"
+                                  }`}
+                                  className="mainInputBox"
+                                  onChange={handleEndSearchChange}
+                                  onClick={handleOpenEndInputBox}
+                                  value={endSearchQuery}
+                                />
+                              ) : (
+                                <input
+                                  onChange={handleChange2}
+                                  type="text"
+                                  required
+                                  className="mainInputBox"
+                                  ref={endSearchInputRef}
+                                  value={inputValueTwo}
+                                  autoComplete="off"
+                                  placeholder={`${
+                                    tab.id === 1 && selectedOption === "option1"
+                                      ? "Drop Location"
+                                      : "Drop Airport Location"
+                                  }`}
+                                  // onChange={handleStartSearchChange}
+                                  onClick={handleOpenEndInputBox}
+                                />
+                              )}
                             </>
                           )}
 
@@ -1023,17 +1117,67 @@ const DashboardHero: React.FC = () => {
                                 </ul>
                               ) : (
                                 <>
-                                  <span>POPULAR CITY</span>
-                                  <ul className="p-0 m-0">
-                                    {popularCities.map(
-                                      (popularCitie, index) => (
-                                        <li key={index}>
-                                          <GoLocation />
-                                          <p>{popularCitie.city_name}</p>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
+                                  {tripType === "Cab From Airport" ? (
+                                    <>
+                                      {suggestions.length > 0 ? (
+                                        <ul className="p-0 m-0 d-flex flex-column">
+                                          {suggestions.length > 0 ? (
+                                            <ul className="p-0 m-0 d-flex flex-column">
+                                              {suggestions.map(
+                                                (suggestion, index) => (
+                                                  <li
+                                                    key={index}
+                                                    onClick={() =>
+                                                      handleEndCitySuggestionSelect(
+                                                        suggestion
+                                                      )
+                                                    }
+                                                  >
+                                                    <GoLocation />
+
+                                                    {/* <p>{suggestion.address}</p> */}
+                                                    <p
+                                                      dangerouslySetInnerHTML={{
+                                                        __html:
+                                                          startCityHighlightText(
+                                                            suggestion.address,
+                                                            inputValueTwo
+                                                          ),
+                                                      }}
+                                                    ></p>
+                                                  </li>
+                                                )
+                                              )}
+                                            </ul>
+                                          ) : null}
+                                        </ul>
+                                      ) : null}{" "}
+                                    </>
+                                  ) : null}
+                                  {tripType !== "Holidays Package" &&
+                                  tripType !== "Cab From Airport" ? (
+                                    <>
+                                      <span>POPULAR CITY</span>
+                                      <ul className="p-0 m-0">
+                                        {popularCities.map(
+                                          (popularCitie, index) => (
+                                            <li
+                                              key={index}
+                                              onClick={() =>
+                                                handleStartCitySelect(
+                                                  popularCitie,
+                                                  endSearchInputRef
+                                                )
+                                              }
+                                            >
+                                              <GoLocation />
+                                              <p>{popularCitie.city_name}</p>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>{" "}
+                                    </>
+                                  ) : null}
                                 </>
                               )}
                             </div>
@@ -1116,11 +1260,11 @@ const DashboardHero: React.FC = () => {
                                     <option value="">
                                       Select Your Package
                                     </option>
-                                    {/* {packages.map((pkg) => (
+                                    {packages.map((pkg) => (
                                       <option key={pkg.id} value={pkg.id}>
                                         {pkg.route}
                                       </option>
-                                    ))} */}
+                                    ))}
                                   </select>
                                 </>
                               ) : (

@@ -1,5 +1,5 @@
 import { useAuth } from "../../Auth/AuthContext";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
@@ -65,6 +65,9 @@ function DashboardNavbar() {
     logout();
     navigate("/");
   };
+  useEffect(() => {
+    setwalletcash(userData.currentBalance);
+  }, [userData]);
   const handleLinkClick = (path: string) => {
     setShowOffcanvas(false);
     navigate(path);
@@ -133,6 +136,7 @@ function DashboardNavbar() {
                   }
                 );
                 if (response.status === 200 && response.data.status) {
+                  notyf.success("Amount added to Wallet successfully");
                   setwalletcash(response.data.message.CurrentBalance);
                   let sessionDataString = sessionStorage.getItem("userData");
                   if (sessionDataString !== null) {
@@ -144,7 +148,7 @@ function DashboardNavbar() {
                       JSON.stringify(sessionData)
                     );
                   }
-                  notyf.success("Amount added to Wallet successfully");
+                  
                 }
               } catch (error) {
                 setLoading(false);
@@ -175,12 +179,11 @@ function DashboardNavbar() {
         setLoading(false);
         setAddCashModalBox(false);
         if (error instanceof AxiosError) {
-          notyf.error("Network error");
+          notyf.error(error.response?.data?.message?.error?.description || "Network error");
         }
         console.log(error, "error");
       }
     } else if (selectedPaymentMethod === "ccavenue") {
-      console.log("it is cc avenue");
     }
     setLoading(false);
     setAddCashModalBox(false);
@@ -356,10 +359,13 @@ function DashboardNavbar() {
                         className="py-2 dashBoardNavBarSubTitle"
                         href="#action1"
                       >
-                        <span>
+                        <div><span>
                           <BsChatDotsFill />
                         </span>
-                        &nbsp; Chat Support
+                       <span> Chat Support</span> </div>
+                        
+                        <div style={{paddingLeft: "20px"}}>987654321</div>
+
                       </Nav.Link>
                     </AccordionDetails>
                   </Accordion>

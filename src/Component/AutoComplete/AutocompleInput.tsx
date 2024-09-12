@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../Auth/AuthContext";
+import { GoLocation } from "react-icons/go";
 
 interface Suggestion {
   address: string;
@@ -74,31 +75,38 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
       }
   };
 
+ 
+
   return (
-    <div className="autocomplete-container">
+    <div >
       <input
         onChange={handleChange}
         value={inputValue}
         type="text"
         required={required}
-        className={`inputbox ${className}`}
+       className="mainInputBox"
         placeholder={placeholder}
       />
-      {isLoading && <div className="loading">Loading...</div>}
-      {suggestions.length > 0 && (
-        <ul className="suggestions-dropdown">
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              onClick={() => handleSuggestionClick(suggestion)}
-              className="suggestion-item"
-            >
-              {suggestion.address}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+      
+ <div
+                            className="citySearchHiddenBoxShow">
+<div className="popularCityListDiv">
+                              {suggestions.length > 0 ? (
+                                <ul className="p-0 m-0 d-flex flex-column">
+                                  {suggestions.map((suggestion, index) => (
+                                    <li
+                                    key={index}
+                                    onClick={() => handleSuggestionClick(suggestion)}
+                                    >
+                                      <GoLocation />
+                                      <p
+                                       
+                                      >{suggestion.address}</p>
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) :null}
+    </div></div></div>
   );
 };
 

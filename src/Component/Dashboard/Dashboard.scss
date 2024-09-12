@@ -241,7 +241,7 @@
   }
 
   .citySearchHiddenBox {
-    width: 100%;
+    width: 135%;
     z-index: 5;
     max-height: 0;
     transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
@@ -249,14 +249,14 @@
     visibility: hidden;
     box-shadow: 0 0 10px #00000036;
     background-color: var(--whiteColor);
-    top: 100%;
-    left: 50%;
+    top: 125%;
+    left: 65%;
     transform: translateX(-50%);
     position: absolute;
     border-radius: 5px;
     overflow: hidden;
     &.citySearchHiddenBoxShow {
-      max-height: 500px; /* Set a value that would comfortably fit the content */
+      max-height: 500px;
       opacity: 1;
       visibility: visible;
     }
@@ -295,7 +295,7 @@
         li {
           padding: 5px;
           display: flex;
-          gap: 5px;
+          gap: 10px;
           cursor: pointer;
           color: #2f2f2f;
           align-items: center;
@@ -304,7 +304,7 @@
             margin: 0;
             overflow: hidden;
             color: var(--txtGrayColor);
-            font-size: 14px;
+            font-size: 12px;
             width: 100%;
             font-weight: 400;
             text-overflow: ellipsis;
@@ -315,7 +315,7 @@
           }
           .citySearchText {
             font-weight: 600;
-            font-size: 14px;
+            font-size: 12px;
             width: fit-content !important;
           }
           svg {

@@ -3,7 +3,7 @@ import { Range, getTrackBackground } from "react-range";
 import { FaRegSnowflake, FaMusic, FaTv } from 'react-icons/fa';
 import { GiCharging } from 'react-icons/gi';
 import { BiSolidCarGarage } from 'react-icons/bi';
-
+import "./CarFilter.css"
 
 interface Car {
   name: string;
@@ -13,7 +13,6 @@ interface Car {
   description: string;
   extraKmFare: string;
   cancellationPolicy: string;
-  // amenities: JSX.Element[];
   amenities: string[];
   originalPrice: string;
   offerPrice: string;
@@ -42,22 +41,22 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
     .filter((price) => !isNaN(price));
 
   const initialMinPrice = prices.length > 0 ? Math.min(...prices) : 0;
-  const initialMaxPrice = prices.length > 0 ? Math.max(...prices) : 0;
+  let initialMaxPrice = prices.length > 0 ? Math.max(...prices) : 0;
+
+ if(initialMinPrice === initialMaxPrice){
+  initialMaxPrice = initialMaxPrice + 1
+ }
 
   const uniqueVehicleNames = Array.from(new Set(cars.map((car) => car.vehicle_name)));
   const [selectedVehicleNames, setSelectedVehicleNames] = useState<string[]>(uniqueVehicleNames);
-  const [filteredPrices, setFilteredPrices] = useState<number[]>(prices);
   
-  // Temporary min and max price for filtered cars
   const [temporaryMinPrice, setTemporaryMinPrice] = useState<number>(initialMinPrice);
   const [temporaryMaxPrice, setTemporaryMaxPrice] = useState<number>(initialMaxPrice);
   
-  // Slider price range which can be adjusted by the user
   const [priceRange, setPriceRange] = useState<[number, number]>([initialMinPrice, initialMaxPrice]);
 
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
-  // Update filtered prices and price range when selectedVehicleNames or selectedAmenities change
   useEffect(() => {
     const filteredCars = cars.filter((car) =>
       selectedVehicleNames.includes(car.vehicle_name) &&
@@ -72,14 +71,12 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
       const minPrice = Math.min(...filteredPrices);
       const maxPrice = Math.max(...filteredPrices);
 
-      // Set the temporary min and max price
       setTemporaryMinPrice(minPrice);
       setTemporaryMaxPrice(maxPrice);
 
-      // Update the slider's price range to match the new filtered range
       setPriceRange([minPrice, maxPrice]);
     } else {
-      setPriceRange([initialMinPrice, initialMaxPrice]); // Reset to initial range if no cars match the filters
+      setPriceRange([initialMinPrice, initialMaxPrice]);
     }
   }, [selectedVehicleNames, selectedAmenities, cars]);
 
@@ -116,67 +113,17 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
   return (
     <>
      <div className="pb-4">
+      
       <p className="h5 mb-3">Select Filters</p>
-      <p className="mb-2">Cab Type</p>
-      <div className="d-flex flex-column gap-2">
-        {uniqueVehicleNames.map((vehicleName, index) => (
-          <div className="form-check d-flex justify-content-between" key={index}>
-            <div>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value={vehicleName}
-                id={`flexCheckDefault${index}`}
-                onChange={() => handleCheckboxChange(vehicleName)}
-                checked={selectedVehicleNames.includes(vehicleName)}
-              />
-              <label
-                className="form-check-label font-size14"
-                htmlFor={`flexCheckDefault${index}`}
-              >
-                {vehicleName}
-              </label>
-            </div>
-            <div className="text-secondary font-size12">
-              ({cars.filter((car) => car.vehicle_name === vehicleName).length})
-            </div>
-          </div>
-        ))}
-      </div>
 
-       {/* Amenities */}
-       <p className="mb-2 mt-4">Amenities</p>
-        <div className="d-flex flex-wrap gap-2">
-          {Object.entries(amenitiesMap).map(([key, { icon, name }]) => (
-            <div className="form-check d-flex align-items-center" key={key}>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value={key}
-                id={`amenityCheck${key}`}
-                onChange={() => handleAmenityChange(key)}
-                checked={selectedAmenities.includes(key)}
-              />
-              <label
-                className="form-check-label d-flex align-items-center ms-2"
-                htmlFor={`amenityCheck${key}`}
-              >
-                {icon}
-                <span className="ms-2">{name}</span>
-              </label>
-            </div>
-          ))}
-        </div>
-
-
-         {/* Price Range Slider */}
-         <div className="mt-4">
-          <p className="mb-2">Price Range</p>
+       {/* Price Range Slider */}
+       <div className="mt-4">
+          <p className="mb-2 h6">Price Range</p>
           <Range
           values={priceRange}
           step={100}
-          min={temporaryMinPrice} // Minimum value from the filtered cars
-          max={temporaryMaxPrice} // Maximum value from the filtered cars
+          min={temporaryMinPrice} 
+          max={temporaryMaxPrice} 
           onChange={handleSliderChange}
           renderTrack={({ props, children }) => (
             <div
@@ -198,7 +145,7 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
                   background: getTrackBackground({
                     values: priceRange,
                     colors: ['#ccc', '#548BF4', '#ccc'],
-                    min: temporaryMinPrice, // Ensure the track background includes the temporary min value
+                    min: temporaryMinPrice, 
                     max: temporaryMaxPrice, 
                   }),
                   alignSelf: 'center',
@@ -216,7 +163,7 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
                 ...props.style,
                 height: '22px',
                 width: '22px',
-                borderRadius: '4px',
+                borderRadius: '50px',
                 backgroundColor: '#FFF',
                 display: 'flex',
                 justifyContent: 'center',
@@ -239,108 +186,68 @@ const CarFilter: React.FC<CarFilterProps> = ({ cars, onFilterChange }) => {
           <span>₹{priceRange[1].toLocaleString()}</span>
         </div>
       </div>
+<hr/>
+
+      <p className="mb-2 h6">Cab Type</p>
+      <div className="d-flex flex-column gap-2">
+        {uniqueVehicleNames.map((vehicleName, index) => (
+          <div className="form-check d-flex justify-content-between" key={index}>
+            <div>
+              <input
+                className="form-check-input"
+                type="checkbox"
+                value={vehicleName}
+                id={`flexCheckDefault${index}`}
+                onChange={() => handleCheckboxChange(vehicleName)}
+                checked={selectedVehicleNames.includes(vehicleName)}
+              />
+              <label
+                className="form-check-label font-size14"
+                htmlFor={`flexCheckDefault${index}`}
+              >
+                {vehicleName}
+              </label>
+            </div>
+            {/* <div className="text-secondary font-size12">
+              ({cars.filter((car) => car.vehicle_name === vehicleName).length})
+            </div> */}
+          </div>
+        ))}
+      </div>
+
+          <hr/>
+
+       {/* Amenities */}
+       <p className="mb-2 mt-4 h6">Amenities</p>
+       <ul className="amenities-list">
+  {Object.entries(amenitiesMap).map(([key, { icon, name }]) => (
+    <li className="amenity-item" key={key}>
+      <input
+        className="form-check-input"
+        type="checkbox"
+        value={key}
+        id={`amenityCheck${key}`}
+        onChange={() => handleAmenityChange(key)}
+        checked={selectedAmenities.includes(key)}
+      />
+      <label
+        className="form-check-label d-flex align-items-center ms-2"
+        htmlFor={`amenityCheck${key}`}
+      >
+        <span className="icon-container">{icon}</span>
+        <span className="amenity-name ms-2">{name}</span>
+      </label>
+    </li>
+  ))}
+</ul>
+
+
+
 
 
         
-
-
     </div>
-      {/* <div className="pb-4">
-        <p className="h5 mb-3">Select Filters</p>
-        <p className="mb-2"> Cab Type</p>
-        <div className="d-flex flex-column gap-2">
-          <div className="form-check d-flex justify-content-between">
-            <div>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value=""
-                id="flexCheckDefault1"
-              />
-              <label
-                className="form-check-label font-size14"
-                htmlFor="flexCheckDefault1"
-              >
-                HATCHBACK
-              </label>
-            </div>
-            <div className="text-secondary font-size12">(5)</div>
-          </div>
-          <div className="form-check d-flex  justify-content-between">
-            <div>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value=""
-                id="flexCheckDefault2"
-              />
-              <label
-                className="form-check-label font-size14"
-                htmlFor="flexCheckDefault2"
-              >
-                SEDAN
-              </label>
-            </div>
-            <div className="text-secondary font-size12">(2)</div>
-          </div>
-          <div className="form-check d-flex  justify-content-between">
-            <div>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value=""
-                id="flexCheckDefault3"
-              />
-              <label
-                className="form-check-label font-size14"
-                htmlFor="flexCheckDefault3"
-              >
-                SUV
-              </label>
-            </div>
-            <div className="text-secondary font-size12">(1)</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <p className="mb-2"> Cab Model</p>
-        <div className="d-flex flex-column gap-2">
-          <div className="form-check d-flex justify-content-between">
-            <div>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value=""
-                id="flexCheckDefault4"
-              />
-              <label
-                className="form-check-label font-size14"
-                htmlFor="flexCheckDefault4"
-              >
-                Toyota Innova
-              </label>
-            </div>
-            <div className="text-secondary font-size12">(5)</div>
-          </div>
-          <div className="form-check d-flex  justify-content-between">
-            <div>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value=""
-                id="flexCheckDefault5"
-              />
-              <label
-                className="form-check-label font-size14"
-                htmlFor="flexCheckDefault5"
-              >
-                Innova Crysta
-              </label>
-            </div>
-            <div className="text-secondary font-size12">(1)</div>
-          </div>
-        </div>
-      </div> */}
+      
     </>
   );
 };

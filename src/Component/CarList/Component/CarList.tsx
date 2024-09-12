@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import carIcon from "../../../Assets/Car_icon.svg";
 import CarIconSUV from "../../../Assets/Car_icon_SUV.svg";
 import { GrMapLocation } from "react-icons/gr";
@@ -10,6 +10,14 @@ import { useNavigate } from "react-router-dom";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import axios from "axios";
 import { useAuth } from "../../Auth/AuthContext";
+import { Modal } from "antd";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import resultNotFount from "../../../Assets/recordNotFound.png";
+import "./CarHero.css";
 
 interface Car {
   name: string;
@@ -268,11 +276,18 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
   const {authToken} = useAuth();
   const navigate = useNavigate();
   const [tripType, setTripType] = useState("");
-  const handleCabBooking = async(car: any) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => { 
     const storedtripType = sessionStorage.getItem("tripType");
     if(storedtripType){
       setTripType(storedtripType)
     }
+   }, []);
+  
+
+  const handleCabBooking = async(car: any) => {
+    
     let  start_city, end_city ;
     const storedstartCitySuggestion = sessionStorage.getItem('startCitySuggestion'); 
     const storedendCitySuggestion = sessionStorage.getItem('endCitySuggestion');
@@ -307,7 +322,7 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
      }
    );
    if (response.data.status) {
-    navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city, startdate: start_date}});
+    navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city, startdate: start_date,tripType : "Airport transfer"}});
    } 
 
    } catch (error) {
@@ -329,7 +344,7 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
     );
     if (response.data.status) {
      navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city,
-      startdate: startrangedate, enddate: endrangedate
+      startdate: startrangedate, enddate: endrangedate, tripType: "Day Rental"
      }});
     } 
  
@@ -351,13 +366,44 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
         }
       );
       if (response.data.status) {
-       navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, startdate: start_date}});
+       navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, startdate: start_date, tripType: "Hour Rental", hour_rental_type: hourTime}});
       } 
    
       } catch (error) {
        console.log(error);
        
       }}
+      if(tripType === "Holidays Package"){
+        
+        let packageId;
+        try {
+          const storedPackageid = sessionStorage.getItem("packageId");
+      if(storedPackageid){
+        packageId = storedPackageid;
+      }
+         const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/price/holidayPackage/selectedPrice`,
+            {packageId: packageId,vehicle_id: car.vehicle_id, travel_date: startrangedate}
+
+            ,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response.data.status) {
+         navigate("/dashboard/cabbooking",{state: {car: response.data.data,
+          // startcity: start_city, endcity: end_city,
+          startdate: startrangedate, enddate: endrangedate, tripType: "Holiday Package",
+          seats: car.seats, packageId : packageId
+         }});
+        } 
+     
+        } catch (error) {
+         console.log(error);
+         
+        }}
 
 
    
@@ -369,10 +415,39 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
     "4": { icon: <BiSolidCarGarage key="carrier" />, name: 'Carrier' },
     "5": { icon: <FaTv key="tv" />, name: 'TV' },
 };
+
+const handleOpenModal = () =>{
+  setIsModalOpen(true);
+}
+
+const itinerary = [
+  {
+      "day": "Day 1",
+      "from": 10,
+      "to": 93,
+      "from_name": "Pondicherry",
+      "to_name": "Yercaud",
+      "km": "236",
+      "duration": "4 hr 53 min",
+      "itinerary": "Morning pick-up from Pondicherry & drive to Yercaud Hotel. On arrival check into the hotel. fresh up then visiting places Emerald lake, Botanical garden, Kiliyur falls, Lady's Seat, Pagoda point, Sheoy temple, Local town hotel for overnight stay...\n\n"
+  },
+  {
+      "day": "Day 2",
+      "from": 93,
+      "to": 10,
+      "from_name": "Yercaud",
+      "to_name": "Pondicherry",
+      "km": "236",
+      "duration": "4 hr 53 min",
+      "itinerary": "Morning at leisure. After breakfast, Anna Park, Arthur's seat, Silk farm, Rose Garden, Bears cave & Bears Hill etc. The Yercaud boathouse provides an ample opportunity to enjoy the scenic beauty of the hilly terrain through boat riding which one shouldn't miss when visiting Yercaud (on direct pay basis) You can also do \"Dirt Biking\" in a place close to Grange Resorts. It is around 4 kms from the lake. In the evening come back and overnight stay at the hotel.\nAfter breakfast check out from the hotel and drive to Pondicherry for your onward destination with lots of beautiful memories.\n\n"
+  }
+]
   return (
     <div>
       <div className="d-flex flex-column gap-4 px-3 pb-5">
-      {cars.map((car, index) => (
+      {
+        cars.length > 0 ? (
+      cars.map((car, index) => (
           <div
             className="sideBars d-flex flex-column row-gap-4 flex-md-rowsideBars d-flex flex-column flex-md-row position-relative"
             key={index}
@@ -410,7 +485,7 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
                       </div>
                     </div>
                   </div> */}
-                  <div className="d-flex font-size14">
+                  {/* <div className="d-flex font-size14">
                     <div className="text-success pe-3">
                       <TbClockX />
                     </div>
@@ -421,12 +496,12 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
                         of departure
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="d-flex align-items-center">
-                    <div className="text-success pe-3">
+                    {/* <div className="text-success pe-3">
                       <FaGasPump />
-                    </div>
-                    <div className="d-flex col-11 col-md-8">
+                    </div> */}
+                    <div className="d-flex col-12 col-md-8">
                       <div className="d-flex col-5 font-size14">Amenities</div>
                       {/* <div className="d-flex col-6 gap-3 align-items-center text-success">
                         {car.amenities.map((amenity) => amenitiesMap[amenity] || null)}
@@ -439,7 +514,10 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
         </div>
     ))}
 </div>
+  
                     </div>
+                    {/* {tripType === "Holidays Package" ? (<div className="itinerary">
+   <span onClick={handleOpenModal }>itinerary</span>  </div>):null} */}
                   </div>
                 </div>
               </div>
@@ -448,18 +526,20 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
               className="col-5 col-lg-3 d-flex row-gap-2 flex-column position-absolute"
               style={{ right: "10px", top: "15px" }}
             >
-              <div>
+              {/* <div>
                 <p className="text-danger m-0 px-lg-4 pt-md-3 text-end">
-                  {/* <FaIndianRupeeSign /> */}
+                  <FaIndianRupeeSign />
                   {car.discount}
                 </p>
-              </div>
+              </div> */}
               <div className="d-flex align-items-center justify-content-between justify-content-lg-evenly">
-                <span className="strikeDiagonal text-secondary d-flex justify-content-center align-items-center fontInter">
+                {/* <span className="strikeDiagonal text-secondary d-flex justify-content-center align-items-center fontInter">
                   <FaIndianRupeeSign />
                   {car.price}
-                </span>
-                <span className="offerPrice">
+                </span> */}
+                <span></span>
+                <span
+                 className="offerPrice" >
                   <FaIndianRupeeSign />
                   {car.price}
                 </span>
@@ -471,7 +551,15 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
               </div>
             </div>
           </div>
-        ))}
+        )) ):
+        (<>
+          <div className="col-12 text-center my-5">
+<div className="col-12 text-center compact-container py-3 py-md-4 py-lg-5">
+  <img src={resultNotFount} alt="resultNotFount" className="compact-image" />
+  <div className="recordFound compact-text">No Record Found</div>
+</div>
+</div>
+        </>)}
         {/* {cars.map((car, index) => (
           <div
             className="sideBars d-flex flex-column row-gap-4 flex-md-rowsideBars d-flex flex-column flex-md-row position-relative"
@@ -565,6 +653,67 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
           </div>
         ))} */}
 
+
+<Modal
+        title={<p className="m-0">Itenerary</p>}
+        footer={null}
+        className="selectPaymentMode col-12 col-md-6"
+        // style={{ minWidth: "350", maxWidth: "550px" }}
+        open={isModalOpen}
+        onCancel={() => {
+          setIsModalOpen(false)}}
+      >
+        <div className="paymentDetailsDiv">    
+        <div className="left_side d-flex gap-3 flex-column">
+                {/* <div className="h5">Itinerary</div> */}
+                <div className="font-size14">Day Wise Details of your package</div>
+                <div>
+                {itinerary.map((item: any, index: number) => (<>
+
+                  <Accordion key={index}
+                  defaultExpanded={index === 0}
+                  disableGutters
+                  sx={{
+                    marginBottom: 0, 
+                    padding: 0, 
+                    boxShadow: 'none', 
+                  }}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${index}-content`}
+            id={`panel${index}-header`}
+            sx={{ backgroundColor: 'lightgrey' }}
+          >
+            <Typography variant="subtitle1" 
+            >
+              {item.from_name} - {item.to_name}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div style={{ display: 'flex' }}>
+              <div 
+              style={{
+                width: '40%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRight: '1px solid black', 
+              }}>
+                <Typography variant="body1"><strong>{item.day}</strong></Typography>
+                <Typography variant="body1"><strong>{item.duration}</strong></Typography>
+              </div>
+              <div style={{ width: '60%', padding: "10px" }}>
+                <Typography variant="body1">{item.itinerary}</Typography>
+              </div>
+            </div>
+          </AccordionDetails>
+        </Accordion>
+</>))}
+                </div>
+                  </div>
+        </div>
+         </Modal>
       </div>
     </div>
   );
