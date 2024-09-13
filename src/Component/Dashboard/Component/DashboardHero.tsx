@@ -644,6 +644,7 @@ const DashboardHero: React.FC = () => {
   };
 
   const popularCities: City[] = [
+    
     { id_city: 1, city_name: "Delhi International Airport" },
     { id_city: 2, city_name: "Chennai International Airport, Meenambakkam" },
     { id_city: 3, city_name: "Mumbai International Airport" },
@@ -653,6 +654,51 @@ const DashboardHero: React.FC = () => {
     { id_city: 7, city_name: "Mumbai International Airport" },
     { id_city: 8, city_name: "Kerala International Airport" },
   ];
+
+  const popularAirports = [
+    {
+      "address": "Chennai International Airport (MAA), Airport Road, Meenambakkam, Chennai, Tamil Nadu, India",
+      "city": "Chennai",
+      "admin": "Tamil Nadu",
+      "province": "India",
+      "geocode": 1
+  },
+  {
+    "address": "Indira Gandhi International Airport (DEL), New Delhi, Delhi, India",
+    "city": "New Delhi",
+    "admin": "Delhi",
+    "province": "India",
+    "geocode": 1
+},
+{
+  "address": "Chhatrapati Shivaji Maharaj International Airport, Mumbai (BOM), Mumbai, Maharashtra, India",
+  "city": "Mumbai",
+  "admin": "Maharashtra",
+  "province": "India",
+  "geocode": 1
+},
+{
+  "address": "Rajiv Gandhi International Airport (HYD), Shamshabad, Hyderabad, Telangana, India",
+  "city": "Hyderabad",
+  "admin": "Telangana",
+  "province": "India",
+  "geocode": 1
+},
+{
+  "address": "Goa International Airport (GOI), Airport Road, Dabolim, Goa, India",
+  "city": "Dabolim",
+  "admin": "Goa",
+  "province": "India",
+  "geocode": 1
+},
+{
+  "address": "Cochin International Airport (COK), Airport Road, Nedumbassery, Kochi, Kerala, India",
+  "city": "Kochi",
+  "admin": "Kerala",
+  "province": "India",
+  "geocode": 1
+},
+  ]
 
   const startCityHighlightText = (text: string, query: string) => {
     const regex = new RegExp(`(${query})`, "i");
@@ -913,9 +959,7 @@ const DashboardHero: React.FC = () => {
                                                     }
                                                   >
                                                     <GoLocation />
-
-                                                    {/* <p>{suggestion.address}</p> */}
-                                                    <p
+                                                    <p style={{ overflow: "hidden" }}
                                                       dangerouslySetInnerHTML={{
                                                         __html:
                                                           startCityHighlightText(
@@ -956,7 +1000,25 @@ const DashboardHero: React.FC = () => {
                                         )}
                                       </ul>{" "}
                                     </>
-                                  ) : null}
+                                  ) : tripType === "Cab From Airport" && inputValueOne.length < 3?(<>
+                                    <span>POPULAR AIRPORTS</span>
+                                      <ul className="p-0 m-0">
+                                        {popularAirports.map(
+                                          (popularairport, index) => (
+                                            <li
+                                              key={index}
+                                              onClick={() =>
+                                                handleStartCitySuggestionSelect(
+                                                  popularairport
+                                                )
+                                              }
+                                            >
+                                              <GoLocation />
+                                              <p>{popularairport.address}</p>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul> </>):null}
                                 </>
                               )}
                             </div>
