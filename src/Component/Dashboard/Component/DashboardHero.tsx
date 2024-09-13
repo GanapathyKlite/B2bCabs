@@ -512,6 +512,7 @@ const DashboardHero: React.FC = () => {
     setEndCitySuggestion(suggestion);
     setInputValueTwo(suggestion.address);
     sessionStorage.setItem("endCitySuggestion", JSON.stringify(suggestion));
+    setSearchEndInputBox(false);
   };
 
   const handleDateChange = (date: Dayjs | null) => {
@@ -645,14 +646,34 @@ const DashboardHero: React.FC = () => {
 
   const popularCities: City[] = [
     
-    { id_city: 1, city_name: "Delhi International Airport" },
-    { id_city: 2, city_name: "Chennai International Airport, Meenambakkam" },
-    { id_city: 3, city_name: "Mumbai International Airport" },
-    { id_city: 4, city_name: "Kerala International Airport" },
-    { id_city: 5, city_name: "Delhi International Airport" },
-    { id_city: 6, city_name: "Chennai International Airport, Meenambakkam" },
-    { id_city: 7, city_name: "Mumbai International Airport" },
-    { id_city: 8, city_name: "Kerala International Airport" },
+    {
+      "id_city": 11,
+      "city_name": "Chennai / Madras"
+  },
+  {
+    "id_city": 10,
+    "city_name": "Pondicherry"
+},
+  {
+    "id_city": 75,
+    "city_name": "Bangalore"
+},
+{
+  "id_city": 58,
+  "city_name": "Cochin"
+},
+{
+  "id_city": 27,
+  "city_name": "Coimbatore"
+},
+{
+  "id_city": 100,
+  "city_name": "Delhi"
+},
+{
+  "id_city": 228,
+  "city_name": "Shimla  "
+},
   ];
 
   const popularAirports = [
@@ -700,13 +721,51 @@ const DashboardHero: React.FC = () => {
 },
   ]
 
+  const RecentSearches = [
+    {
+      "address": "Pondicherry, Puducherry, India",
+      "city": "Pondicherry",
+      "admin": "Puducherry",
+      "province": "India",
+      "geocode": 1
+  },
+  {
+    "address": "Chennai, Tamil Nadu, India",
+    "city": "Chennai",
+    "admin": "Tamil Nadu",
+    "province": "India",
+    "geocode": 1
+},
+{
+  "address": "Coimbatore, Tamil Nadu, India",
+  "city": "Coimbatore",
+  "admin": "Tamil Nadu",
+  "province": "India",
+  "geocode": 1
+},
+{
+  "address": "Bangalore, Karnataka, India",
+  "city": "Bangalore",
+  "admin": "Karnataka",
+  "province": "India",
+  "geocode": 1
+},
+  ]
+
+  const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special characters
+  };
+  
   const startCityHighlightText = (text: string, query: string) => {
-    const regex = new RegExp(`(${query})`, "i");
+    const escapedQuery = escapeRegExp(query);
+    const regex = new RegExp(`(${escapedQuery})`, "i");
     return text.replace(regex, "<span class='citySearchText'>$1</span>");
   };
+  
 
   const endCityHighlightText = (text: string, query: string) => {
-    const regex = new RegExp(`(${query})`, "i");
+    const escapedQuery = escapeRegExp(query);
+    const regex = new RegExp(`(${escapedQuery})`, "i");
     return text.replace(regex, "<span class='citySearchText'>$1</span>");
   };
 
@@ -1021,6 +1080,7 @@ const DashboardHero: React.FC = () => {
                                       </ul> </>):null}
                                 </>
                               )}
+                              
                             </div>
                           </div>
                           {tab.id === 2 && selectedOption === "option2" ? (
@@ -1213,7 +1273,24 @@ const DashboardHero: React.FC = () => {
                                             </ul>
                                           ) : null}
                                         </ul>
-                                      ) : null}{" "}
+                                      ) : (<><span>RECENT SEARCHES</span>
+                                        <ul className="p-0 m-0">
+                                          {RecentSearches.map(
+                                            (recentsearch, index) => (
+                                              <li
+                                                key={index}
+                                                onClick={() =>
+                                                  handleEndCitySuggestionSelect(
+                                                    recentsearch
+                                                  )
+                                                }
+                                              >
+                                                <GoLocation />
+                                                <p>{recentsearch.address}</p>
+                                              </li>
+                                            )
+                                          )}
+                                        </ul></>)}{" "}
                                     </>
                                   ) : null}
                                   {tripType !== "Holidays Package" &&

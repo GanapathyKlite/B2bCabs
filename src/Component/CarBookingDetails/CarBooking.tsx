@@ -560,15 +560,16 @@ const CarBooking: React.FC = () => {
   };
 
   const handlePayNow = () => {
-    setPaymentModalBoxOpen(true);
+    
+    const isValid = validateForm();
+    if (isValid) {
+      showModalBox();
+      setPaymentModalBoxOpen(true);
     setModalBoxLoading(true);
     setTouched((prev) => ({ ...prev, pickupTime: true }));
     if (formRef.current) {
       formRef.current.scrollIntoView({ behavior: "smooth" });
     }
-    const isValid = validateForm();
-    if (isValid) {
-      showModalBox();
     }
     setTimeout(() => {
       setModalBoxLoading(false);
@@ -1422,52 +1423,7 @@ const CarBooking: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="mb-2">
-                      <label className="font-size14">
-                        <span style={{ fontWeight: "600" }}>Arrival Via</span>
-                      </label>
-                      <select
-                        className="form-control px-3 py-2"
-                        id="arrivalvia"
-                        value={selectedArrival}
-                        onChange={(e) => handleChange("arrival", e)}
-                        onBlur={() => validateField("arrivalVia")}
-                        required
-                      >
-                        <option value="" disabled>
-                          Select Arrival Via
-                        </option>
-                        <option value="Flight">Flight</option>
-                        <option value="Bus">Bus</option>
-                        <option value="Train">Train</option>
-                        <option value="Residency">Residency</option>
-                      </select>
-                      {error.arrivalVia && (
-                        <div className="text-danger mt-2">
-                          {error.arrivalVia}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="mb-2">
-                      <label className="font-size14">
-                        <span style={{ fontWeight: "600" }}>Departure Via</span>
-                      </label>
-                      <select
-                        className="form-control px-3 py-2"
-                        id="departurevia"
-                        value={selectedDeparture}
-                        onChange={(e) => handleChange("departure", e)}
-                      >
-                        <option value="" disabled>
-                          Select Departure Via
-                        </option>
-                        <option value="Flight">Flight</option>
-                        <option value="Bus">Bus</option>
-                        <option value="Train">Train</option>
-                        <option value="Residency">Residency</option>
-                      </select>
-                    </div>
+                   
                   </div>
                   <div className="col-lg-6 d-flex flex-column justify-content-between">
                     <div className="mb-2">
@@ -1624,21 +1580,7 @@ const CarBooking: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="mb-2 mt-3">
-                      <label className="font-size14">
-                        <span style={{ fontWeight: "600" }}>
-                          {departureDetails.label}
-                        </span>
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control px-3 py-2"
-                        placeholder={departureDetails.placeholder}
-                        value={dropAddress}
-                        onChange={(e) => setDropAddress(e.target.value)}
-                        readOnly={!selectedDeparture}
-                      />
-                    </div>
+                   
                   </div>
                 </div>
                 <div className="d-flex align-items-center mt-4">
