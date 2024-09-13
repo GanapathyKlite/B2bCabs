@@ -175,12 +175,12 @@ const DashboardHero: React.FC = () => {
     }
     if (storedstartCitySuggestion) {
       const suggestionObject = JSON.parse(storedstartCitySuggestion);
-      setInputValueOne(suggestionObject.address);
+      // setInputValueOne(suggestionObject.address);
       setStartCitySuggestion(suggestionObject);
     }
     if (storedendCitySuggestion) {
       const suggestionObject = JSON.parse(storedendCitySuggestion);
-      setInputValueTwo(suggestionObject.address);
+      // setInputValueTwo(suggestionObject.address);
       setEndCitySuggestion(suggestionObject);
     }
     if (storedholidaystartCity) {
@@ -306,6 +306,10 @@ const DashboardHero: React.FC = () => {
 
   const handleToggle = (option: string) => {
     setSelectedOption(option);
+    setInputValueOne(inputValueTwo)
+    setInputValueTwo(inputValueOne)
+    setStartCitySuggestion(endCitySuggestion)
+    setEndCitySuggestion(startCitySuggestion)
   };
   const navigate = useNavigate();
 
@@ -564,6 +568,7 @@ const DashboardHero: React.FC = () => {
   };
 
   const startSearchInputRef = React.useRef<HTMLInputElement>(null);
+  const startSearchInputRef2 = React.useRef<HTMLInputElement>(null);
   const endSearchInputRef = React.useRef<HTMLInputElement>(null);
   const endSearchInputRef2 = React.useRef<HTMLInputElement>(null);
 
@@ -776,8 +781,17 @@ const DashboardHero: React.FC = () => {
       setStartSearchQuery(endSearchQuery);
       setEndSearchQuery(startSearchQuery);
     }
+    if (inputValueOne && inputValueTwo) {
+      if (selectedOption === "option1") {
+        handleToggle("option2");
+      } else {
+        handleToggle("option1");
+      }
+    }
+  
   };
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [suggestions2, setSuggestions2] = useState<Suggestion[]>([]);
   const fetchSuggestions = async (query: string) => {
     if (query.length > 2) {
       try {
@@ -805,6 +819,33 @@ const DashboardHero: React.FC = () => {
       setSuggestions([]);
     }
   };
+  const fetchSuggestions2 = async (query: string) => {
+    if (query.length > 2) {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/place/autocomplete`,
+          { address: query },
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.data.status) {
+          setSuggestions2(response.data.data);
+        } else {
+          setSuggestions2([]);
+        }
+      } catch (error) {
+        console.error("Error fetching autocomplete data", error);
+      } finally {
+      }
+    } else {
+      setSuggestions2([]);
+    }
+  };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValueOne(value);
@@ -813,7 +854,7 @@ const DashboardHero: React.FC = () => {
   const handleChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValueTwo(value);
-    fetchSuggestions(value);
+    fetchSuggestions2(value);
   };
   // const handleSuggestionClick = (suggestion: Suggestion) => {
   //   onChange({ target: { value: suggestion.address } } as React.ChangeEvent<HTMLInputElement>);
@@ -912,7 +953,9 @@ const DashboardHero: React.FC = () => {
                                 className="radio-type"
                                 value={tab.firstRadioButtonValue}
                                 checked={selectedOption === "option1"}
-                                onChange={() => handleToggle("option1")}
+                                onChange={() => {
+                                  handleToggle("option1")
+                               }}
                               />
                               <div className="label-text">
                                 {tab.firstRadioButtonLable}
@@ -927,7 +970,9 @@ const DashboardHero: React.FC = () => {
                                 className="radio-type"
                                 value={tab.SecondRadioButtonValue}
                                 checked={selectedOption === "option2"}
-                                onChange={() => handleToggle("option2")}
+                                onChange={() =>{
+                                   handleToggle("option2")
+                                  }}
                               />
                               <div className="label-text">
                                 {tab.secondRadioButtonLable}
@@ -969,7 +1014,7 @@ const DashboardHero: React.FC = () => {
                                 type="text"
                                 required
                                 className="mainInputBox"
-                                ref={startSearchInputRef}
+                                ref={startSearchInputRef2}
                                 value={inputValueOne}
                                 autoComplete="off"
                                 placeholder={`${
@@ -1015,7 +1060,9 @@ const DashboardHero: React.FC = () => {
                                 : ""
                             }`}
                           >
-                            <div className="popularCityListDiv">
+                            <div 
+                            className="popularCityListDiv"
+                            >
                               {startFilteredCities.length > 0 ? (
                                 <ul className="p-0 m-0 d-flex flex-column">
                                   {startFilteredCities.map((city) => (
@@ -1040,8 +1087,7 @@ const DashboardHero: React.FC = () => {
                                     </li>
                                   ))}
                                 </ul>
-                              ) : (
-                                <>
+                              ) : null}
                                   {tripType === "Cab From Airport" ? (
                                     <>
                                       {suggestions.length > 0 ? (
@@ -1077,8 +1123,43 @@ const DashboardHero: React.FC = () => {
                                       ) : null}{" "}
                                     </>
                                   ) : null}
+                                  {tripType === "Cab To Airport" ? (
+                                    <>
+                                      {suggestions.length > 0 ? (
+                                        <ul className="p-0 m-0 d-flex flex-column">
+                                          {suggestions.length > 0 ? (
+                                            <ul className="p-0 m-0 d-flex flex-column">
+                                              {suggestions.map(
+                                                (suggestion, index) => (
+                                                  <li
+                                                    key={index}
+                                                    onClick={() =>
+                                                      handleStartCitySuggestionSelect(
+                                                        suggestion, endSearchInputRef2
+                                                      )
+                                                    }
+                                                  >
+                                                    <GoLocation />
+                                                    <p style={{ overflow: "hidden" }}
+                                                      dangerouslySetInnerHTML={{
+                                                        __html:
+                                                          startCityHighlightText(
+                                                            suggestion.address,
+                                                            inputValueOne
+                                                          ),
+                                                      }}
+                                                    ></p>
+                                                  </li>
+                                                )
+                                              )}
+                                            </ul>
+                                          ) : null}
+                                        </ul>
+                                      ) : null}{" "}
+                                    </>
+                                  ) : null}
                                   {tripType !== "Holidays Package" &&
-                                  tripType !== "Cab From Airport" ? (
+                                  tripType !== "Cab From Airport" && tripType !== "Cab To Airport" ? (
                                     <>
                                       <span>POPULAR CITY</span>
                                       <ul className="p-0 m-0">
@@ -1119,8 +1200,26 @@ const DashboardHero: React.FC = () => {
                                           )
                                         )}
                                       </ul> </>):null}
-                                </>
-                              )}
+                                      {tripType === "Cab To Airport" && inputValueOne.length < 3 ? (<><span>RECENT SEARCHES</span>
+                                        <ul className="p-0 m-0">
+                                          {RecentSearches.map(
+                                            (recentsearch, index) => (
+                                              <li
+                                                key={index}
+                                                onClick={() =>
+                                                  handleEndCitySuggestionSelect(
+                                                    recentsearch
+                                                  )
+                                                }
+                                              >
+                                                <GoLocation />
+                                                <p>{recentsearch.address}</p>
+                                              </li>
+                                            )
+                                          )}
+                                        </ul></>): null}
+                                
+                              
                               
                             </div>
                           </div>
@@ -1258,7 +1357,9 @@ const DashboardHero: React.FC = () => {
                               searchEndInputBox ? "citySearchHiddenBoxShow" : ""
                             }`}
                           >
-                            <div className="popularCityListDiv">
+                            <div
+                             className="popularCityListDiv"
+                             >
                               {endFilteredCities.length > 0 ? (
                                 <ul className="p-0 m-0 d-flex flex-column">
                                   {endFilteredCities.map((city) => (
@@ -1280,13 +1381,13 @@ const DashboardHero: React.FC = () => {
                                 </ul>
                               ) : (
                                 <>
-                                  {tripType === "Cab From Airport" ? (
+                                  {tripType === "Cab From Airport"  ? (
                                     <>
-                                      {suggestions.length > 0 ? (
+                                      {suggestions2.length > 0 ? (
                                         <ul className="p-0 m-0 d-flex flex-column">
-                                          {suggestions.length > 0 ? (
+                                          {suggestions2.length > 0 ? (
                                             <ul className="p-0 m-0 d-flex flex-column">
-                                              {suggestions.map(
+                                              {suggestions2.map(
                                                 (suggestion, index) => (
                                                   <li
                                                     key={index}
@@ -1333,9 +1434,42 @@ const DashboardHero: React.FC = () => {
                                           )}
                                         </ul></>)}{" "}
                                     </>
-                                  ) : null}
+                                  ) : tripType === "Cab To Airport" ? (<>
+                                   {suggestions2.length > 0 ? (
+                                        <ul className="p-0 m-0 d-flex flex-column">
+                                          {suggestions2.length > 0 ? (
+                                            <ul className="p-0 m-0 d-flex flex-column">
+                                              {suggestions2.map(
+                                                (suggestion, index) => (
+                                                  <li
+                                                    key={index}
+                                                    onClick={() =>
+                                                      handleEndCitySuggestionSelect(
+                                                        suggestion
+                                                      )
+                                                    }
+                                                  >
+                                                    <GoLocation />
+
+                                                    {/* <p>{suggestion.address}</p> */}
+                                                    <p
+                                                      dangerouslySetInnerHTML={{
+                                                        __html:
+                                                          startCityHighlightText(
+                                                            suggestion.address,
+                                                            inputValueTwo
+                                                          ),
+                                                      }}
+                                                    ></p>
+                                                  </li>
+                                                )
+                                              )}
+                                            </ul>
+                                          ) : null}
+                                        </ul>
+                                      ) : null}</>): null}
                                   {tripType !== "Holidays Package" &&
-                                  tripType !== "Cab From Airport" ? (
+                                  tripType !== "Cab From Airport" && tripType !== "Cab To Airport"? (
                                     <>
                                       <span>POPULAR CITY</span>
                                       <ul className="p-0 m-0">
@@ -1357,9 +1491,32 @@ const DashboardHero: React.FC = () => {
                                         )}
                                       </ul>{" "}
                                     </>
-                                  ) : null}
+                                  ) : null
+                                  }
                                 </>
                               )}
+                              {tripType === "Cab To Airport" && inputValueTwo.length < 3 ?(
+                                    <>
+                                    <span>POPULAR AIRPORTS</span>
+                                      <ul className="p-0 m-0">
+                                        {popularAirports.map(
+                                          (popularairport, index) => (
+                                            <li
+                                              key={index}
+                                              onClick={() =>
+                                                handleEndCitySuggestionSelect(
+                                                  popularairport
+                                                )
+                                              }
+                                            >
+                                              <GoLocation />
+                                              <p>{popularairport.address}</p>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
+                                     </>
+                                  ): null}
                             </div>
                           </div>
                         </div>
