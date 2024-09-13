@@ -497,14 +497,14 @@ const DashboardHero: React.FC = () => {
     setInputValueTwo(inputTwoValue);
   };
 
-  const handleStartCitySuggestionSelect = (suggestion: Suggestion) => {
+  const handleStartCitySuggestionSelect = (suggestion: Suggestion, endSearchInputRef2: React.RefObject<HTMLInputElement>) => {
     setStartCitySuggestion(suggestion);
     setInputValueOne(suggestion.address);
     sessionStorage.setItem("startCitySuggestion", JSON.stringify(suggestion));
     setSearchStartInputBox(false);
     // Move focus to the end location input
-    if (endSearchInputRef.current) {
-      endSearchInputRef.current.focus();
+    if (endSearchInputRef2.current) {
+      endSearchInputRef2.current.focus();
     }
   };
 
@@ -565,6 +565,7 @@ const DashboardHero: React.FC = () => {
 
   const startSearchInputRef = React.useRef<HTMLInputElement>(null);
   const endSearchInputRef = React.useRef<HTMLInputElement>(null);
+  const endSearchInputRef2 = React.useRef<HTMLInputElement>(null);
 
   const handleStartCitySelect = (
     city: City,
@@ -821,6 +822,46 @@ const DashboardHero: React.FC = () => {
   //       onSuggestionSelect(suggestion);
   //     }
   // };
+
+  const disabledrangeDate = (current: Dayjs | null): boolean => {
+    if (!current) return false;
+    const today = dayjs().startOf('day');
+    const sixMonthsLater = dayjs().add(6, 'month').endOf('day');
+    return current.isBefore(today) || current.isAfter(sixMonthsLater);
+  };
+  const disabledDate = (current: Dayjs | null): boolean => {
+    if (!current) return false;
+  
+    return current.isBefore(dayjs().startOf('day')) || current.isAfter(dayjs().add(30, 'day').endOf('day'));
+  };
+
+  const getDisabledTime = (date: any) => {
+    if (!date) return {};
+  
+    const now = dayjs();
+    const currentHour = now.hour();
+    const currentMinute = now.minute();
+    const isToday = date.isSame(now, 'day');
+  
+    if (isToday) {
+      return {
+        disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
+        disabledMinutes: (hour: number) => {
+          if (hour === currentHour + 1) {
+            return Array.from({ length: currentMinute + 1 }, (_, i) => i);
+          }
+          return [];
+        },
+        disabledSeconds: () => [],
+      };
+    }
+    return {
+      disabledHours: () => [],
+      disabledMinutes: () => [],
+      disabledSeconds: () => [],
+    };
+  };
+
   return (
     <>
       <div className="hero-banner">
@@ -1013,7 +1054,7 @@ const DashboardHero: React.FC = () => {
                                                     key={index}
                                                     onClick={() =>
                                                       handleStartCitySuggestionSelect(
-                                                        suggestion
+                                                        suggestion, endSearchInputRef2
                                                       )
                                                     }
                                                   >
@@ -1068,7 +1109,7 @@ const DashboardHero: React.FC = () => {
                                               key={index}
                                               onClick={() =>
                                                 handleStartCitySuggestionSelect(
-                                                  popularairport
+                                                  popularairport,endSearchInputRef2
                                                 )
                                               }
                                             >
@@ -1197,7 +1238,7 @@ const DashboardHero: React.FC = () => {
                                   type="text"
                                   required
                                   className="mainInputBox"
-                                  ref={endSearchInputRef}
+                                  ref={endSearchInputRef2}
                                   value={inputValueTwo}
                                   autoComplete="off"
                                   placeholder={`${
@@ -1333,19 +1374,33 @@ const DashboardHero: React.FC = () => {
                                 <LuCalendarDays />
                               </div>
 
-                              <DatePicker
+                              {tab.id === 2 && selectedOption === "option2" ? (
+                                <DatePicker
                                 required
                                 format="ddd, MMM D"
                                 suffixIcon={null}
-                                className="border-0 w-100 singleDatePicker"
+                                 className="border-0 w-100 singleDatePicker"
                                 allowClear={false}
+                                disabledDate={disabledDate}
+                                showNow={false}
+                                onChange={handleDateChange}
+                                value={selectedDate}
+                              />):(<DatePicker
+                                required
+                                format="ddd, MMM D, h:mm A"
+                                suffixIcon={null}
+                                 className="border-0 w-100 singleDatePicker"
+                                allowClear={false}
+                                disabledDate={disabledDate}
+                                disabledTime={(date) => getDisabledTime(date)}
                                 showTime={{
                                   use12Hours: true,
                                   format: "h:mm A",
                                 }}
                                 onChange={handleDateChange}
+                                showNow={false}
                                 value={selectedDate}
-                              />
+                              />)}
                             </div>
                           </div>
                         </>
@@ -1357,6 +1412,18 @@ const DashboardHero: React.FC = () => {
                                 <LuCalendarDays />
                               </div>
 
+                              {tab.id === 2 && selectedOption === "option1" ? (
+                                <RangePicker
+                                required
+                                format="ddd, MMM D"
+                                suffixIcon={null}
+                                className="border-0 w-100"
+                                allowClear={false}
+                                onChange={handleRangeChange}
+                                disabledDate={disabledDate}
+                                value={selectedDateRange}
+                              />
+                              ):
                               <RangePicker
                                 required
                                 format="ddd, MMM D"
@@ -1364,8 +1431,9 @@ const DashboardHero: React.FC = () => {
                                 className="border-0 w-100"
                                 allowClear={false}
                                 onChange={handleRangeChange}
+                                disabledDate={disabledrangeDate}
                                 value={selectedDateRange}
-                              />
+                              />}
                             </div>
                           </div>
                         </>
