@@ -17,7 +17,7 @@ interface AutocompleteInputProps {
   placeholder: string;
   required: boolean;
   className?: string;
-  onSuggestionSelect?: (suggestion: Suggestion) => void; 
+  onSuggestionSelect?: (suggestion: Suggestion) => void;
 }
 
 const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
@@ -30,13 +30,14 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
 }) => {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const {authToken} = useAuth()
+  const { authToken } = useAuth();
 
   const fetchSuggestions = async (query: string) => {
     if (query.length > 2) {
       try {
         setIsLoading(true);
-        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/place/autocomplete`,
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/place/autocomplete`,
           { address: query },
           {
             headers: {
@@ -68,45 +69,44 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({
   };
 
   const handleSuggestionClick = (suggestion: Suggestion) => {
-    onChange({ target: { value: suggestion.address } } as React.ChangeEvent<HTMLInputElement>);
+    onChange({
+      target: { value: suggestion.address },
+    } as React.ChangeEvent<HTMLInputElement>);
     setSuggestions([]);
     if (onSuggestionSelect) {
-        onSuggestionSelect(suggestion);
-      }
+      onSuggestionSelect(suggestion);
+    }
   };
 
- 
-
   return (
-    <div >
+    <div>
       <input
         onChange={handleChange}
         value={inputValue}
         type="text"
         required={required}
-       className="mainInputBox"
+        className="mainInputBox"
         placeholder={placeholder}
       />
-      
- <div
-                            className="citySearchHiddenBoxShow">
-<div className="popularCityListDiv">
-                              {suggestions.length > 0 ? (
-                                <ul className="p-0 m-0 d-flex flex-column">
-                                  {suggestions.map((suggestion, index) => (
-                                    <li
-                                    key={index}
-                                    onClick={() => handleSuggestionClick(suggestion)}
-                                    >
-                                      <GoLocation />
-                                      <p
-                                       
-                                      >{suggestion.address}</p>
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) :null}
-    </div></div></div>
+
+      <div className="citySearchHiddenBoxShow">
+        <div className="popularCityListDiv">
+          {suggestions.length > 0 ? (
+            <ul className="p-0 m-0 d-flex flex-column">
+              {suggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  <GoLocation />
+                  <p>{suggestion.address}</p>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      </div>
+    </div>
   );
 };
 
