@@ -1134,7 +1134,25 @@ const DashboardHero: React.FC = () => {
                                             </ul>
                                           ) : null}
                                         </ul>
-                                      ) : null}{" "}
+                                      ) : (<>
+                                        <span>POPULAR AIRPORTS</span>
+                                          <ul className="p-0 m-0">
+                                            {popularAirports.map(
+                                              (popularairport, index) => (
+                                                <li
+                                                  key={index}
+                                                  onClick={() =>
+                                                    handleStartCitySuggestionSelect(
+                                                      popularairport
+                                                    )
+                                                  }
+                                                >
+                                                  <GoLocation />
+                                                  <p>{popularairport.address}</p>
+                                                </li>
+                                              )
+                                            )}
+                                          </ul> </>)}{" "}
                                     </>
                                   ) : null}
                                   {tripType === "Cab To Airport" ? (
@@ -1169,7 +1187,24 @@ const DashboardHero: React.FC = () => {
                                             </ul>
                                           ) : null}
                                         </ul>
-                                      ) : null}{" "}
+                                      ) : (<><span>RECENT SEARCHES</span>
+                                        <ul className="p-0 m-0">
+                                          {RecentSearches.map(
+                                            (recentsearch, index) => (
+                                              <li
+                                                key={index}
+                                                onClick={() =>
+                                                  handleStartCitySuggestionSelect(
+                                                    recentsearch
+                                                  )
+                                                }
+                                              >
+                                                <GoLocation />
+                                                <p>{recentsearch.address}</p>
+                                              </li>
+                                            )
+                                          )}
+                                        </ul></>)}{" "}
                                     </>
                                   ) : null}
                                   {tripType !== "Holidays Package" &&
@@ -1195,26 +1230,10 @@ const DashboardHero: React.FC = () => {
                                         )}
                                       </ul>{" "}
                                     </>
-                                  ) : tripType === "Cab From Airport" && inputValueOne.length < 3?(<>
-                                    <span>POPULAR AIRPORTS</span>
-                                      <ul className="p-0 m-0">
-                                        {popularAirports.map(
-                                          (popularairport, index) => (
-                                            <li
-                                              key={index}
-                                              onClick={() =>
-                                                handleStartCitySuggestionSelect(
-                                                  popularairport
-                                                )
-                                              }
-                                            >
-                                              <GoLocation />
-                                              <p>{popularairport.address}</p>
-                                            </li>
-                                          )
-                                        )}
-                                      </ul> </>):null}
-                                      {tripType === "Cab To Airport" && inputValueOne.length < 3 ? (<><span>RECENT SEARCHES</span>
+                                  ) 
+                                  
+                                      :null}
+                                      {/* {tripType === "Cab To Airport" && inputValueOne.length < 3 ? (<><span>RECENT SEARCHES</span>
                                         <ul className="p-0 m-0">
                                           {RecentSearches.map(
                                             (recentsearch, index) => (
@@ -1231,7 +1250,7 @@ const DashboardHero: React.FC = () => {
                                               </li>
                                             )
                                           )}
-                                        </ul></>): null}
+                                        </ul></>): null} */}
                                 
                               
                               
@@ -1430,7 +1449,7 @@ const DashboardHero: React.FC = () => {
                                             </ul>
                                           ) : null}
                                         </ul>
-                                      ) : (<><span>RECENT SEARCHES</span>
+                                        ) : (<><span>RECENT SEARCHES</span>
                                         <ul className="p-0 m-0">
                                           {RecentSearches.map(
                                             (recentsearch, index) => (
@@ -1482,7 +1501,26 @@ const DashboardHero: React.FC = () => {
                                             </ul>
                                           ) : null}
                                         </ul>
-                                      ) : null}</>): null}
+                                      ) : (( <>
+                                        <span>POPULAR AIRPORTS</span>
+                                          <ul className="p-0 m-0">
+                                            {popularAirports.map(
+                                              (popularairport, index) => (
+                                                <li
+                                                  key={index}
+                                                  onClick={() =>
+                                                    handleEndCitySuggestionSelect(
+                                                      popularairport
+                                                    )
+                                                  }
+                                                >
+                                                  <GoLocation />
+                                                  <p>{popularairport.address}</p>
+                                                </li>
+                                              )
+                                            )}
+                                          </ul>
+                                         </>))}</>): null}
                                   {tripType !== "Holidays Package" &&
                                   tripType !== "Cab From Airport" && tripType !== "Cab To Airport"? (
                                     <>
@@ -1510,28 +1548,7 @@ const DashboardHero: React.FC = () => {
                                   }
                                 </>
                               )}
-                              {tripType === "Cab To Airport" && inputValueTwo.length < 3 ?(
-                                    <>
-                                    <span>POPULAR AIRPORTS</span>
-                                      <ul className="p-0 m-0">
-                                        {popularAirports.map(
-                                          (popularairport, index) => (
-                                            <li
-                                              key={index}
-                                              onClick={() =>
-                                                handleEndCitySuggestionSelect(
-                                                  popularairport
-                                                )
-                                              }
-                                            >
-                                              <GoLocation />
-                                              <p>{popularairport.address}</p>
-                                            </li>
-                                          )
-                                        )}
-                                      </ul>
-                                     </>
-                                  ): null}
+                              
                             </div>
                           </div>
                         </div>
