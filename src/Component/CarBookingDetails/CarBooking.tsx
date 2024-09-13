@@ -560,20 +560,15 @@ const CarBooking: React.FC = () => {
   };
 
   const handlePayNow = () => {
-    
+    setTouched(prev => ({ ...prev, pickupTime: true }));
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
     const isValid = validateForm();
     if (isValid) {
       showModalBox();
-      setPaymentModalBoxOpen(true);
-    setModalBoxLoading(true);
-    setTouched((prev) => ({ ...prev, pickupTime: true }));
-    if (formRef.current) {
-      formRef.current.scrollIntoView({ behavior: "smooth" });
+      
     }
-    }
-    setTimeout(() => {
-      setModalBoxLoading(false);
-    }, 2000);
   };
 
   const profileImage = `${imageURL}${userData.logo}`;
