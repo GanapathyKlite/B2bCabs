@@ -148,7 +148,6 @@ function DashboardNavbar() {
                       JSON.stringify(sessionData)
                     );
                   }
-                  
                 }
               } catch (error) {
                 setLoading(false);
@@ -179,7 +178,9 @@ function DashboardNavbar() {
         setLoading(false);
         setAddCashModalBox(false);
         if (error instanceof AxiosError) {
-          notyf.error(error.response?.data?.message?.error?.description || "Network error");
+          notyf.error(
+            error.response?.data?.message?.error?.description || "Network error"
+          );
         }
         console.log(error, "error");
       }
@@ -359,13 +360,14 @@ function DashboardNavbar() {
                         className="py-2 dashBoardNavBarSubTitle"
                         href="#action1"
                       >
-                        <div><span>
-                          <BsChatDotsFill />
-                        </span>
-                       <span> Chat Support</span> </div>
-                        
-                        <div style={{paddingLeft: "20px"}}>987654321</div>
+                        <div>
+                          <span>
+                            <BsChatDotsFill />
+                          </span>
+                          <span> Chat Support</span>{" "}
+                        </div>
 
+                        <div style={{ paddingLeft: "20px" }}>987654321</div>
                       </Nav.Link>
                     </AccordionDetails>
                   </Accordion>

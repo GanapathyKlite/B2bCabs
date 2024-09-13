@@ -211,7 +211,6 @@
   }
 }
 
-
 @keyframes scaleUp {
   0% {
     transform: scale(1);
@@ -315,7 +314,7 @@
 
 .carIcon img {
   background: antiquewhite;
-  width: 75%;
+  width: 100%;
   padding: 8px;
   height: 90px;
   border-radius: 5px;
@@ -344,13 +343,19 @@
 }
 
 .offerPrice {
-  font-size: 30px;
+  font-size: 20px;
   font-weight: 500;
-  font-family: "Inter" !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg{
+    margin-top: 2.5px;
+  }
 }
 
 @media (min-width: 0px) and (max-width: 767px) {
-  .offerPrice{
-    font-size: 25px;
+  .offerPrice {
+    font-size: 18px;
   }
 }

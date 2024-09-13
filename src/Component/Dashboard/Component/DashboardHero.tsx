@@ -693,8 +693,7 @@ const DashboardHero: React.FC = () => {
         }
       } catch (error) {
         console.error("Error fetching autocomplete data", error);
-      } finally {
-      }
+      } 
     } else {
       setSuggestions([]);
     }
@@ -1281,7 +1280,7 @@ const DashboardHero: React.FC = () => {
                         <button
                           type="submit"
                           style={{ minHeight: "50px" }}
-                          className="text-nowrap search_btn w-100"
+                          className="text-nowrap primaryBtn w-100"
                         >
                           Search
                         </button>

@@ -1,31 +1,105 @@
 .amenities-list {
-    list-style-type: none; 
-    padding: 0; 
-    margin: 0; 
-  }
-  
-  .amenity-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem; 
-  }
-  
-  .form-check-input {
-    margin: 0; 
-  }
-  
-  .form-check-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer; 
-  }
-  
-  .icon-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .amenity-name {
-    font-size: 0.9rem; 
-  }
-  
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.amenity-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.form-check-input {
+  margin: 0;
+}
+
+.form-check-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+}
+
+.amenity-name {
+  font-size: 0.9rem;
+}
+
+.checkbox {
+  position: relative;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+}
+.checkbox input[type=checkbox] {
+  display: none;
+  visibility: hidden;
+}
+.checkbox .cbx {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  border: 2px solid #d1d1d1;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transform: translate3d(0, 0, 0);
+}
+.checkbox .cbx:hover {
+  border-color: var(--PrimaryColor);
+}
+.checkbox .flip {
+  display: block;
+  transition: all 0.4s ease;
+  transform-style: preserve-3d;
+  position: relative;
+  width: 20px;
+  height: 16px;
+}
+.checkbox .flip.checked {
+  transform: rotateY(180deg);
+}
+.checkbox .front,
+.checkbox .back {
+  backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+}
+.checkbox .front {
+  z-index: 1;
+}
+.checkbox .back {
+  transform: rotateY(180deg);
+  background: var(--PrimaryColor);
+  text-align: center;
+  color: #fff;
+  line-height: 20px;
+  box-shadow: 0 0 0 1px var(--PrimaryColor);
+}
+.checkbox .back svg {
+  fill: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.checkbox .back svg path {
+  stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.checkbox .vehicleType {
+  font-size: 14px;
+}
+.checkbox .vehicleType:hover ~ .cbx {
+  border-color: var(--PrimaryColor);
+}/*# sourceMappingURL=CarFilter.css.map */
