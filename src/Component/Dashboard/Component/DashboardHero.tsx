@@ -501,15 +501,15 @@ const DashboardHero: React.FC = () => {
     setInputValueTwo(inputTwoValue);
   };
 
-  const handleStartCitySuggestionSelect = (suggestion: Suggestion, endSearchInputRef2: React.RefObject<HTMLInputElement>) => {
+  const handleStartCitySuggestionSelect = (suggestion: Suggestion) => {
     setStartCitySuggestion(suggestion);
     setInputValueOne(suggestion.address);
     sessionStorage.setItem("startCitySuggestion", JSON.stringify(suggestion));
     setSearchStartInputBox(false);
-    // Move focus to the end location input
     if (endSearchInputRef2.current) {
       endSearchInputRef2.current.focus();
     }
+    
   };
 
   const handleEndCitySuggestionSelect = (suggestion: Suggestion) => {
@@ -599,7 +599,6 @@ const DashboardHero: React.FC = () => {
     setSearchStartInputBox((prevState) => !prevState);
   };
   const handleOpenEndInputBox = () => {
-    setIsEndReadOnly(false);
     setSearchEndInputBox((prevState) => !prevState);
   };
 
@@ -642,6 +641,20 @@ const DashboardHero: React.FC = () => {
       document.removeEventListener("mousedown", handleClickOutsideEndCity);
     };
   }, []);
+
+  useEffect(() => {
+    if (searchStartInputBox) {
+      setIsStartReadOnly(false); 
+    } else {
+      setIsStartReadOnly(true); 
+    }
+    if (searchEndInputBox) {
+      setIsEndReadOnly(false); 
+    } else {
+      setIsEndReadOnly(true); 
+    }
+    
+  }, [searchStartInputBox, searchEndInputBox]);
 
   const handleStartSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setStartSearchQuery(e.target.value);
@@ -1015,6 +1028,7 @@ const DashboardHero: React.FC = () => {
                                 required
                                 className="mainInputBox"
                                 ref={startSearchInputRef2}
+                                readOnly={isStartReadOnly}
                                 value={inputValueOne}
                                 autoComplete="off"
                                 placeholder={`${
@@ -1100,7 +1114,7 @@ const DashboardHero: React.FC = () => {
                                                     key={index}
                                                     onClick={() =>
                                                       handleStartCitySuggestionSelect(
-                                                        suggestion, endSearchInputRef2
+                                                        suggestion
                                                       )
                                                     }
                                                   >
@@ -1135,7 +1149,7 @@ const DashboardHero: React.FC = () => {
                                                     key={index}
                                                     onClick={() =>
                                                       handleStartCitySuggestionSelect(
-                                                        suggestion, endSearchInputRef2
+                                                        suggestion
                                                       )
                                                     }
                                                   >
@@ -1190,7 +1204,7 @@ const DashboardHero: React.FC = () => {
                                               key={index}
                                               onClick={() =>
                                                 handleStartCitySuggestionSelect(
-                                                  popularairport,endSearchInputRef2
+                                                  popularairport
                                                 )
                                               }
                                             >
@@ -1338,6 +1352,7 @@ const DashboardHero: React.FC = () => {
                                   required
                                   className="mainInputBox"
                                   ref={endSearchInputRef2}
+                                  readOnly={isEndReadOnly}
                                   value={inputValueTwo}
                                   autoComplete="off"
                                   placeholder={`${
