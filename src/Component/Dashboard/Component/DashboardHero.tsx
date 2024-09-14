@@ -241,14 +241,16 @@ const DashboardHero: React.FC = () => {
 
           if (response.data.status) {
             if (
-              response.data.data !==
-              "We don't have Packages in selected cities."
+               Array.isArray(response.data.data)
             ) {
               setPackages(response.data.data);
-              const storedPackageid = sessionStorage.getItem("packageId");
-              if (storedPackageid) {
-                setPackageId(storedPackageid);
-              }
+              // const storedPackageid = sessionStorage.getItem("packageId");
+              // if (storedPackageid) {
+              //   setPackageId(storedPackageid);
+              // }
+              
+              //Another response
+              //"We don't have packages for the number of days you have selected.\nInstead, you can go with the following itineraries for different durations:\nPondicherry- 2N Yercaud -Pondicherry (2 days)\nPondicherry- Hokennkal 1N- Pondicherry (2 days)\n"
             } else {
               setPackages([]);
               setPackageId("");
@@ -1665,7 +1667,7 @@ const DashboardHero: React.FC = () => {
                                     <option value="">
                                       Select Your Package
                                     </option>
-                                    {packages.map((pkg) => (
+                                    {packages?.map((pkg) => (
                                       <option key={pkg.id} value={pkg.id}>
                                         {pkg.route}
                                       </option>
