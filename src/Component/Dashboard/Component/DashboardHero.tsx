@@ -169,7 +169,7 @@ const DashboardHero: React.FC = () => {
       setHourTime(storedHourTime);
     }
     if (storedDate) {
-      setSelectedDate(dayjs(storedDate));
+      // setSelectedDate(dayjs(storedDate));
     }
     if (storedtripType) {
       setTripType(storedtripType);
