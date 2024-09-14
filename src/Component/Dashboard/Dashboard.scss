@@ -254,16 +254,20 @@
     transform: translateX(-50%);
     position: absolute;
     border-radius: 5px;
-    overflow: hidden;
+    overflow: hidden; 
+    border: 1px solid rgb(243, 239, 239); // Debugging border
+  
     &.citySearchHiddenBoxShow {
-      max-height: 500px;
+      max-height: 500px; 
       opacity: 1;
       visibility: visible;
     }
+  
     .searchInputBoxClass {
       position: relative;
+  
       input {
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2117647059) !important;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.21) !important;
         outline: none;
         width: 100%;
         font-size: 14px;
@@ -271,6 +275,7 @@
         text-transform: capitalize;
         padding: 10px 5px 10px 35px;
       }
+  
       svg {
         position: absolute;
         z-index: 3;
@@ -280,18 +285,23 @@
         transform: translateY(-50%);
       }
     }
+  
     .popularCityListDiv {
       padding: 5px 0;
       overflow-y: scroll;
       scrollbar-width: thin;
+      border: 1px solid rgb(255, 250, 250); // Debugging border
+  
       span:first-child {
         font-size: 12px;
         font-weight: 700;
         padding: 5px;
       }
+  
       ul {
         display: flex;
         flex-direction: column;
+  
         li {
           padding: 5px;
           display: flex;
@@ -299,31 +309,34 @@
           cursor: pointer;
           color: #2f2f2f;
           align-items: center;
+  
           p,
           span {
             margin: 0;
-            overflow: hidden;
-            color: var(--txtGrayColor);
+            overflow: hidden; 
+            color: var(--txtGrayColor); 
             font-size: 12px;
             width: 100%;
             font-weight: 400;
-            text-overflow: ellipsis;
-            text-wrap: nowrap;
-            // display: flex;
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
             padding: 0 !important;
             align-items: center;
           }
+  
           .citySearchText {
             font-weight: 600;
             font-size: 12px;
             width: fit-content !important;
           }
+  
           svg {
             width: fit-content;
           }
+  
           &:hover {
             background-color: #f1f0f0;
-
+  
             p {
               color: var(--SecondaryColor);
             }
@@ -332,6 +345,7 @@
       }
     }
   }
+  
 
   .holidayIcon {
     width: 24px;
