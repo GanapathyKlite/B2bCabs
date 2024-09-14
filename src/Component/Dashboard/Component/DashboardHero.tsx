@@ -310,7 +310,9 @@ const DashboardHero: React.FC = () => {
     setInputValueOne(inputValueTwo)
     setInputValueTwo(inputValueOne)
     setStartCitySuggestion(endCitySuggestion)
+    sessionStorage.setItem("startCitySuggestion", JSON.stringify(endCitySuggestion));
     setEndCitySuggestion(startCitySuggestion)
+    sessionStorage.setItem("endCitySuggestion", JSON.stringify(startCitySuggestion));
   };
   const navigate = useNavigate();
 
@@ -358,6 +360,7 @@ const DashboardHero: React.FC = () => {
         );
         if (response.data.status) {
           const cardata = response.data.data;
+         !selectedDate ? sessionStorage.setItem("selectedDate", defaultDate.toISOString()) : null;
           sessionStorage.setItem("carData", JSON.stringify(cardata));
           sessionStorage.setItem("duration", response.data.duration);
           sessionStorage.setItem("km", response.data.km);
@@ -551,6 +554,7 @@ const DashboardHero: React.FC = () => {
   const formattedDate = {
     start_date: selectedDate ? selectedDate.format("DD-MM-YYYY") : defaultDate.format("DD-MM-YYYY"),
     pickup_time: selectedDate ? selectedDate.format("h:mm A") : defaultDate.format("h:mm A"),
+    
   };
 
   const formatDateRange = (
