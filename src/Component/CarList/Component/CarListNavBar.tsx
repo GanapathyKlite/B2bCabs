@@ -783,6 +783,7 @@ const disabledrangeDate = (current: Dayjs | null): boolean => {
           <DatePicker value={selectedDate} required allowClear={false} 
           showNow={false} disabledDate={disabledDate} onChange={handleDateChange} className="custom-date-picker"/>: 
           <DatePicker value={selectedDate} required onChange={handleDateChange}
+          format="ddd, MMM D, h:mm A"
            showTime={{ use12Hours: true, format: 'h:mm A' }}
            allowClear={false}
            showNow={false}

@@ -1594,7 +1594,7 @@ const DashboardHero: React.FC = () => {
                                 }}
                                 onChange={handleDateChange}
                                 showNow={false}
-                                value={selectedDate}
+                                value={selectedDate || dayjs().add(1, 'hour')}
                               />)}
                             </div>
                           </div>
