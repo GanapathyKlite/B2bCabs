@@ -205,6 +205,20 @@
   position: relative;
   cursor: pointer;
 
+  .cabNavBarLable {
+    font-size: 12px;
+    font-weight: 500;
+    user-select: none;
+    color: var(--PrimaryColor);
+  }
+
+  .sBtn-text {
+    font-size: 14px;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+  }
+
   .mainInputBox {
     width: 100%;
     cursor: pointer;
@@ -216,7 +230,7 @@
     min-height: 50px;
     background-color: #fff !important;
     user-select: none;
-    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(0, 0, 0, 0.2);
 
     &.open ~ .dropdown-arrow {
       transform: rotate(180deg);
@@ -358,6 +372,7 @@
     }
   }
 }
+
 .locationChangerArrowIcon {
   position: absolute;
   font-size: 20px;
@@ -390,6 +405,12 @@
     justify-content: center;
     align-items: center;
   }
+}
+
+.carListNavBarArrowIcon {
+  border: 1px solid;
+  border-radius: 100%;
+  right: -5.5%;
 }
 
 .datePickerSingle {

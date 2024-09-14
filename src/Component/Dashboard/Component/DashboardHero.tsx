@@ -1,26 +1,19 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import "./CSS/DashboardHero.css";
 import bg from "../../../Assets/hero-banner.jpg";
-import { MdLocationSearching, MdGpsFixed } from "react-icons/md";
-import { FaPlaneArrival, FaPlaneDeparture } from "react-icons/fa";
+import { FaPlaneArrival } from "react-icons/fa";
 import { GrLocation } from "react-icons/gr";
 import { LuClock4 } from "react-icons/lu";
 import { DatePicker } from "antd";
 import { LuCalendarDays } from "react-icons/lu";
 import { useAuth } from "../../Auth/AuthContext";
-// import "antd/dist/reset.css";
-// import { CalendarOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-
 import dayjs, { Dayjs } from "dayjs";
 import axios from "axios";
 import { AxiosError } from "axios";
-import AutocompleteInput from "../../AutoComplete/AutocompleInput";
 import { Notyf } from "notyf";
-import { IoSearchOutline } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
 import { TbArrowsExchange2 } from "react-icons/tb";
-
 import { GoLocation } from "react-icons/go";
 
 interface TabData {
@@ -99,9 +92,7 @@ const tabsData: TabData[] = [
 
 const DashboardHero: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
-  const [isToggled, setToggled] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string>("option1");
-  const [locationData, setLocationData] = useState<any>(null);
   const [cities, setCities] = useState<City[]>([]);
   const [startCitySuggestion, setStartCitySuggestion] =
     useState<Suggestion | null>(null);
@@ -240,15 +231,13 @@ const DashboardHero: React.FC = () => {
           );
 
           if (response.data.status) {
-            if (
-               Array.isArray(response.data.data)
-            ) {
+            if (Array.isArray(response.data.data)) {
               setPackages(response.data.data);
               // const storedPackageid = sessionStorage.getItem("packageId");
               // if (storedPackageid) {
               //   setPackageId(storedPackageid);
               // }
-              
+
               //Another response
               //"We don't have packages for the number of days you have selected.\nInstead, you can go with the following itineraries for different durations:\nPondicherry- 2N Yercaud -Pondicherry (2 days)\nPondicherry- Hokennkal 1N- Pondicherry (2 days)\n"
             } else {
@@ -310,13 +299,18 @@ const DashboardHero: React.FC = () => {
   const handleToggle = (option: string) => {
     setSelectedOption(option);
 
-    setInputValueOne(inputValueTwo)
-    setInputValueTwo(inputValueOne)
-    setStartCitySuggestion(endCitySuggestion)
-    sessionStorage.setItem("startCitySuggestion", JSON.stringify(endCitySuggestion));
-    setEndCitySuggestion(startCitySuggestion)
-    sessionStorage.setItem("endCitySuggestion", JSON.stringify(startCitySuggestion));
-
+    setInputValueOne(inputValueTwo);
+    setInputValueTwo(inputValueOne);
+    setStartCitySuggestion(endCitySuggestion);
+    sessionStorage.setItem(
+      "startCitySuggestion",
+      JSON.stringify(endCitySuggestion)
+    );
+    setEndCitySuggestion(startCitySuggestion);
+    sessionStorage.setItem(
+      "endCitySuggestion",
+      JSON.stringify(startCitySuggestion)
+    );
   };
   const navigate = useNavigate();
 
@@ -365,7 +359,9 @@ const DashboardHero: React.FC = () => {
         );
         if (response.data.status) {
           const cardata = response.data.data;
-         !selectedDate ? sessionStorage.setItem("selectedDate", defaultDate.toISOString()) : null;
+          !selectedDate
+            ? sessionStorage.setItem("selectedDate", defaultDate.toISOString())
+            : null;
           sessionStorage.setItem("carData", JSON.stringify(cardata));
           sessionStorage.setItem("duration", response.data.duration);
           sessionStorage.setItem("km", response.data.km);
@@ -487,7 +483,7 @@ const DashboardHero: React.FC = () => {
         if (response.data.status) {
           sessionStorage.setItem("duration", "");
           sessionStorage.setItem("km", "0");
-          let period = {
+          const period = {
             noOfDays: response.data.noOfDays,
             noOfNights: response.data.noOfNights,
           };
@@ -503,16 +499,6 @@ const DashboardHero: React.FC = () => {
         console.log(error);
       }
     }
-  };
-
-  const inputFieldOne = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputOneValue = e.target.value;
-    setInputValueOne(inputOneValue);
-  };
-
-  const inputFieldTwo = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputTwoValue = e.target.value;
-    setInputValueTwo(inputTwoValue);
   };
 
   const handleStartCitySuggestionSelect = (suggestion: Suggestion) => {
@@ -554,11 +540,14 @@ const DashboardHero: React.FC = () => {
       sessionStorage.removeItem("selectedDateRange");
     }
   };
-  const defaultDate = dayjs().add(1, 'hour');
+  const defaultDate = dayjs().add(1, "hour");
   const formattedDate = {
-    start_date: selectedDate ? selectedDate.format("DD-MM-YYYY") : defaultDate.format("DD-MM-YYYY"),
-    pickup_time: selectedDate ? selectedDate.format("h:mm A") : defaultDate.format("h:mm A"),
-    
+    start_date: selectedDate
+      ? selectedDate.format("DD-MM-YYYY")
+      : defaultDate.format("DD-MM-YYYY"),
+    pickup_time: selectedDate
+      ? selectedDate.format("h:mm A")
+      : defaultDate.format("h:mm A"),
   };
 
   const formatDateRange = (
@@ -933,7 +922,7 @@ const DashboardHero: React.FC = () => {
       disabledSeconds: () => [],
     };
   };
- 
+
   return (
     <>
       <div className="hero-banner">
@@ -1092,14 +1081,61 @@ const DashboardHero: React.FC = () => {
                                 : ""
                             }`}
                           >
-
-                            <div 
-                            className="popularCityListDiv"
-                            >
-                              
-                                  {tripType === "Cab From Airport" ? (
+                            <div className="popularCityListDiv">
+                              {tripType === "Cab From Airport" ? (
+                                <>
+                                  {suggestions.length > 0 ? (
+                                    <ul className="p-0 m-0 d-flex flex-column">
+                                      {suggestions.map((suggestion, index) => (
+                                        <li
+                                          key={index}
+                                          onClick={() =>
+                                            handleStartCitySuggestionSelect(
+                                              suggestion
+                                            )
+                                          }
+                                        >
+                                          <GoLocation />
+                                          <p
+                                            style={{ overflow: "hidden" }}
+                                            dangerouslySetInnerHTML={{
+                                              __html: startCityHighlightText(
+                                                suggestion.address,
+                                                inputValueOne
+                                              ),
+                                            }}
+                                          ></p>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  ) : (
                                     <>
-
+                                      <span>POPULAR AIRPORTS</span>
+                                      <ul className="p-0 m-0">
+                                        {popularAirports.map(
+                                          (popularairport, index) => (
+                                            <li
+                                              key={index}
+                                              onClick={() =>
+                                                handleStartCitySuggestionSelect(
+                                                  popularairport
+                                                )
+                                              }
+                                            >
+                                              <GoLocation />
+                                              <p>{popularairport.address}</p>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>{" "}
+                                    </>
+                                  )}{" "}
+                                </>
+                              ) : null}
+                              {tripType === "Cab To Airport" ? (
+                                <>
+                                  {suggestions.length > 0 ? (
+                                    <ul className="p-0 m-0 d-flex flex-column">
                                       {suggestions.length > 0 ? (
                                         <ul className="p-0 m-0 d-flex flex-column">
                                           {suggestions.map(
@@ -1127,131 +1163,84 @@ const DashboardHero: React.FC = () => {
                                             )
                                           )}
                                         </ul>
-
-                                      ) : (<>
-                                        <span>POPULAR AIRPORTS</span>
-                                          <ul className="p-0 m-0">
-                                            {popularAirports.map(
-                                              (popularairport, index) => (
-                                                <li
-                                                  key={index}
-                                                  onClick={() =>
-                                                    handleStartCitySuggestionSelect(
-                                                      popularairport
-                                                    )
-                                                  }
-                                                >
-                                                  <GoLocation />
-                                                  <p>{popularairport.address}</p>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul> </>)}{" "}
-                                    </>
-                                  ) : null}
-                                  {tripType === "Cab To Airport" ? (
+                                      ) : null}
+                                    </ul>
+                                  ) : (
                                     <>
-                                      {suggestions.length > 0 ? (
-                                        <ul className="p-0 m-0 d-flex flex-column">
-                                          {suggestions.length > 0 ? (
-                                            <ul className="p-0 m-0 d-flex flex-column">
-                                              {suggestions.map(
-                                                (suggestion, index) => (
-                                                  <li
-                                                    key={index}
-                                                    onClick={() =>
-                                                      handleStartCitySuggestionSelect(
-                                                        suggestion
-                                                      )
-                                                    }
-                                                  >
-                                                    <GoLocation />
-                                                    <p style={{ overflow: "hidden" }}
-                                                      dangerouslySetInnerHTML={{
-                                                        __html:
-                                                          startCityHighlightText(
-                                                            suggestion.address,
-                                                            inputValueOne
-                                                          ),
-                                                      }}
-                                                    ></p>
-                                                  </li>
+                                      <span>RECENT SEARCHES</span>
+                                      <ul className="p-0 m-0">
+                                        {RecentSearches.map(
+                                          (recentsearch, index) => (
+                                            <li
+                                              key={index}
+                                              onClick={() =>
+                                                handleStartCitySuggestionSelect(
+                                                  recentsearch
                                                 )
-                                              )}
-                                            </ul>
-                                          ) : null}
-                                        </ul>
-                                      ) : (<><span>RECENT SEARCHES</span>
-                                        <ul className="p-0 m-0">
-                                          {RecentSearches.map(
-                                            (recentsearch, index) => (
-                                              <li
-                                                key={index}
-                                                onClick={() =>
-                                                  handleStartCitySuggestionSelect(
-                                                    recentsearch
-                                                  )
-                                                }
-                                              >
-                                                <GoLocation />
-                                                <p>{recentsearch.address}</p>
-                                              </li>
-                                            )
-                                          )}
-                                        </ul></>)}{" "}
-                                    </>
-                                  ) : null}
-                                  {tripType === "Holidays Package"  ? (
-                                    <>
-                                    {startFilteredCities.length > 0 ? (
-                                <ul className="p-0 m-0 d-flex flex-column">
-                                  {startFilteredCities.map((city) => (
-                                    <li
-                                      key={city.id_city}
-                                      onClick={() =>
-                                        handleStartCitySelect(
-                                          city,
-                                          endSearchInputRef
-                                        )
-                                      }
-                                    >
-                                      <GoLocation />
-                                      <p
-                                        dangerouslySetInnerHTML={{
-                                          __html: startCityHighlightText(
-                                            city.city_name,
-                                            startSearchQuery
-                                          ),
-                                        }}
-                                      ></p>
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : (<><span>POPULAR CITY</span>
-                                <ul className="p-0 m-0">
-                                  {popularCities.map(
-                                    (popularCitie, index) => (
-                                      <li
-                                        key={index}
-                                        onClick={() =>
-                                          handleStartCitySelect(
-                                            popularCitie,
-                                            endSearchInputRef
+                                              }
+                                            >
+                                              <GoLocation />
+                                              <p>{recentsearch.address}</p>
+                                            </li>
                                           )
-                                        }
-                                      >
-                                        <GoLocation />
-                                        <p>{popularCitie.city_name}</p>
-                                      </li>
-                                    )
-                                  )}
-                                </ul></>)}
-                                      
+                                        )}
+                                      </ul>
                                     </>
-                                  ) 
-                                  
-                                      :null}
-                                      {/* {tripType === "Cab To Airport" && inputValueOne.length < 3 ? (<><span>RECENT SEARCHES</span>
+                                  )}{" "}
+                                </>
+                              ) : null}
+                              {tripType === "Holidays Package" ? (
+                                <>
+                                  {startFilteredCities.length > 0 ? (
+                                    <ul className="p-0 m-0 d-flex flex-column">
+                                      {startFilteredCities.map((city) => (
+                                        <li
+                                          key={city.id_city}
+                                          onClick={() =>
+                                            handleStartCitySelect(
+                                              city,
+                                              endSearchInputRef
+                                            )
+                                          }
+                                        >
+                                          <GoLocation />
+                                          <p
+                                            dangerouslySetInnerHTML={{
+                                              __html: startCityHighlightText(
+                                                city.city_name,
+                                                startSearchQuery
+                                              ),
+                                            }}
+                                          ></p>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  ) : (
+                                    <>
+                                      <span>POPULAR CITY</span>
+                                      <ul className="p-0 m-0">
+                                        {popularCities.map(
+                                          (popularCitie, index) => (
+                                            <li
+                                              key={index}
+                                              onClick={() =>
+                                                handleStartCitySelect(
+                                                  popularCitie,
+                                                  endSearchInputRef
+                                                )
+                                              }
+                                            >
+                                              <GoLocation />
+                                              <p>{popularCitie.city_name}</p>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
+                                    </>
+                                  )}
+                                </>
+                              ) : null}
+                              {/* {tripType === "Cab To Airport" && inputValueOne.length < 3 ? (<><span>RECENT SEARCHES</span>
                                         <ul className="p-0 m-0">
                                           {RecentSearches.map(
                                             (recentsearch, index) => (
@@ -1280,10 +1269,6 @@ const DashboardHero: React.FC = () => {
                                           )}
 
                                         </ul></>): null} */}
-                                
-                              
-                              
-
                             </div>
                           </div>
                           {tab.id === 2 && selectedOption === "option2" ? (
@@ -1421,146 +1406,148 @@ const DashboardHero: React.FC = () => {
                               searchEndInputBox ? "citySearchHiddenBoxShow" : ""
                             }`}
                           >
-
-                            <div
-                             className="popularCityListDiv"
-                             >
-                              
-                                  {tripType === "Cab From Airport"  ? (
-
-                                    <>
+                            <div className="popularCityListDiv">
+                              {tripType === "Cab From Airport" ? (
+                                <>
+                                  {suggestions2.length > 0 ? (
+                                    <ul className="p-0 m-0 d-flex flex-column">
                                       {suggestions2.length > 0 ? (
                                         <ul className="p-0 m-0 d-flex flex-column">
-                                          {suggestions2.length > 0 ? (
-                                            <ul className="p-0 m-0 d-flex flex-column">
-                                              {suggestions2.map(
-                                                (suggestion, index) => (
-                                                  <li
-                                                    key={index}
-                                                    onClick={() =>
-                                                      handleEndCitySuggestionSelect(
-                                                        suggestion
-                                                      )
-                                                    }
-                                                  >
-                                                    <GoLocation />
-
-                                                    {/* <p>{suggestion.address}</p> */}
-                                                    <p
-                                                      dangerouslySetInnerHTML={{
-                                                        __html:
-                                                          startCityHighlightText(
-                                                            suggestion.address,
-                                                            inputValueTwo
-                                                          ),
-                                                      }}
-                                                    ></p>
-                                                  </li>
-                                                )
-                                              )}
-                                            </ul>
-                                          ) : null}
-                                        </ul>
-
-                                        ) : (<><span>RECENT SEARCHES</span>
-                                        <ul className="p-0 m-0">
-                                          {RecentSearches.map(
-                                            (recentsearch, index) => (
+                                          {suggestions2.map(
+                                            (suggestion, index) => (
                                               <li
                                                 key={index}
                                                 onClick={() =>
                                                   handleEndCitySuggestionSelect(
-                                                    recentsearch
+                                                    suggestion
                                                   )
                                                 }
                                               >
                                                 <GoLocation />
-                                                <p>{recentsearch.address}</p>
+
+                                                {/* <p>{suggestion.address}</p> */}
+                                                <p
+                                                  dangerouslySetInnerHTML={{
+                                                    __html:
+                                                      startCityHighlightText(
+                                                        suggestion.address,
+                                                        inputValueTwo
+                                                      ),
+                                                  }}
+                                                ></p>
                                               </li>
                                             )
                                           )}
-                                        </ul></>)}{" "}
-
-                                    </>
-                                  ) : tripType === "Cab To Airport" ? (
+                                        </ul>
+                                      ) : null}
+                                    </ul>
+                                  ) : (
                                     <>
+                                      <span>RECENT SEARCHES</span>
+                                      <ul className="p-0 m-0">
+                                        {RecentSearches.map(
+                                          (recentsearch, index) => (
+                                            <li
+                                              key={index}
+                                              onClick={() =>
+                                                handleEndCitySuggestionSelect(
+                                                  recentsearch
+                                                )
+                                              }
+                                            >
+                                              <GoLocation />
+                                              <p>{recentsearch.address}</p>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
+                                    </>
+                                  )}{" "}
+                                </>
+                              ) : tripType === "Cab To Airport" ? (
+                                <>
+                                  {suggestions2.length > 0 ? (
+                                    <ul className="p-0 m-0 d-flex flex-column">
                                       {suggestions2.length > 0 ? (
                                         <ul className="p-0 m-0 d-flex flex-column">
-                                          {suggestions2.length > 0 ? (
-                                            <ul className="p-0 m-0 d-flex flex-column">
-                                              {suggestions2.map(
-                                                (suggestion, index) => (
-                                                  <li
-                                                    key={index}
-                                                    onClick={() =>
-                                                      handleEndCitySuggestionSelect(
-                                                        suggestion
-                                                      )
-                                                    }
-                                                  >
-                                                    <GoLocation />
+                                          {suggestions2.map(
+                                            (suggestion, index) => (
+                                              <li
+                                                key={index}
+                                                onClick={() =>
+                                                  handleEndCitySuggestionSelect(
+                                                    suggestion
+                                                  )
+                                                }
+                                              >
+                                                <GoLocation />
 
-                                                    {/* <p>{suggestion.address}</p> */}
-                                                    <p
-                                                      dangerouslySetInnerHTML={{
-                                                        __html:
-                                                          startCityHighlightText(
-                                                            suggestion.address,
-                                                            inputValueTwo
-                                                          ),
-                                                      }}
-                                                    ></p>
-                                                  </li>
-                                                )
-                                              )}
-                                            </ul>
-                                          ) : null}
+                                                {/* <p>{suggestion.address}</p> */}
+                                                <p
+                                                  dangerouslySetInnerHTML={{
+                                                    __html:
+                                                      startCityHighlightText(
+                                                        suggestion.address,
+                                                        inputValueTwo
+                                                      ),
+                                                  }}
+                                                ></p>
+                                              </li>
+                                            )
+                                          )}
                                         </ul>
-
-                                      ) : (( <>
-                                        <span>POPULAR AIRPORTS</span>
-                                          <ul className="p-0 m-0">
-                                            {popularAirports.map(
-                                              (popularairport, index) => (
-                                                <li
-                                                  key={index}
-                                                  onClick={() =>
-                                                    handleEndCitySuggestionSelect(
-                                                      popularairport
-                                                    )
-                                                  }
-                                                >
-                                                  <GoLocation />
-                                                  <p>{popularairport.address}</p>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                         </>))}</>): null}
-                                  {tripType === "Holidays Package" ? (
-
+                                      ) : null}
+                                    </ul>
+                                  ) : (
                                     <>
-                                    {endFilteredCities.length > 0 ? (
-                                <ul className="p-0 m-0 d-flex flex-column">
-                                  {endFilteredCities.map((city) => (
-                                    <li
-                                      key={city.id_city}
-                                      onClick={() => handleEndCitySelect(city)}
-                                    >
-                                      <GoLocation />
-                                      <p
-                                        dangerouslySetInnerHTML={{
-                                          __html: endCityHighlightText(
-                                            city.city_name,
-                                            endSearchQuery
-                                          ),
-                                        }}
-                                      ></p>
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : (<>
-                               <span>POPULAR CITY</span>
+                                      <span>POPULAR AIRPORTS</span>
+                                      <ul className="p-0 m-0">
+                                        {popularAirports.map(
+                                          (popularairport, index) => (
+                                            <li
+                                              key={index}
+                                              onClick={() =>
+                                                handleEndCitySuggestionSelect(
+                                                  popularairport
+                                                )
+                                              }
+                                            >
+                                              <GoLocation />
+                                              <p>{popularairport.address}</p>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
+                                    </>
+                                  )}
+                                </>
+                              ) : null}
+                              {tripType === "Holidays Package" ? (
+                                <>
+                                  {endFilteredCities.length > 0 ? (
+                                    <ul className="p-0 m-0 d-flex flex-column">
+                                      {endFilteredCities.map((city) => (
+                                        <li
+                                          key={city.id_city}
+                                          onClick={() =>
+                                            handleEndCitySelect(city)
+                                          }
+                                        >
+                                          <GoLocation />
+                                          <p
+                                            dangerouslySetInnerHTML={{
+                                              __html: endCityHighlightText(
+                                                city.city_name,
+                                                endSearchQuery
+                                              ),
+                                            }}
+                                          ></p>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  ) : (
+                                    <>
+                                      <span>POPULAR CITY</span>
                                       <ul className="p-0 m-0">
                                         {popularCities.map(
                                           (popularCitie, index) => (
@@ -1577,15 +1564,11 @@ const DashboardHero: React.FC = () => {
                                             </li>
                                           )
                                         )}
-                                      </ul></>)}
+                                      </ul>
                                     </>
-
-                                  ) : null
-                                  }
-                                
-                              
-                              
-
+                                  )}
+                                </>
+                              ) : null}
                             </div>
                           </div>
                         </div>
@@ -1602,33 +1585,38 @@ const DashboardHero: React.FC = () => {
 
                               {tab.id === 2 && selectedOption === "option2" ? (
                                 <DatePicker
-
-                                required
-                                format="ddd, MMM D"
-                                suffixIcon={null}
-                                 className="border-0 w-100 singleDatePicker"
-                                allowClear={false}
-                                disabledDate={disabledDate}
-                                showNow={false}
-                                onChange={handleDateChange}
-                                value={selectedDate}
-                              />):(<DatePicker
-                                required
-                                format="ddd, MMM D, h:mm A"
-                                suffixIcon={null}
-                                 className="border-0 w-100 singleDatePicker"
-                                allowClear={false}
-                                disabledDate={disabledDate}
-                                disabledTime={(date) => getDisabledTime(date)}
-                                showTime={{
-                                  use12Hours: true,
-                                  format: "h:mm A",
-                                }}
-                                onChange={handleDateChange}
-                                showNow={false}
-                                value={ selectedDate ? selectedDate : dayjs().add(1, 'hour')}
-                              />)}
-
+                                  required
+                                  format="ddd, MMM D"
+                                  suffixIcon={null}
+                                  className="border-0 w-100 singleDatePicker"
+                                  allowClear={false}
+                                  disabledDate={disabledDate}
+                                  showNow={false}
+                                  onChange={handleDateChange}
+                                  value={selectedDate}
+                                />
+                              ) : (
+                                <DatePicker
+                                  required
+                                  format="ddd, MMM D, h:mm A"
+                                  suffixIcon={null}
+                                  className="border-0 w-100 singleDatePicker"
+                                  allowClear={false}
+                                  disabledDate={disabledDate}
+                                  disabledTime={(date) => getDisabledTime(date)}
+                                  showTime={{
+                                    use12Hours: true,
+                                    format: "h:mm A",
+                                  }}
+                                  onChange={handleDateChange}
+                                  showNow={false}
+                                  value={
+                                    selectedDate
+                                      ? selectedDate
+                                      : dayjs().add(1, "hour")
+                                  }
+                                />
+                              )}
                             </div>
                           </div>
                         </>
@@ -1721,309 +1709,17 @@ const DashboardHero: React.FC = () => {
                           className="text-nowrap primaryBtn w-100"
                         >
                           {loading ? (
-                <span
-                  className="spinner-border spinner-border-sm"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-              ) : (
-                "Search"
-              )}
+                            <span
+                              className="spinner-border spinner-border-sm"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
+                          ) : (
+                            "Search"
+                          )}
                         </button>
-                        
                       </div>
                     </div>
-                    {/* <div className="row justify-content-center row-gap-3 align-items-center position-relative">
-                      <div className="col-lg-3 col-md-3 z-1">
-                        <div className="inputdiv px-3 py-lg-3 py-md-2 m-0 d-flex align-items-center justify-content-between">
-                          <div
-                            className={`${tab.id === 1 ? "d-block" : "d-none"}`}
-                          >
-                            {selectedOption === "option1" ? (
-                              <FaPlaneArrival className="icon" />
-                            ) : (
-                              <GrLocation className="icon" />
-                            )}
-                          </div>
-                          <div
-                            className={`${tab.id === 2 ? "d-block" : "d-none"}`}
-                          >
-                            {selectedOption === "option1" ? (
-                              <GrLocation className="icon" />
-                            ) : (
-                              <GrLocation className="icon" />
-                            )}
-                          </div>
-                          <div
-                            className={`${tab.id === 3 ? "d-block" : "d-none"}`}
-                          >
-                            {selectedOption === "option1" ? (
-                              <GrLocation className="icon" />
-                            ) : (
-                              <GrLocation className="icon" />
-                            )}
-                          </div>
-                          <div className="autocomplete-container">
-                            {tripType !== "Holidays Package" ? (
-                              <>
-                                <AutocompleteInput
-                                  inputValue={inputValueOne}
-                                  onChange={inputFieldOne}
-                                  onSuggestionSelect={
-                                    handleStartCitySuggestionSelect
-                                  }
-                                  placeholder={`${
-                                    tab.id === 1 && selectedOption === "option1"
-                                      ? "Enter Airport Name"
-                                      : "Enter Pickup Address"
-                                  }`}
-                                  required={true}
-                                  className="w-75"
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <input
-                                  type="text"
-                                  value={startSearchQuery}
-                                  onChange={handleStartSearchChange}
-                                  placeholder="Select start city"
-                                />
-                                {startFilteredCities.length > 0 && (
-                                  <ul>
-                                    {startFilteredCities.map((city) => (
-                                      <li
-                                        key={city.id_city}
-                                        onClick={() =>
-                                          handleStartCitySelect(city)
-                                        }
-                                      >
-                                        {city.city_name}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                              </>
-                            )}
-                          </div>
-
-                          <button
-                            className={`currentlocationbtn ${
-                              selectedOption === "option1" && tab.id === 1
-                                ? "invisible"
-                                : "opacity-1"
-                            }`}
-                            onClick={handleCurrentLocation}
-                          >
-                            {isToggled ? (
-                              <MdGpsFixed className="clicked" />
-                            ) : (
-                              <MdLocationSearching className="notclicked" />
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                      <div className="col-lg-3 col-md-3 z-1">
-                        <div className="inputdiv px-3 py-lg-3 py-md-2 m-0 d-flex align-items-center justify-content-between">
-                          <div
-                            className={`${tab.id === 1 ? "d-flex" : "d-none"}`}
-                          >
-                            {selectedOption === "option1" ? (
-                              <GrLocation className="icon" />
-                            ) : (
-                              <FaPlaneDeparture className="icon" />
-                            )}
-                          </div>
-                          <div
-                            className={`${tab.id === 2 ? "d-block" : "d-none"}`}
-                          >
-                            {selectedOption === "option1" ? (
-                              <GrLocation className="icon" />
-                            ) : (
-                              <LuClock4 className="icon" />
-                            )}
-                          </div>
-                          <div
-                            className={`${tab.id === 3 ? "d-block" : "d-none"}`}
-                          >
-                            {selectedOption === "option1" ? (
-                              <GrLocation className="icon" />
-                            ) : (
-                              <LuClock4 className="icon" />
-                            )}
-                          </div>
-
-                          <div
-                            className={`${
-                              tab.id === 2 && selectedOption === "option2"
-                                ? "d-none"
-                                : "d-flex w-75"
-                            }`}
-                          >
-                            {tripType !== "Holidays Package" ? (
-                              <>
-                                <AutocompleteInput
-                                  inputValue={inputValueTwo}
-                                  onChange={inputFieldTwo}
-                                  onSuggestionSelect={
-                                    handleEndCitySuggestionSelect
-                                  }
-                                  placeholder={`${
-                                    tab.id === 1 && selectedOption === "option2"
-                                      ? "Enter Airport Name"
-                                      : "Enter Drop Address"
-                                  }`}
-                                  required={tripType !== "Hourly Rental"}
-                                  className="w-100 m-0"
-                                />
-                              </>
-                            ) : (
-                              <>
-                                <div className="autocomplete-container">
-                                  <input
-                                    type="text"
-                                    value={endSearchQuery}
-                                    onChange={handleEndSearchChange}
-                                    placeholder="Select end city"
-                                  />
-
-                                  {endFilteredCities.length > 0 && (
-                                    <ul>
-                                      {endFilteredCities.map((city) => (
-                                        <li
-                                          key={city.id_city}
-                                          onClick={() =>
-                                            handleEndCitySelect(city)
-                                          }
-                                        >
-                                          {city.city_name}
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  )}
-                                </div>
-                              </>
-                            )}
-                          </div>
-                          <div
-                            className={`${
-                              tab.id === 2 && selectedOption === "option2"
-                                ? "d-flex w-75 justify-content-between"
-                                : "d-none"
-                            }`}
-                          >
-                            <select
-                              className="inputbox m-0 w-100"
-                              onChange={(e) => {
-                                setHourTime(e.target.value);
-                                sessionStorage.setItem(
-                                  "hourTime",
-                                  e.target.value
-                                );
-                              }}
-                              value={hourTime}
-                            >
-                              <option value={1}>2h 20km</option>
-                              <option value={2}>4h 40km</option>
-                              <option value={3}>6h 60km</option>
-                              <option value={4}>8h 80km</option>
-                              <option value={5}>10h 100km</option>
-                            </select>
-                          </div>
-                          <button
-                            className={`currentlocationbtn ${
-                              tab.id === 2 && selectedOption === "option2"
-                                ? "invisible"
-                                : "invisible"
-                            }`}
-                          >
-                            <MdLocationSearching />
-                          </button>
-                        </div>
-                      </div>
-                      {tab.id === 1 ||
-                      (tab.id === 2 && selectedOption === "option2") ? (
-                        <>
-                          <div className="col-lg-3 col-md-3 z-1">
-                            <div className="inputdiv px-3 py-0  m-0 d-flex align-items-center justify-content-between">
-                              <LuCalendarDays />
-
-                              <DatePicker
-                                required
-                                format="ddd, MMM D"
-                                suffixIcon={null}
-                                className="border-0 w-75 p-0"
-                                allowClear={false}
-                                showTime={{
-                                  use12Hours: true,
-                                  format: "h:mm A",
-                                }}
-                                onChange={handleDateChange}
-                                value={selectedDate}
-                              />
-                              <LuCalendarDays className="invisible" />
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="col-lg-3 col-md-3 z-1">
-                            <div className="inputdiv px-3 py-0  m-0 d-flex align-items-center justify-content-between">
-                              <LuCalendarDays />
-
-                              <RangePicker
-                                required
-                                format="ddd, MMM D"
-                                suffixIcon={null}
-                                className="border-0 w-75 p-0"
-                                allowClear={false}
-                                onChange={handleRangeChange}
-                                value={selectedDateRange}
-                              />
-                              <LuCalendarDays className="invisible" />
-                            </div>
-                          </div>
-                        </>
-                      )}
-
-                      {tab.id === 3 ? (
-                        <>
-                          <div className="col-lg-3 col-md-3 z-1">
-                            <div className="inputdiv px-3 py-lg-3 py-md-2 m-0 d-flex align-items-center justify-content-between">
-                              {packages.length !== 0 ? (
-                                <>
-                                  <select
-                                    className="inputbox m-0 w-100"
-                                    onChange={handlePackageChange}
-                                    value={packageId || ""}
-                                  >
-                                    <option value="">
-                                      Select Your Package
-                                    </option>
-                                    {packages.map((pkg) => (
-                                      <option key={pkg.id} value={pkg.id}>
-                                        {pkg.route}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </>
-                              ) : (
-                                <>Not available</>
-                              )}
-                            </div>
-                          </div>
-                        </>
-                      ) : null}
-
-                      <div className="col-lg-3 col-md-3 z-1">
-                        <button
-                          type="submit"
-                          className="text-nowrap search_btn w-100 py-lg-3 px-lg-4 py-md-2 px-md-3"
-                        >
-                          Search
-                        </button>
-                      </div>
-                    </div> */}
                   </div>
                 </form>
               ))}
