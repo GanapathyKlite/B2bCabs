@@ -128,6 +128,7 @@ const DashboardHero: React.FC = () => {
   const [isStartReadOnly, setIsStartReadOnly] = React.useState<boolean>(true);
   const [isEndReadOnly, setIsEndReadOnly] = React.useState<boolean>(true);
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     authToken,
@@ -315,6 +316,7 @@ const DashboardHero: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoading(true);
     sessionStorage.setItem("tripType", tripType);
     let start_city, end_city;
     if (startCitySuggestion) {
@@ -365,6 +367,7 @@ const DashboardHero: React.FC = () => {
           navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
+        setLoading(false);
         console.log(error);
         if (error instanceof AxiosError) {
           notyf.error(error.response?.data?.message);
@@ -403,6 +406,7 @@ const DashboardHero: React.FC = () => {
           navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
+        setLoading(false);
         console.log(error);
         if (error instanceof AxiosError) {
           notyf.error(error.response?.data?.message);
@@ -452,6 +456,7 @@ const DashboardHero: React.FC = () => {
           navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
+        setLoading(false);
         console.log(error);
         if (error instanceof AxiosError) {
           notyf.error(error.response?.data?.message);
@@ -486,6 +491,7 @@ const DashboardHero: React.FC = () => {
           navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
+        setLoading(false);
         console.log(error);
       }
     }
@@ -1676,11 +1682,21 @@ const DashboardHero: React.FC = () => {
                       <div className="col-lg-3 col-md-3 z-1">
                         <button
                           type="submit"
+                          disabled={loading}
                           style={{ minHeight: "50px" }}
                           className="text-nowrap search_btn w-100"
                         >
-                          Search
+                          {loading ? (
+                <span
+                  className="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              ) : (
+                "Search"
+              )}
                         </button>
+                        
                       </div>
                     </div>
                     {/* <div className="row justify-content-center row-gap-3 align-items-center position-relative">

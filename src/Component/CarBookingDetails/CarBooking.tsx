@@ -101,6 +101,8 @@ const CarBooking: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if(dayjs().format("DD-MM-YYYY") === startdate){
+      settoday(true)}
     const storedholidaystartCity = sessionStorage.getItem("holidaystartCity");
     const storedholidayendCity = sessionStorage.getItem("holidayendCity");
     if (storedholidaystartCity) {
@@ -265,6 +267,7 @@ const CarBooking: React.FC = () => {
   const [addCashModalBox, setAddCashModalBox] = useState(false);
   const [addamount, setaddAmount] = useState("");
   const [loading, setLoading] = useState(false);
+  const [today, settoday] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState("razorpay");
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -935,21 +938,26 @@ const CarBooking: React.FC = () => {
     setAddCashModalBox(false);
   };
 
+ 
+ 
+    
   const disabledTime = () => {
-    const now = dayjs();
-    const currentHour = now.hour();
-    const currentMinute = now.minute();
-
-    return {
-      disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
-      disabledMinutes: (hour: number) => {
-        if (hour === currentHour + 1) {
-          return Array.from({ length: currentMinute + 1 }, (_, i) => i);
-        }
-        return [];
-      },
-      disabledSeconds: () => [],
-    };
+      const now = dayjs();
+    
+      const currentHour = now.hour();
+      const currentMinute = now.minute();
+  
+      return {
+        disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
+        disabledMinutes: (hour: number) => {
+          if (hour === currentHour + 1) {
+            return Array.from({ length: currentMinute + 1 }, (_, i) => i);
+          }
+          return [];
+        },
+        disabledSeconds: () => [],
+      };
+   
   };
   return (
     <>
@@ -1435,7 +1443,7 @@ const CarBooking: React.FC = () => {
                         style={{ height: "38px" }}
                         onChange={handleTimeChange}
                         onFocus={handleFocus}
-                        disabledTime={disabledTime}
+                        disabledTime={today ? disabledTime : undefined}
                         // onBlur={()=>validateField("pickupTime")}
                         format="h:mm A"
                         use12Hours
