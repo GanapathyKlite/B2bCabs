@@ -488,7 +488,10 @@ const CarList: React.FC<CarListProps> = ({
       <div className="d-flex flex-column gap-4 px-2 pb-3">
         {cars.length > 0 ? (
           cars.map((car, index) => (
-            <div className="sideBars row align-items-center row-gap-4" key={index}>
+            <div
+              className="sideBars row align-items-center row-gap-4"
+              key={index}
+            >
               <div className="carIcon d-flex col-2 align-items-center justify-content-start justify-content-md-center">
                 <img
                   style={{ objectFit: "contain" }}

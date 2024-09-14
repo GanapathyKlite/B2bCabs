@@ -55,20 +55,21 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  padding: 10px 15px;
+  padding: 0px 0px 0 5px;
+  overflow: hidden;
 }
 .select-menu .options {
-  position: relative;
-  margin-top: 20px;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 115%;
   border-radius: 8px;
   background: #fff;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
   display: none;
 }
 .select-menu .options .option {
   display: flex;
   cursor: pointer;
-  padding: 10px 0;
   align-items: start;
   background: #fff;
   flex-direction: column;
@@ -84,8 +85,9 @@
   margin-right: 12px;
 }
 .select-menu .options .option .option-text {
-  font-size: 14px;
+  font-size: 12px;
   color: #333;
+  padding: 10px 0;
 }
 
 .subText {
@@ -95,13 +97,6 @@
 .label {
   font-size: 14px;
   color: var(--PrimaryColor);
-}
-
-.sBtn-text {
-  font-size: 16px;
-  text-overflow: ellipsis;
-  text-wrap: nowrap;
-  overflow: hidden;
 }
 
 .fromPlace {
@@ -210,15 +205,15 @@
   border-color: transparent;
 }
 .datePickerDiv :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined {
-  height: 55px !important;
   padding: 25px 10px 0 !important;
-}
-.datePickerDiv :where(.css-dev-only-do-not-override-98ntnt).ant-picker-outlined input {
-  font-size: 16px;
 }
 .datePickerDiv .ant-picker-clear {
   top: auto !important;
   bottom: 0px !important;
+}
+.datePickerDiv .ant-picker .ant-picker-input {
+  gap: 10px;
+  flex-direction: row-reverse;
 }
 
 .datePickerInputBox input {
@@ -323,4 +318,28 @@
   .offerPrice {
     font-size: 18px;
   }
+}
+.cabListNavBarInputBoxDiv {
+  background-color: white;
+  min-height: 48px;
+  max-height: 48px;
+}
+.cabListNavBarInputBoxDiv .cabListNavBarInputBox {
+  min-height: 30px !important;
+  border: none !important;
+  row-gap: 9px;
+}
+.cabListNavBarInputBoxDiv .carListNavBarDropDownArrow {
+  position: absolute;
+  right: 10px;
+  top: 15px;
+  transition: transform 0.3s ease;
+  font-size: 18px;
+  color: var(--PrimaryColor);
+}
+.cabListNavBarInputBoxDiv .carListNavBarIcon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  color: gray;
 }/*# sourceMappingURL=CarList.css.map */
