@@ -101,6 +101,8 @@ const CarBooking: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if(dayjs().format("DD-MM-YYYY") === startdate){
+      settoday(true)}
     const storedholidaystartCity = sessionStorage.getItem("holidaystartCity");
     const storedholidayendCity = sessionStorage.getItem("holidayendCity");
     if (storedholidaystartCity) {
@@ -130,6 +132,7 @@ const CarBooking: React.FC = () => {
   const startcity = location.state.startcity;
   const endcity = location.state.endcity;
   const startdate = location.state.startdate;
+  const pick_uptime = location.state.pickuptime;
   const enddate = location.state.enddate;
   const imageURL = `${import.meta.env.VITE_API_IMG_URL}`;
   const carImage = `${imageURL}${car.image}`;
@@ -254,7 +257,9 @@ const CarBooking: React.FC = () => {
   const [alternateNoCountryCode, setAlternateNoCountryCode] = useState("+91");
   const [isFormValid, setIsFormValid] = useState(false);
   const [isAgreed, setIsAgreed] = useState<boolean>(false);
-  const [pickupTime, setPickupTime] = useState<Dayjs | null>(null);
+  const [pickupTime, setPickupTime] = 
+  // useState<Dayjs | null>(null);
+  useState<Dayjs | null>(dayjs(pick_uptime, 'h:mm A'));
   const [error, setError] = useState<{ [key: string]: string }>({});
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({});
   const formRef = useRef<HTMLFormElement>(null);
@@ -265,6 +270,7 @@ const CarBooking: React.FC = () => {
   const [addCashModalBox, setAddCashModalBox] = useState(false);
   const [addamount, setaddAmount] = useState("");
   const [loading, setLoading] = useState(false);
+  const [today, settoday] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState("razorpay");
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -935,21 +941,26 @@ const CarBooking: React.FC = () => {
     setAddCashModalBox(false);
   };
 
+ 
+  
+    
   const disabledTime = () => {
-    const now = dayjs();
-    const currentHour = now.hour();
-    const currentMinute = now.minute();
-
-    return {
-      disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
-      disabledMinutes: (hour: number) => {
-        if (hour === currentHour + 1) {
-          return Array.from({ length: currentMinute + 1 }, (_, i) => i);
-        }
-        return [];
-      },
-      disabledSeconds: () => [],
-    };
+      const now = dayjs();
+    
+      const currentHour = now.hour();
+      const currentMinute = now.minute();
+  
+      return {
+        disabledHours: () => Array.from({ length: currentHour + 1 }, (_, i) => i),
+        disabledMinutes: (hour: number) => {
+          if (hour === currentHour + 1) {
+            return Array.from({ length: currentMinute + 1 }, (_, i) => i);
+          }
+          return [];
+        },
+        disabledSeconds: () => [],
+      };
+   
   };
   return (
     <>
@@ -970,7 +981,7 @@ const CarBooking: React.FC = () => {
             {/* <span>Puducherry, India</span> */}
             {endcity ? endcity.city : null}
 
-            <span>| Pickup : {startdate}</span>
+            <span>| Pickup : {startdate} {pick_uptime ? pick_uptime : null}</span>
             {enddate ? (
               <>
                 <span>| Drop : {enddate}</span>
@@ -1435,7 +1446,7 @@ const CarBooking: React.FC = () => {
                         style={{ height: "38px" }}
                         onChange={handleTimeChange}
                         onFocus={handleFocus}
-                        disabledTime={disabledTime}
+                        disabledTime={today ? disabledTime : undefined}
                         // onBlur={()=>validateField("pickupTime")}
                         format="h:mm A"
                         use12Hours

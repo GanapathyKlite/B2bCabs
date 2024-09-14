@@ -318,61 +318,40 @@ const CarList: React.FC<CarListProps> = ({
         province: suggestionObject.province,
       };
     }
-    if (tripType === "Cab From Airport" || tripType === "Cab To Airport") {
-      try {
-        const response = await axios.post(
-          `${
-            import.meta.env.VITE_API_BASE_URL
-          }/price/airportPickup/selectedPrice`,
-          {
-            start_city,
-            end_city,
-            duration: duration,
-            km: km,
-            vehicle_id: car.vehicle_id,
-            start_date: start_date,
-            pickup_time: pickup_time,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (response.data.status) {
-          navigate("/dashboard/cabbooking", {
-            state: {
-              car: response.data.data,
-              startcity: start_city,
-              endcity: end_city,
-              startdate: start_date,
-              tripType: "Airport transfer",
-            },
-          });
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    if (tripType === "Daily Rental") {
-      try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/price/dayRental/selectedPrice`,
-          {
-            start_city,
-            end_city,
-            duration: duration,
-            km: km,
-            vehicle_id: car.vehicle_id,
-            start_date: startrangedate,
-            end_date: endrangedate,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-              "Content-Type": "application/json",
-            },
+
+    if(tripType === "Cab From Airport" || tripType === "Cab To Airport"){
+   try {
+    const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/price/airportPickup/selectedPrice`,
+     { start_city, end_city,"duration": duration ,"km": km,"vehicle_id":car.vehicle_id,"start_date":start_date,
+       "pickup_time":pickup_time}
+       ,
+     {
+       headers: {
+         Authorization: `Bearer ${authToken}`,
+         "Content-Type": "application/json",
+       },
+     }
+   );
+   if (response.data.status) {
+    navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city, startdate: start_date,pickuptime: pickup_time ,tripType : "Airport Pickup"}});
+   } 
+
+   } catch (error) {
+    console.log(error);
+    
+   }}
+   if(tripType === "Daily Rental"){
+    try {
+     const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/price/dayRental/selectedPrice`,
+      { start_city, end_city,"duration": duration ,"km": km,"vehicle_id":car.vehicle_id,"start_date":startrangedate,
+        "end_date":endrangedate}
+        ,
+      {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+
           }
         );
         if (response.data.status) {

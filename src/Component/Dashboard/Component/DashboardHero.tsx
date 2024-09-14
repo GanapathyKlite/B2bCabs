@@ -128,6 +128,7 @@ const DashboardHero: React.FC = () => {
   const [isStartReadOnly, setIsStartReadOnly] = React.useState<boolean>(true);
   const [isEndReadOnly, setIsEndReadOnly] = React.useState<boolean>(true);
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     authToken,
@@ -161,14 +162,14 @@ const DashboardHero: React.FC = () => {
     const storedHourTime = sessionStorage.getItem("hourTime");
     const storedDateRange = sessionStorage.getItem("selectedDateRange");
     if (storedDateRange) {
-      const parsedDates = JSON.parse(storedDateRange);
-      setSelectedDateRange([dayjs(parsedDates[0]), dayjs(parsedDates[1])]);
+      // const parsedDates = JSON.parse(storedDateRange);
+      // setSelectedDateRange([dayjs(parsedDates[0]), dayjs(parsedDates[1])]);
     }
     if (storedHourTime) {
       setHourTime(storedHourTime);
     }
     if (storedDate) {
-      setSelectedDate(dayjs(storedDate));
+      // setSelectedDate(dayjs(storedDate));
     }
     if (storedtripType) {
       setTripType(storedtripType);
@@ -184,14 +185,14 @@ const DashboardHero: React.FC = () => {
       setEndCitySuggestion(suggestionObject);
     }
     if (storedholidaystartCity) {
-      const suggestionObject = JSON.parse(storedholidaystartCity);
-      setSelectedStartCity(suggestionObject);
-      setStartSearchQuery(suggestionObject.city_name);
+      // const suggestionObject = JSON.parse(storedholidaystartCity);
+      // setSelectedStartCity(suggestionObject);
+      // setStartSearchQuery(suggestionObject.city_name);
     }
     if (storedholidayendCity) {
-      const suggestionObject = JSON.parse(storedholidayendCity);
-      setSelectedEndCity(suggestionObject);
-      setEndSearchQuery(suggestionObject.city_name);
+      // const suggestionObject = JSON.parse(storedholidayendCity);
+      // setSelectedEndCity(suggestionObject);
+      // setEndSearchQuery(suggestionObject.city_name);
     }
   }, []);
 
@@ -240,14 +241,16 @@ const DashboardHero: React.FC = () => {
 
           if (response.data.status) {
             if (
-              response.data.data !==
-              "We don't have Packages in selected cities."
+               Array.isArray(response.data.data)
             ) {
               setPackages(response.data.data);
-              const storedPackageid = sessionStorage.getItem("packageId");
-              if (storedPackageid) {
-                setPackageId(storedPackageid);
-              }
+              // const storedPackageid = sessionStorage.getItem("packageId");
+              // if (storedPackageid) {
+              //   setPackageId(storedPackageid);
+              // }
+              
+              //Another response
+              //"We don't have packages for the number of days you have selected.\nInstead, you can go with the following itineraries for different durations:\nPondicherry- 2N Yercaud -Pondicherry (2 days)\nPondicherry- Hokennkal 1N- Pondicherry (2 days)\n"
             } else {
               setPackages([]);
               setPackageId("");
@@ -306,16 +309,22 @@ const DashboardHero: React.FC = () => {
 
   const handleToggle = (option: string) => {
     setSelectedOption(option);
-    setInputValueOne(inputValueTwo);
-    setInputValueTwo(inputValueOne);
-    setStartCitySuggestion(endCitySuggestion);
-    setEndCitySuggestion(startCitySuggestion);
+
+    setInputValueOne(inputValueTwo)
+    setInputValueTwo(inputValueOne)
+    setStartCitySuggestion(endCitySuggestion)
+    sessionStorage.setItem("startCitySuggestion", JSON.stringify(endCitySuggestion));
+    setEndCitySuggestion(startCitySuggestion)
+    sessionStorage.setItem("endCitySuggestion", JSON.stringify(startCitySuggestion));
+
   };
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoading(true);
     sessionStorage.setItem("tripType", tripType);
+    sessionStorage.removeItem("period");
     let start_city, end_city;
     if (startCitySuggestion) {
       start_city = {
@@ -356,15 +365,17 @@ const DashboardHero: React.FC = () => {
         );
         if (response.data.status) {
           const cardata = response.data.data;
+         !selectedDate ? sessionStorage.setItem("selectedDate", defaultDate.toISOString()) : null;
           sessionStorage.setItem("carData", JSON.stringify(cardata));
           sessionStorage.setItem("duration", response.data.duration);
           sessionStorage.setItem("km", response.data.km);
 
-          const canceldate = formattedDate?.start_date;
-          sessionStorage.setItem("canceldate", canceldate || "");
+          // const canceldate = formattedDate?.start_date;
+          // sessionStorage.setItem("canceldate", canceldate || "");
           navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
+        setLoading(false);
         console.log(error);
         if (error instanceof AxiosError) {
           notyf.error(error.response?.data?.message);
@@ -403,6 +414,7 @@ const DashboardHero: React.FC = () => {
           navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
+        setLoading(false);
         console.log(error);
         if (error instanceof AxiosError) {
           notyf.error(error.response?.data?.message);
@@ -430,8 +442,8 @@ const DashboardHero: React.FC = () => {
         if (response.data.status) {
           const cardata = response.data.data;
           sessionStorage.setItem("carData", JSON.stringify(cardata));
-          const canceldate = formattedDate.start_date;
-          sessionStorage.setItem("canceldate", canceldate || "");
+          // const canceldate = formattedDate.start_date;
+          // sessionStorage.setItem("canceldate", canceldate || "");
 
           if (hourTime === "1") {
             sessionStorage.setItem("duration", "2 hr");
@@ -452,6 +464,7 @@ const DashboardHero: React.FC = () => {
           navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
+        setLoading(false);
         console.log(error);
         if (error instanceof AxiosError) {
           notyf.error(error.response?.data?.message);
@@ -486,6 +499,7 @@ const DashboardHero: React.FC = () => {
           navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
+        setLoading(false);
         console.log(error);
       }
     }
@@ -540,10 +554,11 @@ const DashboardHero: React.FC = () => {
       sessionStorage.removeItem("selectedDateRange");
     }
   };
-
+  const defaultDate = dayjs().add(1, 'hour');
   const formattedDate = {
-    start_date: selectedDate?.format("DD-MM-YYYY"),
-    pickup_time: selectedDate?.format("h:mm A"),
+    start_date: selectedDate ? selectedDate.format("DD-MM-YYYY") : defaultDate.format("DD-MM-YYYY"),
+    pickup_time: selectedDate ? selectedDate.format("h:mm A") : defaultDate.format("h:mm A"),
+    
   };
 
   const formatDateRange = (
@@ -918,7 +933,7 @@ const DashboardHero: React.FC = () => {
       disabledSeconds: () => [],
     };
   };
-
+ 
   return (
     <>
       <div className="hero-banner">
@@ -1077,8 +1092,118 @@ const DashboardHero: React.FC = () => {
                                 : ""
                             }`}
                           >
-                            <div className="popularCityListDiv">
-                              {startFilteredCities.length > 0 ? (
+
+                            <div 
+                            className="popularCityListDiv"
+                            >
+                              
+                                  {tripType === "Cab From Airport" ? (
+                                    <>
+
+                                      {suggestions.length > 0 ? (
+                                        <ul className="p-0 m-0 d-flex flex-column">
+                                          {suggestions.map(
+                                            (suggestion, index) => (
+                                              <li
+                                                key={index}
+                                                onClick={() =>
+                                                  handleStartCitySuggestionSelect(
+                                                    suggestion
+                                                  )
+                                                }
+                                              >
+                                                <GoLocation />
+                                                <p
+                                                  style={{ overflow: "hidden" }}
+                                                  dangerouslySetInnerHTML={{
+                                                    __html:
+                                                      startCityHighlightText(
+                                                        suggestion.address,
+                                                        inputValueOne
+                                                      ),
+                                                  }}
+                                                ></p>
+                                              </li>
+                                            )
+                                          )}
+                                        </ul>
+
+                                      ) : (<>
+                                        <span>POPULAR AIRPORTS</span>
+                                          <ul className="p-0 m-0">
+                                            {popularAirports.map(
+                                              (popularairport, index) => (
+                                                <li
+                                                  key={index}
+                                                  onClick={() =>
+                                                    handleStartCitySuggestionSelect(
+                                                      popularairport
+                                                    )
+                                                  }
+                                                >
+                                                  <GoLocation />
+                                                  <p>{popularairport.address}</p>
+                                                </li>
+                                              )
+                                            )}
+                                          </ul> </>)}{" "}
+                                    </>
+                                  ) : null}
+                                  {tripType === "Cab To Airport" ? (
+                                    <>
+                                      {suggestions.length > 0 ? (
+                                        <ul className="p-0 m-0 d-flex flex-column">
+                                          {suggestions.length > 0 ? (
+                                            <ul className="p-0 m-0 d-flex flex-column">
+                                              {suggestions.map(
+                                                (suggestion, index) => (
+                                                  <li
+                                                    key={index}
+                                                    onClick={() =>
+                                                      handleStartCitySuggestionSelect(
+                                                        suggestion
+                                                      )
+                                                    }
+                                                  >
+                                                    <GoLocation />
+                                                    <p style={{ overflow: "hidden" }}
+                                                      dangerouslySetInnerHTML={{
+                                                        __html:
+                                                          startCityHighlightText(
+                                                            suggestion.address,
+                                                            inputValueOne
+                                                          ),
+                                                      }}
+                                                    ></p>
+                                                  </li>
+                                                )
+                                              )}
+                                            </ul>
+                                          ) : null}
+                                        </ul>
+                                      ) : (<><span>RECENT SEARCHES</span>
+                                        <ul className="p-0 m-0">
+                                          {RecentSearches.map(
+                                            (recentsearch, index) => (
+                                              <li
+                                                key={index}
+                                                onClick={() =>
+                                                  handleStartCitySuggestionSelect(
+                                                    recentsearch
+                                                  )
+                                                }
+                                              >
+                                                <GoLocation />
+                                                <p>{recentsearch.address}</p>
+                                              </li>
+                                            )
+                                          )}
+                                        </ul></>)}{" "}
+                                    </>
+                                  ) : null}
+                                  {tripType === "Holidays Package"  ? (
+                                    <>
+                                    {startFilteredCities.length > 0 ? (
                                 <ul className="p-0 m-0 d-flex flex-column">
                                   {startFilteredCities.map((city) => (
                                     <li
@@ -1102,15 +1227,35 @@ const DashboardHero: React.FC = () => {
                                     </li>
                                   ))}
                                 </ul>
-                              ) : null}
-                              {tripType === "Cab From Airport" ? (
-                                <>
-                                  {suggestions.length > 0 ? (
-                                    <ul className="p-0 m-0 d-flex flex-column">
-                                      {suggestions.length > 0 ? (
-                                        <ul className="p-0 m-0 d-flex flex-column">
-                                          {suggestions.map(
-                                            (suggestion, index) => (
+                              ) : (<><span>POPULAR CITY</span>
+                                <ul className="p-0 m-0">
+                                  {popularCities.map(
+                                    (popularCitie, index) => (
+                                      <li
+                                        key={index}
+                                        onClick={() =>
+                                          handleStartCitySelect(
+                                            popularCitie,
+                                            endSearchInputRef
+                                          )
+                                        }
+                                      >
+                                        <GoLocation />
+                                        <p>{popularCitie.city_name}</p>
+                                      </li>
+                                    )
+                                  )}
+                                </ul></>)}
+                                      
+                                    </>
+                                  ) 
+                                  
+                                      :null}
+                                      {/* {tripType === "Cab To Airport" && inputValueOne.length < 3 ? (<><span>RECENT SEARCHES</span>
+                                        <ul className="p-0 m-0">
+                                          {RecentSearches.map(
+                                            (recentsearch, index) => (
+
                                               <li
                                                 key={index}
                                                 onClick={() =>
@@ -1133,118 +1278,12 @@ const DashboardHero: React.FC = () => {
                                               </li>
                                             )
                                           )}
-                                        </ul>
-                                      ) : null}
-                                    </ul>
-                                  ) : null}{" "}
-                                </>
-                              ) : null}
-                              {tripType === "Cab To Airport" ? (
-                                <>
-                                  {suggestions.length > 0 ? (
-                                    <ul className="p-0 m-0 d-flex flex-column">
-                                      {suggestions.length > 0 ? (
-                                        <ul className="p-0 m-0 d-flex flex-column">
-                                          {suggestions.map(
-                                            (suggestion, index) => (
-                                              <li
-                                                key={index}
-                                                onClick={() =>
-                                                  handleStartCitySuggestionSelect(
-                                                    suggestion
-                                                  )
-                                                }
-                                              >
-                                                <GoLocation />
-                                                <p
-                                                  style={{ overflow: "hidden" }}
-                                                  dangerouslySetInnerHTML={{
-                                                    __html:
-                                                      startCityHighlightText(
-                                                        suggestion.address,
-                                                        inputValueOne
-                                                      ),
-                                                  }}
-                                                ></p>
-                                              </li>
-                                            )
-                                          )}
-                                        </ul>
-                                      ) : null}
-                                    </ul>
-                                  ) : null}{" "}
-                                </>
-                              ) : null}
-                              {tripType !== "Holidays Package" &&
-                              tripType !== "Cab From Airport" &&
-                              tripType !== "Cab To Airport" ? (
-                                <>
-                                  <span>POPULAR CITY</span>
-                                  <ul className="p-0 m-0">
-                                    {popularCities.map(
-                                      (popularCitie, index) => (
-                                        <li
-                                          key={index}
-                                          onClick={() =>
-                                            handleStartCitySelect(
-                                              popularCitie,
-                                              endSearchInputRef
-                                            )
-                                          }
-                                        >
-                                          <GoLocation />
-                                          <p>{popularCitie.city_name}</p>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>{" "}
-                                </>
-                              ) : tripType === "Cab From Airport" &&
-                                inputValueOne.length < 3 ? (
-                                <>
-                                  <span>POPULAR AIRPORTS</span>
-                                  <ul className="p-0 m-0">
-                                    {popularAirports.map(
-                                      (popularairport, index) => (
-                                        <li
-                                          key={index}
-                                          onClick={() =>
-                                            handleStartCitySuggestionSelect(
-                                              popularairport
-                                            )
-                                          }
-                                        >
-                                          <GoLocation />
-                                          <p>{popularairport.address}</p>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>{" "}
-                                </>
-                              ) : null}
-                              {tripType === "Cab To Airport" &&
-                              inputValueOne.length < 3 ? (
-                                <>
-                                  <span>RECENT SEARCHES</span>
-                                  <ul className="p-0 m-0">
-                                    {RecentSearches.map(
-                                      (recentsearch, index) => (
-                                        <li
-                                          key={index}
-                                          onClick={() =>
-                                            handleEndCitySuggestionSelect(
-                                              recentsearch
-                                            )
-                                          }
-                                        >
-                                          <GoLocation />
-                                          <p>{recentsearch.address}</p>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
-                                </>
-                              ) : null}
+
+                                        </ul></>): null} */}
+                                
+                              
+                              
+
                             </div>
                           </div>
                           {tab.id === 2 && selectedOption === "option2" ? (
@@ -1382,29 +1421,13 @@ const DashboardHero: React.FC = () => {
                               searchEndInputBox ? "citySearchHiddenBoxShow" : ""
                             }`}
                           >
-                            <div className="popularCityListDiv">
-                              {endFilteredCities.length > 0 ? (
-                                <ul className="p-0 m-0 d-flex flex-column">
-                                  {endFilteredCities.map((city) => (
-                                    <li
-                                      key={city.id_city}
-                                      onClick={() => handleEndCitySelect(city)}
-                                    >
-                                      <GoLocation />
-                                      <p
-                                        dangerouslySetInnerHTML={{
-                                          __html: endCityHighlightText(
-                                            city.city_name,
-                                            endSearchQuery
-                                          ),
-                                        }}
-                                      ></p>
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : (
-                                <>
-                                  {tripType === "Cab From Airport" ? (
+
+                            <div
+                             className="popularCityListDiv"
+                             >
+                              
+                                  {tripType === "Cab From Airport"  ? (
+
                                     <>
                                       {suggestions2.length > 0 ? (
                                         <ul className="p-0 m-0 d-flex flex-column">
@@ -1438,28 +1461,26 @@ const DashboardHero: React.FC = () => {
                                             </ul>
                                           ) : null}
                                         </ul>
-                                      ) : (
-                                        <>
-                                          <span>RECENT SEARCHES</span>
-                                          <ul className="p-0 m-0">
-                                            {RecentSearches.map(
-                                              (recentsearch, index) => (
-                                                <li
-                                                  key={index}
-                                                  onClick={() =>
-                                                    handleEndCitySuggestionSelect(
-                                                      recentsearch
-                                                    )
-                                                  }
-                                                >
-                                                  <GoLocation />
-                                                  <p>{recentsearch.address}</p>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        </>
-                                      )}{" "}
+
+                                        ) : (<><span>RECENT SEARCHES</span>
+                                        <ul className="p-0 m-0">
+                                          {RecentSearches.map(
+                                            (recentsearch, index) => (
+                                              <li
+                                                key={index}
+                                                onClick={() =>
+                                                  handleEndCitySuggestionSelect(
+                                                    recentsearch
+                                                  )
+                                                }
+                                              >
+                                                <GoLocation />
+                                                <p>{recentsearch.address}</p>
+                                              </li>
+                                            )
+                                          )}
+                                        </ul></>)}{" "}
+
                                     </>
                                   ) : tripType === "Cab To Airport" ? (
                                     <>
@@ -1495,23 +1516,59 @@ const DashboardHero: React.FC = () => {
                                             </ul>
                                           ) : null}
                                         </ul>
-                                      ) : null}
-                                    </>
-                                  ) : null}
-                                  {tripType !== "Holidays Package" &&
-                                  tripType !== "Cab From Airport" &&
-                                  tripType !== "Cab To Airport" ? (
+
+                                      ) : (( <>
+                                        <span>POPULAR AIRPORTS</span>
+                                          <ul className="p-0 m-0">
+                                            {popularAirports.map(
+                                              (popularairport, index) => (
+                                                <li
+                                                  key={index}
+                                                  onClick={() =>
+                                                    handleEndCitySuggestionSelect(
+                                                      popularairport
+                                                    )
+                                                  }
+                                                >
+                                                  <GoLocation />
+                                                  <p>{popularairport.address}</p>
+                                                </li>
+                                              )
+                                            )}
+                                          </ul>
+                                         </>))}</>): null}
+                                  {tripType === "Holidays Package" ? (
+
                                     <>
-                                      <span>POPULAR CITY</span>
+                                    {endFilteredCities.length > 0 ? (
+                                <ul className="p-0 m-0 d-flex flex-column">
+                                  {endFilteredCities.map((city) => (
+                                    <li
+                                      key={city.id_city}
+                                      onClick={() => handleEndCitySelect(city)}
+                                    >
+                                      <GoLocation />
+                                      <p
+                                        dangerouslySetInnerHTML={{
+                                          __html: endCityHighlightText(
+                                            city.city_name,
+                                            endSearchQuery
+                                          ),
+                                        }}
+                                      ></p>
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : (<>
+                               <span>POPULAR CITY</span>
                                       <ul className="p-0 m-0">
                                         {popularCities.map(
                                           (popularCitie, index) => (
                                             <li
                                               key={index}
                                               onClick={() =>
-                                                handleStartCitySelect(
-                                                  popularCitie,
-                                                  endSearchInputRef
+                                                handleEndCitySelect(
+                                                  popularCitie
                                                 )
                                               }
                                             >
@@ -1520,34 +1577,15 @@ const DashboardHero: React.FC = () => {
                                             </li>
                                           )
                                         )}
-                                      </ul>{" "}
+                                      </ul></>)}
                                     </>
-                                  ) : null}
-                                </>
-                              )}
-                              {tripType === "Cab To Airport" &&
-                              inputValueTwo.length < 3 ? (
-                                <>
-                                  <span>POPULAR AIRPORTS</span>
-                                  <ul className="p-0 m-0">
-                                    {popularAirports.map(
-                                      (popularairport, index) => (
-                                        <li
-                                          key={index}
-                                          onClick={() =>
-                                            handleEndCitySuggestionSelect(
-                                              popularairport
-                                            )
-                                          }
-                                        >
-                                          <GoLocation />
-                                          <p>{popularairport.address}</p>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
-                                </>
-                              ) : null}
+
+                                  ) : null
+                                  }
+                                
+                              
+                              
+
                             </div>
                           </div>
                         </div>
@@ -1564,34 +1602,33 @@ const DashboardHero: React.FC = () => {
 
                               {tab.id === 2 && selectedOption === "option2" ? (
                                 <DatePicker
-                                  required
-                                  format="ddd, MMM D"
-                                  suffixIcon={null}
-                                  className="border-0 w-100 singleDatePicker"
-                                  allowClear={false}
-                                  disabledDate={disabledDate}
-                                  showNow={false}
-                                  onChange={handleDateChange}
-                                  value={selectedDate}
-                                />
-                              ) : (
-                                <DatePicker
-                                  required
-                                  format="ddd, MMM D, h:mm A"
-                                  suffixIcon={null}
-                                  className="border-0 w-100 singleDatePicker"
-                                  allowClear={false}
-                                  disabledDate={disabledDate}
-                                  disabledTime={(date) => getDisabledTime(date)}
-                                  showTime={{
-                                    use12Hours: true,
-                                    format: "h:mm A",
-                                  }}
-                                  onChange={handleDateChange}
-                                  showNow={false}
-                                  value={selectedDate}
-                                />
-                              )}
+
+                                required
+                                format="ddd, MMM D"
+                                suffixIcon={null}
+                                 className="border-0 w-100 singleDatePicker"
+                                allowClear={false}
+                                disabledDate={disabledDate}
+                                showNow={false}
+                                onChange={handleDateChange}
+                                value={selectedDate}
+                              />):(<DatePicker
+                                required
+                                format="ddd, MMM D, h:mm A"
+                                suffixIcon={null}
+                                 className="border-0 w-100 singleDatePicker"
+                                allowClear={false}
+                                disabledDate={disabledDate}
+                                disabledTime={(date) => getDisabledTime(date)}
+                                showTime={{
+                                  use12Hours: true,
+                                  format: "h:mm A",
+                                }}
+                                onChange={handleDateChange}
+                                showNow={false}
+                                value={ selectedDate ? selectedDate : dayjs().add(1, 'hour')}
+                              />)}
+
                             </div>
                           </div>
                         </>
@@ -1659,7 +1696,7 @@ const DashboardHero: React.FC = () => {
                                     <option value="">
                                       Select Your Package
                                     </option>
-                                    {packages.map((pkg) => (
+                                    {packages?.map((pkg) => (
                                       <option key={pkg.id} value={pkg.id}>
                                         {pkg.route}
                                       </option>
@@ -1679,11 +1716,21 @@ const DashboardHero: React.FC = () => {
                       <div className="col-lg-3 col-md-3 z-1">
                         <button
                           type="submit"
+                          disabled={loading}
                           style={{ minHeight: "50px" }}
                           className="text-nowrap primaryBtn w-100"
                         >
-                          Search
+                          {loading ? (
+                <span
+                  className="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              ) : (
+                "Search"
+              )}
                         </button>
+                        
                       </div>
                     </div>
                     {/* <div className="row justify-content-center row-gap-3 align-items-center position-relative">

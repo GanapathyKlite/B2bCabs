@@ -855,78 +855,103 @@ const CarListNavBar: React.FC = () => {
                               );
                             }}
                             value={hourTime}
-                          >
-                            <option value={1}>2h 20km</option>
-                            <option value={2}>4h 40km</option>
-                            <option value={3}>6h 60km</option>
-                            <option value={4}>8h 80km</option>
-                            <option value={5}>10h 100km</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  <div className="pe-0 ps-1 col-lg-2">
-                    <div className="d-flex justify-content-between align-items-start fromPlace">
-                      <div className="d-flex label">Start City</div>
-                      <div className="d-flex justify-content-between align-items-center w-100">
-                        <input
-                          type="text"
-                          value={startSearchQuery}
-                          onChange={handleStartSearchChange}
-                          placeholder="Select start city"
-                        />
-                        {startFilteredCities.length > 0 && (
-                          <ul>
-                            {startFilteredCities.map((city) => (
-                              <li
-                                key={city.id_city}
-                                onClick={() => handleStartCitySelect(city)}
-                              >
-                                {city.city_name}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="arrows">
-                    <LuArrowLeftRight
-                      style={{ cursor: "pointer" }}
-                      onClick={swapCityValues}
-                    />
-                  </div>
-                  <div className="p-0 col-lg-2">
-                    <div className="d-flex justify-content-between align-items-start fromPlace">
-                      <div className="d-flex label">End City</div>
-                      <div className="d-flex justify-content-between align-items-center w-100">
-                        <input
-                          type="text"
-                          value={endSearchQuery}
-                          onChange={handleEndSearchChange}
-                          placeholder="Select end city"
-                        />
-                        {endFilteredCities.length > 0 && (
-                          <ul>
-                            {endFilteredCities.map((city) => (
-                              <li
-                                key={city.id_city}
-                                onClick={() => handleEndCitySelect(city)}
-                              >
-                                {city.city_name}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
+
+>
+                    <option value= {1} >2h 20km</option>
+                    <option value= {2}>4h 40km</option>
+                    <option value= {3}>6h 60km</option>
+                    <option value= {4}>8h 80km</option>
+                    <option value= {5}>10h 100km</option>
+                            </select>
+                 </div>
+               </div>
+             </div>
+            )}  
+           </>):
+           (
+           <>
+            <div className="pe-0 ps-1 col-lg-2">
+              <div className="d-flex justify-content-between align-items-start fromPlace">
+                <div className="d-flex label">Start City</div>
+                <div className="d-flex justify-content-between align-items-center w-100">
+                <input
+          type="text"
+          value={startSearchQuery}
+          onChange={handleStartSearchChange}
+          placeholder="Select start city"
+          
+        />
+        {startFilteredCities.length > 0 && (
+          <ul>
+            {startFilteredCities.map(city => (
+              <li key={city.id_city} onClick={() => handleStartCitySelect(city)}>
+                {city.city_name}
+              </li>
+            ))}
+          </ul>
+        )}
+                </div>
+              </div>
+            </div>
+            <div className="arrows">
+             <LuArrowLeftRight style={{cursor: "pointer"}} onClick={swapCityValues}/>
+            </div>
+          <div className="p-0 col-lg-2">
+              <div className="d-flex justify-content-between align-items-start fromPlace">
+                <div className="d-flex label">End City</div>
+                <div className="d-flex justify-content-between align-items-center w-100">
+                <input
+          type="text"
+          value={endSearchQuery}
+          onChange={handleEndSearchChange}
+          placeholder="Select end city"
+        />
+        {endFilteredCities.length > 0 && (
+          <ul>
+            {endFilteredCities.map(city => (
+              <li key={city.id_city} onClick={() => handleEndCitySelect(city)}>
+                {city.city_name}
+              </li>
+            ))}
+          </ul>
+        )}
+      
+                </div>
+              </div>
+            </div> 
+           
+           </>)}
+
+            <div className={`pe-0 ps-1 ${tripType === 'Holidays Package' ? 'col-lg-2' : 'col-lg-3'}`}>
+              <div className="d-flex justify-content-between position-relative align-items-start fromPlace p-0">
+                <div
+                  className="d-flex label position-absolute z-3"
+                  style={{ left: "10px", top: "5px" }}
+                >
+                  PICK-UP DATE
+                </div>
+                <div className="d-flex justify-content-between align-items-center w-100 datePickerDiv">
+                
+      {
+         tripType === "Holidays Package" ?
+         ( <RangePicker value={selectedDateRange} allowClear={false} required disabledDate={disabledrangeDate} onChange={handleRangeChange}/>) : 
+         tripType === "Daily Rental" ? (<RangePicker allowClear={false} value={selectedDateRange} required disabledDate={disabledDate} onChange={handleRangeChange}/>) :
+        (<>
+          {tripType === "Hourly Rental" ?  
+          <DatePicker value={selectedDate} required allowClear={false} 
+          showNow={false} disabledDate={disabledDate} onChange={handleDateChange} className="custom-date-picker"/>: 
+          <DatePicker value={selectedDate} required onChange={handleDateChange}
+          format="ddd, MMM D, h:mm A"
+           showTime={{ use12Hours: true, format: 'h:mm A' }}
+           allowClear={false}
+           showNow={false}
+           disabledDate={disabledDate}
+           disabledTime={(date) => getDisabledTime(date)}
+      />
+           }
+           </>)
+      }
+
 
               <div
                 className={`pe-0 ps-1 ${
