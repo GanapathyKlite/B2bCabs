@@ -362,8 +362,8 @@ const DashboardHero: React.FC = () => {
           sessionStorage.setItem("duration", response.data.duration);
           sessionStorage.setItem("km", response.data.km);
 
-          const canceldate = formattedDate?.start_date;
-          sessionStorage.setItem("canceldate", canceldate || "");
+          // const canceldate = formattedDate?.start_date;
+          // sessionStorage.setItem("canceldate", canceldate || "");
           navigate("/dashboard/cablist", { state: { car: true } });
         }
       } catch (error) {
@@ -434,8 +434,8 @@ const DashboardHero: React.FC = () => {
         if (response.data.status) {
           const cardata = response.data.data;
           sessionStorage.setItem("carData", JSON.stringify(cardata));
-          const canceldate = formattedDate.start_date;
-          sessionStorage.setItem("canceldate", canceldate || "");
+          // const canceldate = formattedDate.start_date;
+          // sessionStorage.setItem("canceldate", canceldate || "");
 
           if (hourTime === "1") {
             sessionStorage.setItem("duration", "2 hr");
@@ -547,10 +547,10 @@ const DashboardHero: React.FC = () => {
       sessionStorage.removeItem("selectedDateRange");
     }
   };
-
+  const defaultDate = dayjs().add(1, 'hour');
   const formattedDate = {
-    start_date: selectedDate?.format("DD-MM-YYYY"),
-    pickup_time: selectedDate?.format("h:mm A"),
+    start_date: selectedDate ? selectedDate.format("DD-MM-YYYY") : defaultDate.format("DD-MM-YYYY"),
+    pickup_time: selectedDate ? selectedDate.format("h:mm A") : defaultDate.format("h:mm A"),
   };
 
   const formatDateRange = (
@@ -921,7 +921,7 @@ const DashboardHero: React.FC = () => {
       disabledSeconds: () => [],
     };
   };
-
+ 
   return (
     <>
       <div className="hero-banner">
@@ -1592,7 +1592,7 @@ const DashboardHero: React.FC = () => {
                                 }}
                                 onChange={handleDateChange}
                                 showNow={false}
-                                value={selectedDate || dayjs().add(1, 'hour')}
+                                value={ selectedDate ? selectedDate : dayjs().add(1, 'hour')}
                               />)}
                             </div>
                           </div>
