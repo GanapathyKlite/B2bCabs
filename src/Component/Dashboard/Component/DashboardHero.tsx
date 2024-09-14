@@ -919,7 +919,7 @@ const DashboardHero: React.FC = () => {
     return {
       disabledHours: () => [],
       disabledMinutes: () => [],
-      disabledSeconds: () => [],
+      disabledSeconds: () => [],    
     };
   };
 

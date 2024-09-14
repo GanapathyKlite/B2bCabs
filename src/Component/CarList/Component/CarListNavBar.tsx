@@ -1,17 +1,10 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
-import {
-  FaAngleDown,
-  FaAngleUp,
-  FaPlaneArrival,
-  FaPlaneDeparture,
-  FaRupeeSign,
-} from "react-icons/fa";
+import { FaPlaneArrival, FaRupeeSign } from "react-icons/fa";
 import { LuArrowLeftRight } from "react-icons/lu";
 import { DatePicker } from "antd";
 const { RangePicker } = DatePicker;
 import { useAuth } from "../../Auth/AuthContext";
 import dayjs, { Dayjs } from "dayjs";
-import AutocompleteInput from "../../AutoComplete/AutocompleInput";
 import axios from "axios";
 import { AxiosError } from "axios";
 import CarHero from "./CarHero";
@@ -281,15 +274,15 @@ const CarListNavBar: React.FC = () => {
     setIsActive(false);
   };
 
-  const inputFieldOne = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputOneValue = e.target.value;
-    setInputValueOne(inputOneValue);
-  };
+  // const inputFieldOne = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const inputOneValue = e.target.value;
+  //   setInputValueOne(inputOneValue);
+  // };
 
-  const inputFieldTwo = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputTwoValue = e.target.value;
-    setInputValueTwo(inputTwoValue);
-  };
+  // const inputFieldTwo = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const inputTwoValue = e.target.value;
+  //   setInputValueTwo(inputTwoValue);
+  // };
 
   const handleDateChange = (date: dayjs.Dayjs | null) => {
     setSelectedDate(date);
@@ -407,7 +400,7 @@ const CarListNavBar: React.FC = () => {
             "canceldate",
             formattedDates?.start_date || ""
           );
-          let period = { noOfDays: 0, noOfNights: 0 };
+          const period = { noOfDays: 0, noOfNights: 0 };
           sessionStorage.setItem("period", JSON.stringify(period));
         }
       } catch (error) {
@@ -454,7 +447,7 @@ const CarListNavBar: React.FC = () => {
           sessionStorage.setItem("km", response.data.km);
           setCanceldate(formattedDate.start_date || "");
           sessionStorage.setItem("canceldate", formattedDate.start_date || "");
-          let period = { noOfDays: 0, noOfNights: 0 };
+          const period = { noOfDays: 0, noOfNights: 0 };
           sessionStorage.setItem("period", JSON.stringify(period));
         }
       } catch (error) {
@@ -523,7 +516,7 @@ const CarListNavBar: React.FC = () => {
           }
           setCanceldate(formattedDate.start_date || "");
           sessionStorage.setItem("canceldate", formattedDate.start_date || "");
-          let period = { noOfDays: 0, noOfNights: 0 };
+          const period = { noOfDays: 0, noOfNights: 0 };
           sessionStorage.setItem("period", JSON.stringify(period));
         }
       } catch (error) {
@@ -563,7 +556,7 @@ const CarListNavBar: React.FC = () => {
             noOfDays: response.data.noOfDays,
             noOfNights: response.data.noOfNights,
           });
-          let period = {
+          const period = {
             noOfDays: response.data.noOfDays,
             noOfNights: response.data.noOfNights,
           };
@@ -587,18 +580,18 @@ const CarListNavBar: React.FC = () => {
     }
   };
 
-  const swapValues = () => {
-    setInputValueOne(inputValueTwo);
-    setInputValueTwo(inputValueOne);
+  // const swapValues = () => {
+  //   setInputValueOne(inputValueTwo);
+  //   setInputValueTwo(inputValueOne);
 
-    setStartCitySuggestion(endCitySuggestion);
-    setEndCitySuggestion(startCitySuggestion);
-    if (tripType === "Cab From Airport") {
-      setTripType("Cab To Airport");
-    } else {
-      setTripType("Cab From Airport");
-    }
-  };
+  //   setStartCitySuggestion(endCitySuggestion);
+  //   setEndCitySuggestion(startCitySuggestion);
+  //   if (tripType === "Cab From Airport") {
+  //     setTripType("Cab To Airport");
+  //   } else {
+  //     setTripType("Cab From Airport");
+  //   }
+  // };
 
   const swapCityValues = () => {
     setStartSearchQuery(endSearchQuery);
@@ -616,7 +609,7 @@ const CarListNavBar: React.FC = () => {
     if (!current) return false;
 
     return (
-      current.isBefore(dayjs().startOf("day")) ||
+      current.isBefore(dayjs().startOf("day")) || 
       current.isAfter(dayjs().add(30, "day").endOf("day"))
     );
   };
