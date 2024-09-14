@@ -16,7 +16,7 @@ a {
   font-family: "Poppins", sans-serif !important;
 }
 
-.hiddenInputBox{
+.hiddenInputBox {
   border: none;
   width: 100%;
   outline: none;
@@ -42,6 +42,7 @@ a {
   color: var(--whiteColor);
   font-size: 16px;
   font-weight: 400;
+  border-radius: 5px;
 }
 .primaryBtn:hover {
   background-color: var(--PrimaryColor);
@@ -82,7 +83,7 @@ input[type="radio"]:checked {
   max-height: fit-content;
 }
 
-li{
+li {
   list-style: none !important;
 }
 
@@ -123,7 +124,9 @@ li{
   .ant-picker-cell-inner {
   background-color: var(--PrimaryColor) !important;
 }
-:where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown .ant-picker-header-view >button:hover{
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown
+  .ant-picker-header-view
+  > button:hover {
   color: var(--PrimaryColor);
 }
 
@@ -144,10 +147,10 @@ li{
 
 :where(.css-dev-only-do-not-override-98ntnt).ant-picker-dropdown
   .ant-picker-cell-in-view.ant-picker-cell-today
-  .ant-picker-cell-inner::before{
-    border: 1px solid var(--PrimaryColor);
-  }
-  :where(.css-dev-only-do-not-override-98ntnt).ant-picker-range
+  .ant-picker-cell-inner::before {
+  border: 1px solid var(--PrimaryColor);
+}
+:where(.css-dev-only-do-not-override-98ntnt).ant-picker-range
   .ant-picker-active-bar {
   background: var(--PrimaryColor);
 }
@@ -158,10 +161,10 @@ li{
 .ant-picker-now-btn:hover {
   color: #95d5b2;
 }
-.form-control{
+.form-control {
   font-size: 14px !important;
 }
-.btn-close:focus{
+.btn-close:focus {
   box-shadow: none !important;
 }
 /* Default styles  */
@@ -197,7 +200,6 @@ li{
   .we-offer-area .item {
     padding: 15px !important;
   }
-  
 }
 
 /* Media query for screens between 576px and 767px (e.g., tablets)  */
@@ -233,7 +235,6 @@ li{
   .we-offer-area .item {
     padding: 15px !important;
   }
-  
 }
 
 /* Media query for screens between 768px and 991px (e.g., small laptops)  */
