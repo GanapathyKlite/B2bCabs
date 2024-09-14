@@ -162,8 +162,8 @@ const DashboardHero: React.FC = () => {
     const storedHourTime = sessionStorage.getItem("hourTime");
     const storedDateRange = sessionStorage.getItem("selectedDateRange");
     if (storedDateRange) {
-      const parsedDates = JSON.parse(storedDateRange);
-      setSelectedDateRange([dayjs(parsedDates[0]), dayjs(parsedDates[1])]);
+      // const parsedDates = JSON.parse(storedDateRange);
+      // setSelectedDateRange([dayjs(parsedDates[0]), dayjs(parsedDates[1])]);
     }
     if (storedHourTime) {
       setHourTime(storedHourTime);
@@ -185,14 +185,14 @@ const DashboardHero: React.FC = () => {
       setEndCitySuggestion(suggestionObject);
     }
     if (storedholidaystartCity) {
-      const suggestionObject = JSON.parse(storedholidaystartCity);
-      setSelectedStartCity(suggestionObject);
-      setStartSearchQuery(suggestionObject.city_name);
+      // const suggestionObject = JSON.parse(storedholidaystartCity);
+      // setSelectedStartCity(suggestionObject);
+      // setStartSearchQuery(suggestionObject.city_name);
     }
     if (storedholidayendCity) {
-      const suggestionObject = JSON.parse(storedholidayendCity);
-      setSelectedEndCity(suggestionObject);
-      setEndSearchQuery(suggestionObject.city_name);
+      // const suggestionObject = JSON.parse(storedholidayendCity);
+      // setSelectedEndCity(suggestionObject);
+      // setEndSearchQuery(suggestionObject.city_name);
     }
   }, []);
 
@@ -320,6 +320,7 @@ const DashboardHero: React.FC = () => {
     event.preventDefault();
     setLoading(true);
     sessionStorage.setItem("tripType", tripType);
+    sessionStorage.removeItem("period");
     let start_city, end_city;
     if (startCitySuggestion) {
       start_city = {

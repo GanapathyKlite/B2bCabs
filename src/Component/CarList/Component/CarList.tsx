@@ -322,7 +322,7 @@ const CarList: React.FC<CarListProps> = ({ cars,duration, km, start_date,pickup_
      }
    );
    if (response.data.status) {
-    navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city, startdate: start_date,tripType : "Airport Pickup"}});
+    navigate("/dashboard/cabbooking",{state: {car: response.data.data,startcity: start_city, endcity: end_city, startdate: start_date,pickuptime: pickup_time ,tripType : "Airport Pickup"}});
    } 
 
    } catch (error) {
