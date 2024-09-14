@@ -1083,31 +1083,7 @@ const DashboardHero: React.FC = () => {
                             <div 
                             className="popularCityListDiv"
                             >
-                              {startFilteredCities.length > 0 ? (
-                                <ul className="p-0 m-0 d-flex flex-column">
-                                  {startFilteredCities.map((city) => (
-                                    <li
-                                      key={city.id_city}
-                                      onClick={() =>
-                                        handleStartCitySelect(
-                                          city,
-                                          endSearchInputRef
-                                        )
-                                      }
-                                    >
-                                      <GoLocation />
-                                      <p
-                                        dangerouslySetInnerHTML={{
-                                          __html: startCityHighlightText(
-                                            city.city_name,
-                                            startSearchQuery
-                                          ),
-                                        }}
-                                      ></p>
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : null}
+                              
                                   {tripType === "Cab From Airport" ? (
                                     <>
                                       {suggestions.length > 0 ? (
@@ -1213,28 +1189,52 @@ const DashboardHero: React.FC = () => {
                                         </ul></>)}{" "}
                                     </>
                                   ) : null}
-                                  {tripType !== "Holidays Package" &&
-                                  tripType !== "Cab From Airport" && tripType !== "Cab To Airport" ? (
+                                  {tripType === "Holidays Package"  ? (
                                     <>
-                                      <span>POPULAR CITY</span>
-                                      <ul className="p-0 m-0">
-                                        {popularCities.map(
-                                          (popularCitie, index) => (
-                                            <li
-                                              key={index}
-                                              onClick={() =>
-                                                handleStartCitySelect(
-                                                  popularCitie,
-                                                  endSearchInputRef
-                                                )
-                                              }
-                                            >
-                                              <GoLocation />
-                                              <p>{popularCitie.city_name}</p>
-                                            </li>
+                                    {startFilteredCities.length > 0 ? (
+                                <ul className="p-0 m-0 d-flex flex-column">
+                                  {startFilteredCities.map((city) => (
+                                    <li
+                                      key={city.id_city}
+                                      onClick={() =>
+                                        handleStartCitySelect(
+                                          city,
+                                          endSearchInputRef
+                                        )
+                                      }
+                                    >
+                                      <GoLocation />
+                                      <p
+                                        dangerouslySetInnerHTML={{
+                                          __html: startCityHighlightText(
+                                            city.city_name,
+                                            startSearchQuery
+                                          ),
+                                        }}
+                                      ></p>
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : (<><span>POPULAR CITY</span>
+                                <ul className="p-0 m-0">
+                                  {popularCities.map(
+                                    (popularCitie, index) => (
+                                      <li
+                                        key={index}
+                                        onClick={() =>
+                                          handleStartCitySelect(
+                                            popularCitie,
+                                            endSearchInputRef
                                           )
-                                        )}
-                                      </ul>{" "}
+                                        }
+                                      >
+                                        <GoLocation />
+                                        <p>{popularCitie.city_name}</p>
+                                      </li>
+                                    )
+                                  )}
+                                </ul></>)}
+                                      
                                     </>
                                   ) 
                                   
@@ -1400,27 +1400,7 @@ const DashboardHero: React.FC = () => {
                             <div
                              className="popularCityListDiv"
                              >
-                              {endFilteredCities.length > 0 ? (
-                                <ul className="p-0 m-0 d-flex flex-column">
-                                  {endFilteredCities.map((city) => (
-                                    <li
-                                      key={city.id_city}
-                                      onClick={() => handleEndCitySelect(city)}
-                                    >
-                                      <GoLocation />
-                                      <p
-                                        dangerouslySetInnerHTML={{
-                                          __html: endCityHighlightText(
-                                            city.city_name,
-                                            endSearchQuery
-                                          ),
-                                        }}
-                                      ></p>
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : (
-                                <>
+                              
                                   {tripType === "Cab From Airport"  ? (
                                     <>
                                       {suggestions2.length > 0 ? (
@@ -1527,19 +1507,37 @@ const DashboardHero: React.FC = () => {
                                             )}
                                           </ul>
                                          </>))}</>): null}
-                                  {tripType !== "Holidays Package" &&
-                                  tripType !== "Cab From Airport" && tripType !== "Cab To Airport"? (
+                                  {tripType === "Holidays Package" ? (
                                     <>
-                                      <span>POPULAR CITY</span>
+                                    {endFilteredCities.length > 0 ? (
+                                <ul className="p-0 m-0 d-flex flex-column">
+                                  {endFilteredCities.map((city) => (
+                                    <li
+                                      key={city.id_city}
+                                      onClick={() => handleEndCitySelect(city)}
+                                    >
+                                      <GoLocation />
+                                      <p
+                                        dangerouslySetInnerHTML={{
+                                          __html: endCityHighlightText(
+                                            city.city_name,
+                                            endSearchQuery
+                                          ),
+                                        }}
+                                      ></p>
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : (<>
+                               <span>POPULAR CITY</span>
                                       <ul className="p-0 m-0">
                                         {popularCities.map(
                                           (popularCitie, index) => (
                                             <li
                                               key={index}
                                               onClick={() =>
-                                                handleStartCitySelect(
-                                                  popularCitie,
-                                                  endSearchInputRef
+                                                handleEndCitySelect(
+                                                  popularCitie
                                                 )
                                               }
                                             >
@@ -1548,12 +1546,12 @@ const DashboardHero: React.FC = () => {
                                             </li>
                                           )
                                         )}
-                                      </ul>{" "}
+                                      </ul></>)}
                                     </>
                                   ) : null
                                   }
-                                </>
-                              )}
+                                
+                              
                               
                             </div>
                           </div>
